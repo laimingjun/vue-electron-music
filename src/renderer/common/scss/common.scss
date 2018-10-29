@@ -1,0 +1,91 @@
+.pages-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .el-pagination {
+    background: none;
+
+    button {
+      &:disabled {
+        display: none;
+      }
+    }
+
+    .btn-next,
+    .btn-prev {
+      padding: 0;
+      border: 1px solid $light-border-color;
+      color: $color-text;
+      background: none;
+    }
+
+    .btn-prev {
+      margin-right: 5px;
+    }
+
+    .el-pager {
+      li {
+        margin-right: 5px;
+        border: 1px solid $light-border-color;
+        color: $color-text;
+        background: none;
+
+        &.active {
+          color: $color-text-highlight;
+        }
+      }
+    }
+
+    .el-input__inner {
+      color: $color-text;
+      border-color: $light-border-color;
+      background: none;
+    }
+  }
+}
+
+.btn-mini {
+  padding: 6px 12px;
+  border: 1px solid $btn-border-color;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background-color 1s;
+
+  .iconfont {
+    margin-right: 2px;
+    font-size: $font-size-small;
+  }
+
+  &.active {
+    color: $color-text-highlight;
+    border-color: $color-text-highlight;
+  }
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.cover-hover-bg {
+  position: absolute;
+  background-color: rgba(#000, 0);
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: rgba(#000, 0.2);
+  }
+
+  .item-play-icon {
+    position: absolute;
+
+    &:hover {
+      color: $color-text-highlight;
+      transition: color 0.3s;
+    }
+
+    .iconfont {
+      font-size: $iconfont-size-medium;
+    }
+  }
+}
