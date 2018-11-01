@@ -89,3 +89,27 @@
     }
   }
 }
+
+.singer {
+  .singer-item {
+    cursor: pointer;
+
+    &:hover {
+      color: $color-text-highlight;
+    }
+
+    &:hover::before {
+      color: #fff;
+    }
+
+    &:before {
+
+      content: '/';
+      margin: 0 2px;
+    }
+
+    &:first-child:before {
+      content: '';
+    }
+  }
+}

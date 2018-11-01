@@ -110,19 +110,6 @@ $songs-hover-bg: #155263;
       }
       .singer {
         width: 20%;
-        cursor: pointer;
-        .singer-item {
-          &:hover {
-            color: $color-text-highlight;
-          }
-          &:before {
-            content: '/';
-            margin: 0 2px;
-          }
-          &:first-child:before {
-            content: '';
-          }
-        }
       }
       .album {
         width: 20%;

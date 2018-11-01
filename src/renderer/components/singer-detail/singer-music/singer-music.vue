@@ -3,7 +3,7 @@
     <div class="btn-group">
       <div class="btn-mini active"><i class="iconfont icon-bofangqi-bofang"></i>全部播放</div>
     </div>
-    <music-list :musicList="musicList" :showSinger="showSinger"></music-list>
+    <music-list :musicList="musicList" :showSinger="showSinger" @clickAlbum="toAlbumDetail"></music-list>
   </div>
 </template>
 
@@ -24,6 +24,12 @@ export default {
     this._getMusicList()
   },
   methods: {
+    toAlbumDetail(id) {
+      this.$router.push({
+        name: 'AlbumDetail',
+        params: { id }
+      })
+    },
     _getMusicList() {
       httpGet(singerMusicListUrl, {
         id: this.id

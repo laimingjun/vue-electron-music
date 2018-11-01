@@ -1,5 +1,14 @@
 export const initial = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'
 
+export const commentTypeList = {
+  MUSIC_TYPE: 0,
+  MV_TYPE: 1,
+  SONG_LIST_TYPE: 2,
+  ALBUM_TYPE: 3,
+  STATION_TYPE: 4,
+  VIDEO_TYPE: 5
+}
+
 export const singerCatList = [{
     name: '入驻歌手',
     code: 5001
@@ -81,4 +90,56 @@ export const newMusicTypeList = [{
 }, {
   name: '韩国',
   code: 16
+}]
+
+export const suggestTypeConvert = {
+  songs: {
+    title: '单曲',
+    icon: 'icon-gequming'
+  },
+  artists: {
+    title: '歌手',
+    icon: 'icon-geren'
+  },
+  albums: {
+    title: '专辑',
+    icon: 'icon-zhuanji'
+  },
+  mvs: {
+    title: '视频',
+    icon: 'icon-shipin'
+  },
+  playlists: {
+    title: '歌单',
+    icon: 'icon-pajian_gequliebiao_'
+  }
+}
+
+export const searchTypeList = [{
+  name: '单曲',
+  type: 1
+}, {
+  name: '专辑',
+  type: 10
+}, {
+  name: '歌手',
+  type: 100
+}, {
+  name: '歌单',
+  type: 1000
+}, {
+  name: '用户',
+  type: 1002
+}, {
+  name: 'mv',
+  type: 1004
+}, {
+  name: '歌词',
+  type: 1006
+}, {
+  name: '电台',
+  type: 1009
+}, {
+  name: '视频',
+  type: 1014
 }]

@@ -8,7 +8,11 @@
           <img :src="singer.img1v1Url" alt="歌手头像">
         </div>
         <div class="singer-desc">
-          <h3>{{singer.name}}</h3>
+          <div class="singer-title">
+            <h3>{{singer.name}}</h3>
+            <div class="btn-mini">
+              <i class="iconfont icon-xihuan"></i>收藏</div>
+          </div>
           <div class="desc">
             {{singerDesc}}
           </div>      
@@ -102,10 +106,14 @@ $singer-bg: #0d465a;
     }
     .singer-desc {
       flex: 1;
-      h3 {
+      .singer-title {
+        display: flex;
+        justify-content: space-between;
         margin-bottom: 10px;
-        font-size: $font-size-large-x;
-        font-weight: bold;
+        h3 {
+          font-size: $font-size-large-x;
+          font-weight: bold;
+        }
       }
       .desc {
         line-height: $p-line-height;

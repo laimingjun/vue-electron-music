@@ -6,14 +6,45 @@
           <img v-lazy="album.picUrl" />
         </div>
         <div class="detail">
-          
+          <div class="album-name">{{album.name}}</div>
+          <div class="singer">
+            <span class="singer-item" v-for="item in album.artists" :key="item.id">
+              {{item.name}}
+            </span>
+          </div>
+          <div class="create-date">{{album.publishTime | formatDateTime}} 发行</div>
+          <div class="btn-group">
+            <div class='btn-mini active'>
+              <i class="iconfont icon-bofangqi-bofang"></i>播放全部
+            </div>
+            <div class="btn-mini">
+              <i class="iconfont icon-iconfontxihuan"></i>收藏
+            </div>
+            <div class="btn-mini">
+              <i class="iconfont icon-fenxiang"></i>分享({{album.info && album.info.shareCount}})
+            </div>
+          </div>
         </div>
       </div>
       <div class="album-content">
-        <music-list 
+        <ul class="tabs">
+          <li 
+            :class="{active: currentTab === 'MusicList'}" 
+            @click="changeTab('MusicList')">歌曲({{album.size}})</li>
+          <li 
+            :class="{active: currentTab === 'AlbumDesc'}" 
+            @click="changeTab('AlbumDesc')">专辑信息</li>
+          <li 
+            :class="{active: currentTab === 'AlbumComment'}"
+            @click="changeTab('AlbumComment')">
+            评论({{album.info && album.info.commentCount}})</li>
+        </ul>
+        <component :is="currentTab"
           :musicList="musicList" 
           :showAlbum="false"
-          @clickSinger="toSingerDetail"></music-list>
+          :album="album"
+          :id="album.id"
+          @clickSinger="toSingerDetail"></component>
       </div>
     </scroll>
   </div>
@@ -22,13 +53,17 @@
 <script>
 import { ERR_OK, albumDetailUrl } from '@/api/config'
 import { httpGet } from '@/api/httpUtil'
+import { formatDateTime } from '@/common/js/util'
 import Scroll from '@/base/scroll/scroll'
 import MusicList from '@/base/music-list/music-list'
+import AlbumDesc from './album-desc/album-desc'
+import AlbumComment from './album-comment/album-comment'
 export default {
   data() {
     return {
       musicList: [],
-      album: {}
+      album: {},
+      currentTab: 'MusicList'
     }
   },
   created() {
@@ -40,6 +75,9 @@ export default {
         name: 'SingerDetail',
         params: { id }
       })
+    },
+    changeTab(tab) {
+      this.currentTab = tab
     },
     _getAlbumDetail(id) {
       httpGet(albumDetailUrl, {
@@ -54,7 +92,12 @@ export default {
   },
   components: {
     Scroll,
-    MusicList
+    MusicList,
+    AlbumComment,
+    AlbumDesc
+  },
+  filters: {
+    formatDateTime
   }
 }
 </script>
@@ -67,6 +110,7 @@ $content-bg: #0d465a;
   height: $music-content-height;
   background: $content-bg;
   .album-detail {
+    display: flex;
     padding: 20px;
     background: $detail-bg;
     .cover-img {
@@ -75,9 +119,53 @@ $content-bg: #0d465a;
         width: 100%;
       }
     }
+    .detail {
+      position: relative;
+      flex: 1;
+      padding-left: 12px;
+      .album-name {
+        font-size: $font-size-large;
+        font-weight: bold;
+      }
+      .singer {
+        margin: 20px 0;
+      }
+      .create-date {
+        color: $color-text-dark;
+      }
+      .btn-group {
+        position: absolute;
+        bottom: 0;
+        display: flex;
+        margin-top: 10px;
+        .btn-mini {
+          margin-right: 8px;
+        }
+      }
+    }
   }
   .album-content {
     padding: 20px;
+    .tabs {
+      display: flex;
+      font-size: $font-size-medium;
+      li {
+        margin: 0 10px;
+        height: $control-height;
+        line-height: $control-height;
+        cursor: pointer;
+        &:hover {
+          color: $color-text-highlight;
+        }
+        &:first-child {
+          margin-left: 0;
+        }
+        &.active {
+          color: $color-text-highlight;
+          border-bottom: 2px solid $color-text-highlight;
+        }
+      }
+    }
   }
 }
 </style>

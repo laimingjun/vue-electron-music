@@ -80,7 +80,6 @@ export default {
             item.ar = item.artists
             item.dt = item.duration
           })
-          console.log(musicList)
           this.musicList = musicList
         }
       })

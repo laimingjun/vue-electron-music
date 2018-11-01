@@ -3,6 +3,7 @@ export function pad(num) {
 }
 
 export function formatSingers(arr) {
+  if (!arr) return
   let singers = []
   arr.forEach(item => {
     singers.push(item.name)
@@ -19,6 +20,7 @@ export function formatDateTime(time) {
 }
 
 export function convertUnit(val) {
+  if (!val) return ''
   if (val > 10000) {
     return (val / 10000).toFixed(1) + '万'
   }

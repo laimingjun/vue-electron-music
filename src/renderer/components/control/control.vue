@@ -13,37 +13,56 @@
     <div class="search-group">
       <div class="search-placeholder" 
         v-show="isPlaceholderShow" 
-        @click="hidePlaceholder">
+        @click="searchFocus">
         <i class="iconfont icon-sousuo"></i>
         <span>搜索音乐、MV、歌单</span>
       </div>
-      <input class="search-input"
-        ref="searchInput"
-        v-model="searchInput" 
-        @focus="hidePlaceholder" 
-        @blur="showPlaceholder" 
-        type="text">
+      <input class="search-input" ref="searchInput" v-model="keyword" 
+          @focus="searchFocus" @blur="searchBlur" @keydown.enter="toSearchDetail(keyword)"
+          type="text">     
+    </div>
+    <div class="search-content" v-if="isShowSearchContent">
+      <component 
+        :suggestList="suggestList" 
+        :is="isShowSeach"
+        @clickSuggest="toSearchDetail"></component>
     </div>
   </div>
 </template>
 
 <script>
+import { ERR_OK, searchSuggestUrl } from '@/api/config'
+import { httpGet } from '@/api/httpUtil'
+import SearchHot from './search-hot/search-hot'
+import SearchSuggest from './search-suggest/search-suggest'
 export default {
   data() {
     return {
       isPlaceholderShow: true,
-      searchInput: ''
+      keyword: '',
+      suggestList: {},
+      isShowSearchContent: false,
+      isSelect: false
+    }
+  },
+  computed: {
+    isShowSeach() {
+      return this.keyword ? 'SearchSuggest' : 'SearchHot'
     }
   },
   methods: {
-    hidePlaceholder() {
+    searchFocus() {
+      this.isShowSearchContent = true
       this.isPlaceholderShow = false
       this.$refs.searchInput.focus()
     },
-    showPlaceholder() {
-      this.searchInput
+    searchBlur() {
+      this.keyword
         ? (this.isPlaceholderShow = false)
         : (this.isPlaceholderShow = true)
+      setTimeout(() => {
+        this.isShowSearchContent = false
+      }, 200)
     },
     back() {
       this.$router.go(-1)
@@ -53,7 +72,41 @@ export default {
     },
     refresh() {
       this.$emit('refresh')
+    },
+    toSearchDetail(keyword) {
+      this.isSelect = true
+      this.keyword = keyword
+      this.isPlaceholderShow = false
+      this.$router.push({
+        name: 'SearchDetail',
+        params: {
+          keyword
+        }
+      })
+    },
+    _getSerachSuggest(keyword) {
+      httpGet(searchSuggestUrl, {
+        keywords: this.keyword
+      }).then(res => {
+        if (res.code === ERR_OK) {
+          this.suggestList = res.result
+        }
+      })
     }
+  },
+  watch: {
+    keyword(val) {
+      if (val === '') return
+      if (this.isSelect) {
+        this.isSelect = false
+        return
+      }
+      this._getSerachSuggest(val)
+    }
+  },
+  components: {
+    SearchHot,
+    SearchSuggest
   }
 }
 </script>
@@ -64,6 +117,7 @@ $search-input-width: 220px;
 $search-bg: #235164;
 $placeholder-color: #ccc;
 .control {
+  position: relative;
   display: flex;
   width: 100%;
   height: $control-height;
@@ -98,6 +152,14 @@ $placeholder-color: #ccc;
       font-size: $font-size-small;
       color: $placeholder-color;
     }
+  }
+  .search-content {
+    position: absolute;
+    top: 40px;
+    left: 120px;
+    color: #000;
+    background: #fff;
+    z-index: 99;
   }
 }
 </style>
