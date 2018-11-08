@@ -18,14 +18,17 @@
         <span>搜索音乐、MV、歌单</span>
       </div>
       <input class="search-input" ref="searchInput" v-model="keyword" 
-          @focus="searchFocus" @blur="searchBlur" @keydown.enter="toSearchDetail(keyword)"
+          @focus="searchFocus" @blur="searchBlur" @keydown.enter="searchEnter"
           type="text">     
     </div>
     <div class="search-content" v-if="isShowSearchContent">
       <component 
         :suggestList="suggestList" 
         :is="isShowSeach"
-        @clickSuggest="toSearchDetail"></component>
+        @clickSuggest="toSearchDetail"
+        @clickWrapper="clickWrapper"
+        @clickDelete="deleteSearch"
+        @clickRemove="removeSearch"></component>
     </div>
   </div>
 </template>
@@ -35,6 +38,7 @@ import { ERR_OK, searchSuggestUrl } from '@/api/config'
 import { httpGet } from '@/api/httpUtil'
 import SearchHot from './search-hot/search-hot'
 import SearchSuggest from './search-suggest/search-suggest'
+import { mapActions, mapMutations } from 'vuex'
 export default {
   data() {
     return {
@@ -42,7 +46,8 @@ export default {
       keyword: '',
       suggestList: {},
       isShowSearchContent: false,
-      isSelect: false
+      isSelect: false,
+      isClickWrapper: false
     }
   },
   computed: {
@@ -51,16 +56,24 @@ export default {
     }
   },
   methods: {
+    clickWrapper() {
+      this.isClickWrapper = true
+      this.$refs.searchInput.focus()
+    },
     searchFocus() {
       this.isShowSearchContent = true
       this.isPlaceholderShow = false
       this.$refs.searchInput.focus()
     },
     searchBlur() {
-      this.keyword
-        ? (this.isPlaceholderShow = false)
-        : (this.isPlaceholderShow = true)
       setTimeout(() => {
+        if (this.isClickWrapper) {
+          this.isClickWrapper = false
+          return
+        }
+        this.keyword
+          ? (this.isPlaceholderShow = false)
+          : (this.isPlaceholderShow = true)
         this.isShowSearchContent = false
       }, 200)
     },
@@ -73,16 +86,33 @@ export default {
     refresh() {
       this.$emit('refresh')
     },
+    searchEnter() {
+      if (this.keyword === '') return
+      this.isShowSearchContent = false
+      this.toSearchDetail()
+    },
     toSearchDetail(keyword) {
+      this.keyword = keyword || this.keyword
       this.isSelect = true
-      this.keyword = keyword
       this.isPlaceholderShow = false
-      this.$router.push({
-        name: 'SearchDetail',
-        params: {
-          keyword
+      if (this.keyword !== '') {
+        this.setSearchQuery(this.keyword)
+        this.saveSearchHistory(this.keyword)
+        if (this.$router.history.current.name !== 'SearchDetail') {
+          this.$router.push({
+            name: 'SearchDetail',
+            params: {
+              keyword
+            }
+          })
         }
-      })
+      }
+    },
+    deleteSearch(query) {
+      this.deleteSearchHistory(query)
+    },
+    removeSearch() {
+      this.removeSearchHistory()
     },
     _getSerachSuggest(keyword) {
       httpGet(searchSuggestUrl, {
@@ -92,7 +122,15 @@ export default {
           this.suggestList = res.result
         }
       })
-    }
+    },
+    ...mapActions([
+      'saveSearchHistory',
+      'deleteSearchHistory',
+      'removeSearchHistory'
+    ]),
+    ...mapMutations({
+      setSearchQuery: 'SET_SEARCH_QUERY'
+    })
   },
   watch: {
     keyword(val) {
@@ -101,6 +139,7 @@ export default {
         this.isSelect = false
         return
       }
+      this.isShowSearchContent = true
       this._getSerachSuggest(val)
     }
   },

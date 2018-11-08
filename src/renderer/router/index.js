@@ -23,13 +23,12 @@ Vue.use(Router)
 export default new Router({
   routes: [{
     path: '/',
-    redirect: {
-      name: 'MusicTab'
-    }
+    redirect: '/musicTab/featured'
   }, {
     path: '/musicTab',
     component: MusicTab,
     name: 'MusicTab',
+    redirect: '/musicTab/featured',
     children: [{
         path: '/',
         redirect: 'featured'

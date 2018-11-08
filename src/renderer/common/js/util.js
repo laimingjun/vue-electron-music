@@ -19,6 +19,13 @@ export function formatDateTime(time) {
   return `${year}-${mouth}-${day}`
 }
 
+export function formatTime(time) {
+  time = (time / 1000) | 0
+  const minute = (time / 60) | 0
+  const second = pad(time % 60)
+  return `${minute}:${second}`
+}
+
 export function convertUnit(val) {
   if (!val) return ''
   if (val > 10000) {

@@ -1,21 +1,21 @@
 <template>
   <div class="search-detail-wrapper">
-    <scroll>
+    <scroll :onScroll="true" @scrollBottom="loadMore">
         <div class="nav-container">
           <ul class="nav">
             <li 
               v-for="item in searchTypeList" 
               :key="item.type"
               :class="{active: currentType === item.type}"
-              @click="changeType(item.type)"
+              @click="changeType(item.type, item.component)"
               >{{item.name}}
             </li>
           </ul>
-          <div class="hint">共查找到{{resultCount}}条</div>
+          <div class="hint">{{searchQuery}}共查找到{{resultCount}}条记录</div>
         </div>
-        
         <div class="search-detail">
-          <component :is="currentCompent"></component>
+          <component :is="currentComponent" v-bind="result" :hasMore="hasMore"></component>
+          <div class="loading-container" v-loading="loading" v-show="loading"></div>
         </div>
     </scroll> 
   </div>
@@ -26,48 +26,108 @@ import { ERR_OK, searchUrl } from '@/api/config'
 import { httpGet } from '@/api/httpUtil'
 import { searchTypeList } from '@/api/apiType'
 import Scroll from '@/base/scroll/scroll'
-import MusicList from '@/base/music-list/music-list'
+import SearchMusic from './search-music/search-music'
+import SearchAlbum from './search-album/search-album'
+import SearchMv from './search-mv/search-mv'
+import SearchSinger from './search-singer/search-singer'
+import SearchSongList from './search-song-list/search-song-list'
+import SearchUser from './search-user/search-user'
+import SearchVideo from './search-video/search-video'
+import SearcLyric from './search-lyric/search-lyric'
+import { mapGetters } from 'vuex'
+
 export default {
   data() {
     return {
       searchTypeList,
       currentType: 1,
-      currentCompent: 'MusicList',
-      result: [],
-      keywords: '',
-      resultCount: 0
+      currentComponent: 'SearchMusic',
+      pageIndex: 1,
+      pageSize: 50,
+      result: {},
+      resultList: [],
+      resultCount: 0,
+      hasMore: true,
+      loading: false
     }
   },
+  computed: {
+    ...mapGetters(['searchQuery'])
+  },
   created() {
-    this.keywords = this.$route.params.keyword
     this._getSearchResult()
   },
   methods: {
-    changeType(type) {
+    changeType(type, component) {
       this.currentType = type
+      this.currentComponent = component
+      this.result = {}
+      this.resultList = []
+      this.resultCount = 0
       this._getSearchResult()
     },
+    loadMore() {
+      if (!this.loading && this.hasMore) {
+        this.pageIndex = this.pageIndex + 1
+        this.loading = true
+        this._getSearchResult()
+      }
+    },
     _getSearchResult() {
+      if (this.searchQuery === '') return
+      let offset = (this.pageIndex - 1) * this.pageSize
       httpGet(searchUrl, {
-        keywords: this.keywords,
-        type: this.currentType
+        keywords: this.searchQuery,
+        type: this.currentType,
+        offset,
+        limit: this.pageSize
       }).then(res => {
+        this.loading = false
         if (res.code === ERR_OK) {
-          let result = res.result
-          this.result = result
-          for (let key in result) {
-            if (typeof result[key] === 'number') {
-              this.resultCount = result[key]
-              return
-            }
-          }
+          this._normalizeResult(res.result)
         }
       })
+    },
+    _normalizeResult(result) {
+      let totalResult = []
+      let arrKey = ''
+      for (let key in result) {
+        if (typeof result[key] === 'number') {
+          this.resultCount = result[key]
+        }
+        if (result[key] instanceof Array) {
+          arrKey = key
+          totalResult = result[key]
+        }
+      }
+      if (totalResult) {
+        this.resultList = result[arrKey] = this.resultList.concat(totalResult)
+        this.result = result
+        this.hasMore = true
+      }
+      if (this.pageIndex * this.pageSize > this.resultCount) {
+        this.hasMore = false
+      }
+    }
+  },
+  watch: {
+    searchQuery() {
+      this.result = {}
+      this.resultList = []
+      this.resultCount = 0
+      this._getSearchResult()
     }
   },
   components: {
     Scroll,
-    MusicList
+    SearchMusic,
+    SearchAlbum,
+    SearchMv,
+    SearchSinger,
+    SearchSongList,
+    SearchUser,
+    SearchVideo,
+    SearcLyric
   }
 }
 </script>
@@ -76,6 +136,7 @@ export default {
 @import 'scss/variable.scss';
 .search-detail-wrapper {
   height: $music-content-height;
+  padding-bottom: 20px;
   .nav-container {
     display: flex;
     justify-content: space-between;
@@ -86,8 +147,9 @@ export default {
       li {
         height: $control-height;
         line-height: $control-height;
-        margin-right: 20px;
+        margin-right: 30px;
         font-size: $font-size-medium;
+        cursor: pointer;
         &:hover {
           color: $color-text-highlight;
         }
@@ -105,6 +167,9 @@ export default {
   }
   .search-detail {
     padding: 0 30px;
+  }
+  .loading-container {
+    margin-top: 30px;
   }
 }
 </style>

@@ -117,29 +117,34 @@ export const suggestTypeConvert = {
 
 export const searchTypeList = [{
   name: '单曲',
-  type: 1
+  type: 1,
+  component: 'SearchMusic'
 }, {
   name: '专辑',
-  type: 10
+  type: 10,
+  component: 'SearchAlbum'
 }, {
   name: '歌手',
-  type: 100
+  type: 100,
+  component: 'SearchSinger'
 }, {
   name: '歌单',
-  type: 1000
+  type: 1000,
+  component: 'SearchSongList'
 }, {
   name: '用户',
-  type: 1002
+  type: 1002,
+  component: 'SearchUser'
 }, {
   name: 'mv',
-  type: 1004
+  type: 1004,
+  component: 'SearchMv'
 }, {
   name: '歌词',
-  type: 1006
-}, {
-  name: '电台',
-  type: 1009
+  type: 1006,
+  component: 'SearcLyric'
 }, {
   name: '视频',
-  type: 1014
+  type: 1014,
+  component: 'SearchVideo'
 }]

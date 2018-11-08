@@ -1,0 +1,5 @@
+export const SET_COUNT = 'SET_COUNT'
+
+export const SET_SEARCH_HISTORY = 'SET_SEARCH_HISTORY'
+
+export const SET_SEARCH_QUERY = 'SET_SEARCH_QUERY'

@@ -82,15 +82,6 @@ $song-list-item-width: 19%;
       }
       .cover-hover-bg {
         visibility: hidden;
-        position: absolute;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(#000, 0);
-        transition: background-color 0.3s;
-        &:hover {
-          background-color: rgba(#000, 0.2);
-        }
         .item-play-icon {
           right: 4px;
           bottom: 4px;

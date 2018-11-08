@@ -6,7 +6,7 @@
     </h2>
     <ul class="tag">
       <li v-for="item in hotTags" :key="item.id" @click="toSongByTag(item.name)" >{{item.name}}</li>
-      <li>全部分类</li>
+      <li @click="toAllTag">全部分类</li>
     </ul>
     <song-list @selectSong="selectSong" :songList="songList"></song-list>
   </div>
@@ -51,6 +51,11 @@ export default {
         params: {
           tag
         }
+      })
+    },
+    toAllTag() {
+      this.$router.push({
+        name: 'SongTag'
       })
     }
   },

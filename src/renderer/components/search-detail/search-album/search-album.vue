@@ -1,34 +1,36 @@
 <template>
-  <div class="search-song-list-wrapper">
-    <div class="song-list-item" v-for="(item, index) in playlists" :key="item.id">
-      <div class="song-list-cover" 
+  <div class="search-album-wrapper">
+    <div class="album-item" v-for="(item, index) in albums" :key="item.id">
+      <div class="album-cover" 
         @mouseenter="changeCurrentHover(index)"
         @mouseleave="changeCurrentHover(null)">
-        <img v-lazy="item.coverImgUrl">
+        <img v-lazy="item.blurPicUrl">
         <div class="cover-hover-bg" v-show="currentHoverIndex === index">
           <div class="item-play-icon">
              <i class="iconfont icon-play"></i>
           </div>
         </div>
       </div>
-      <div class="name" @click="toSongListDetail(item.id)">
+      <div class="name" @click="toAlbumDetail(item.id)">
         {{item.name}}
       </div>
-      <div class="user">
-        {{item.creator.nickname}}
+      <div class="singer">
+        <span class="singer-item" v-for="singer in item.artists" :key="singer.id" @click="toSingerDetail(singer.id)">
+          {{singer.name}}
+        </span>
       </div>
       <div class="time">
-        {{item.playCount | convertUnit}}人播放
+        {{item.publishTime | formatDateTime}}
       </div>
       <div class="number">
-        {{item.trackCount}}首
+        {{item.size}}首
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { convertUnit } from '@/common/js/util'
+import { formatDateTime } from '@/common/js/util'
 export default {
   data() {
     return {
@@ -36,7 +38,7 @@ export default {
     }
   },
   props: {
-    playlists: {
+    albums: {
       type: Array,
       default() {
         return []
@@ -47,9 +49,9 @@ export default {
     changeCurrentHover(index) {
       this.currentHoverIndex = index
     },
-    toSongListDetail(id) {
+    toAlbumDetail(id) {
       this.$router.push({
-        name: 'SongDetail',
+        name: 'AlbumDetail',
         params: { id }
       })
     },
@@ -61,7 +63,7 @@ export default {
     }
   },
   filters: {
-    convertUnit
+    formatDateTime
   }
 }
 </script>
@@ -69,8 +71,8 @@ export default {
 <style scoped lang="scss">
 @import 'scss/variable.scss';
 $ablum-height: 80px;
-.search-song-list-wrapper {
-  .song-list-item {
+.search-album-wrapper {
+  .album-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -81,7 +83,7 @@ $ablum-height: 80px;
     &:hover {
       background: $hover-bg-hint;
     }
-    .song-list-cover {
+    .album-cover {
       position: relative;
       width: $ablum-height;
       height: $ablum-height;
@@ -96,27 +98,22 @@ $ablum-height: 80px;
       }
     }
     .name {
-      width: 42%;
+      width: 36%;
       margin-left: 10px;
       cursor: pointer;
       &:hover {
         color: $color-text-highlight;
       }
     }
-    .user {
-      width: 20%;
-      cursor: pointer;
-      &:hover {
-        color: $color-text-highlight;
-      }
+    .singer {
+      width: 24%;
     }
     .time {
       flex: 1;
-      text-align: right;
       color: $color-text-dark;
     }
     .number {
-      width: 10%;
+      flex: 1;
       text-align: right;
       color: $color-text-dark;
     }

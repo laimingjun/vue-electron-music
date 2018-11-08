@@ -7,7 +7,7 @@
         <div class="album" v-if="showAlbum">专辑</div>
         <div class="duration">时长</div>  
       <li>
-      <li class="songs-item" v-for="item in musicList" :key="item.id">
+      <li class="songs-item" v-for="(item, index) in musicList" :key="index">
         <div class="name">
           <i class="iconfont icon-iconfontxihuan"></i>
           {{item.name}}
@@ -15,23 +15,24 @@
         <div class="singer" v-if="showSinger" :title="item.ar | formatSingers">
           <span 
             class="singer-item"
-            v-for="singer in item.ar" 
-            :key="singer.id"
+            v-for="(singer, index) in item.ar || item.artists" 
+            :key="index"
+            :title="singer.id"
             @click="clickSinger(singer.id)">
             {{singer.name}}
           </span>
         </div>
         <div class="album" v-if="showAlbum">
-          <span :title="item.al.name" @click="clickAlbum(item.al.id)">{{item.al.name}}</span>
+          <span :title="item | formatAlbum" @click="clickAlbum(item)">{{item | formatAlbum}}</span>
         </div>   
-        <div class="duration">{{item.dt | formatTime}}</div>   
+        <div class="duration">{{item.dt || item.duration | formatTime}}</div>   
       </li>
     </ul>  
   </div>
 </template>
 
 <script>
-import { pad, formatSingers } from '@/common/js/util'
+import { formatSingers, formatTime } from '@/common/js/util'
 export default {
   props: {
     musicList: {
@@ -51,19 +52,22 @@ export default {
   },
   methods: {
     clickSinger(id) {
+      if (id === 0) {
+        this.$alert('暂无歌手详情', '提示')
+        return
+      }
       this.$emit('clickSinger', id)
     },
-    clickAlbum(id) {
+    clickAlbum(item) {
+      let id = item.al ? item.al.id : item.album ? item.album.id : ''
       this.$emit('clickAlbum', id)
     }
   },
   filters: {
     formatSingers,
-    formatTime(val) {
-      val = (val / 1000) | 0
-      const minute = (val / 60) | 0
-      const second = pad(val % 60)
-      return `${minute}:${second}`
+    formatTime,
+    formatAlbum(item) {
+      return item.al ? item.al.name : item.album ? item.album.name : ''
     }
   }
 }

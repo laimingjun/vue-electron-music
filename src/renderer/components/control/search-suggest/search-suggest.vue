@@ -1,11 +1,11 @@
 <template>
-  <div class="search-suggest-wrapper" >
+  <div class="search-suggest-wrapper" @click="clickWrapper">
     <div class="suggest-item" v-for="(title, index) in order" :key="index">
       <div class="title">
         <i class="iconfont" :class="suggestTypeConvert[title].icon"></i>
         {{suggestTypeConvert[title].title}}</div>
       <ul>
-        <li @click="handleSuggest(item.name)" v-for="item in suggestList[title]" :key="item.id">
+        <li @click.stop="handleSuggest(item.name)" v-for="item in suggestList[title]" :key="item.id">
           {{item.name}}
           <span v-if="title === 'songs' || title === 'albums'">
             - {{item | formatArtist}}
@@ -31,6 +31,9 @@ export default {
   methods: {
     handleSuggest(keyword) {
       this.$emit('clickSuggest', keyword)
+    },
+    clickWrapper() {
+      this.$emit('clickWrapper')
     }
   },
   watch: {
