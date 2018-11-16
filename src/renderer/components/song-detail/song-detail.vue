@@ -19,7 +19,7 @@
               <li v-for="(item, index) in songDetail.tags" :key="index">#{{item}}</li>
             </ul>
             <div class="btn-group">
-              <div class='btn-mini active'>
+              <div class='btn-mini active' @click="playAll">
                 <i class="iconfont icon-bofangqi-bofang"></i>播放全部
               </div>
               <div class="btn-mini">
@@ -60,6 +60,8 @@
 import { ERR_OK, songListDetailUrl } from '@/api/config'
 import { httpGet } from '@/api/httpUtil'
 import { convertUnit } from '@/common/js/util'
+import { createMusic } from '@/common/js/music'
+import { mapActions } from 'vuex'
 import Scroll from '@/base/scroll/scroll'
 import MusicList from '@/base/music-list/music-list'
 import SongComment from './song-comment/song-comment'
@@ -116,6 +118,12 @@ export default {
         params: { id }
       })
     },
+    playAll() {
+      let list = this.musicList.map(item => {
+        return createMusic(item)
+      })
+      this.savePlayListHistory(list)
+    },
     _getSongListDetail(id) {
       httpGet(songListDetailUrl, {
         id
@@ -130,7 +138,8 @@ export default {
           this.musicList = res.playlist.tracks
         }
       })
-    }
+    },
+    ...mapActions(['savePlayListHistory'])
   },
   components: {
     Scroll,

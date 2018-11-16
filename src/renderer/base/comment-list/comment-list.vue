@@ -1,19 +1,20 @@
 <template>
   <div class="comment-list-wrapper">
-    <div class="title">{{title}}({{total}})</div>
-    <div class="comment-item" v-for="comment in commentList" :key="comment.commentId">
+    <div class="title" :style="cpBorderColor">{{title}}({{total}})</div>
+    <div class="comment-item" :style="cpBorderColor"
+      v-for="comment in commentList" :key="comment.commentId">
       <div class="avatar">
-        <img :src="comment.user.avatarUrl" />
+        <img v-lazy="comment.user.avatarUrl" />
       </div>
       <div class="container">
-        <div class="nickname">{{comment.user.nickname}}</div>
+        <div class="nickname" :style="fontColor">{{comment.user.nickname}}</div>
         <div class="replied-content" v-if="comment.beReplied.length">
           回复
           <span class="replied-name">@{{comment.beReplied[0].user.nickname}}</span>：{{comment.beReplied[0].content}}
         </div>
         <div class="content" :class="{replied: comment.beReplied.length}">{{comment.content}}</div>
         <div class="bottom">
-          <div class="time">{{comment.time | formatterTime}}</div>
+          <div class="time" :style="fontColor">{{comment.time | formatterTime}}</div>
           <div class="control">
             <span class="like"><i class="iconfont icon-dianzan"></i>{{comment.likedCount}}</span>
             <span><i class="iconfont icon-xiaoxi"></i></span>
@@ -33,6 +34,20 @@ export default {
       type: Array,
       default() {
         return []
+      }
+    },
+    color: String,
+    borderColor: String
+  },
+  computed: {
+    cpBorderColor() {
+      return {
+        borderColor: this.borderColor
+      }
+    },
+    fontColor() {
+      return {
+        color: this.color
       }
     }
   },
@@ -57,7 +72,7 @@ export default {
 
 <style scoped lang="scss">
 @import 'scss/variable.scss';
-$control-width: 80px;
+$control-width: 76px;
 $avatar-height: 50px;
 .comment-list-wrapper {
   margin-bottom: 10px;
@@ -85,6 +100,7 @@ $avatar-height: 50px;
       margin-left: 10px;
       .nickname {
         color: $color-text-dark;
+        cursor: pointer;
         &:hover {
           color: $color-text-highlight;
         }
@@ -117,7 +133,7 @@ $avatar-height: 50px;
         .control {
           display: flex;
           justify-content: space-between;
-          width: $control-width;
+          min-width: $control-width;
           .like {
             .iconfont {
               margin-right: 5px;

@@ -7,6 +7,14 @@ import {
   httpGet
 } from '@/api/httpUtil'
 
+import {
+  mapGetters,
+  mapMutations
+} from 'vuex'
+import {
+  SET_PLAY_LIST_VISIBLE
+} from '@/store/mutation-types'
+
 export const songMixin = {
   data() {
     return {
@@ -111,5 +119,19 @@ export const commentMixin = {
         }
       })
     }
+  }
+}
+
+export const playListVisibleMixin = {
+  computed: {
+    ...mapGetters(['playListVisible'])
+  },
+  methods: {
+    hidePlayList() {
+      this.playListVisible && this.setPlayListVisible(false)
+    },
+    ...mapMutations({
+      setPlayListVisible: SET_PLAY_LIST_VISIBLE
+    })
   }
 }

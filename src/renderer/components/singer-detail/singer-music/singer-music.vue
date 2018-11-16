@@ -1,7 +1,9 @@
 <template>
   <div class="singer-music-wrapper">
     <div class="btn-group">
-      <div class="btn-mini active"><i class="iconfont icon-bofangqi-bofang"></i>全部播放</div>
+      <div class="btn-mini active" @click="playAll">
+        <i class="iconfont icon-bofangqi-bofang"></i>全部播放
+      </div>
     </div>
     <music-list :musicList="musicList" :showSinger="showSinger" @clickAlbum="toAlbumDetail"></music-list>
   </div>
@@ -10,6 +12,8 @@
 <script>
 import { ERR_OK, singerMusicListUrl } from '@/api/config'
 import { httpGet } from '@/api/httpUtil'
+import { createMusic } from '@/common/js/music'
+import { mapActions } from 'vuex'
 import MusicList from '@/base/music-list/music-list'
 
 export default {
@@ -30,6 +34,12 @@ export default {
         params: { id }
       })
     },
+    playAll() {
+      let list = this.musicList.map(item => {
+        return createMusic(item)
+      })
+      this.savePlayListHistory(list)
+    },
     _getMusicList() {
       httpGet(singerMusicListUrl, {
         id: this.id
@@ -38,7 +48,8 @@ export default {
           this.musicList = res.hotSongs
         }
       })
-    }
+    },
+    ...mapActions(['savePlayListHistory'])
   },
   components: {
     MusicList

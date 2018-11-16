@@ -67,3 +67,12 @@ export const searchSuggestUrl = '/search/suggest'
 
 // 搜索 *:keywords
 export const searchUrl = '/search'
+
+// 音乐url *:id
+export const musicUrl = '/song/url'
+
+// 歌词 *:id
+export const lyricUrl = '/lyric'
+
+// 音乐评论 *:id
+export const commentMusicUrl = '/comment/music'

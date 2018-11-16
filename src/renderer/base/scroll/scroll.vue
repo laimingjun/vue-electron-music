@@ -1,22 +1,43 @@
 <template>
-    <el-scrollbar wrap-class="_scroll_" style="height:100%;">
+    <el-scrollbar :wrap-class="[className, '_scroll_']" :style="defaultStyle">
       <slot></slot>
     </el-scrollbar>
 </template>
 
 <script>
-const TRIGGER_SCROLL_BOTTOM_HEIGHT = 50
+var TRIGGER_SCROLL_BOTTOM_HEIGHT = 50
+let num = 0
 export default {
+  data() {
+    return {
+      className: '',
+      defaultStyle: {
+        height: '100%',
+        width: '100%'
+      }
+    }
+  },
   props: {
     onScroll: {
       type: Boolean,
       default: false
     }
   },
+  methods: {
+    setScrollTop(height) {
+      const scrollDom = document.querySelector(`.${this.className}`)
+      scrollDom.scrollTop = height
+    }
+  },
+  created() {
+    // 防止冲突
+    num += 1
+    this.className = `_${num}scroll_`
+  },
   mounted() {
+    let _this = this
+    const scrollDom = document.querySelector(`.${this.className}`)
     if (this.onScroll) {
-      let _this = this
-      const scrollDom = document.querySelector('._scroll_')
       scrollDom.addEventListener('scroll', function(e) {
         if (
           scrollDom.scrollTop >

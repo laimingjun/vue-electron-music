@@ -12,7 +12,7 @@
           </li>
         </ul>
         <div class="btn-group">
-          <div class="btn-mini active">
+          <div class="btn-mini active" @click="playAll">
             <i class="iconfont icon-play"></i>播放全部
           </div>
         </div>
@@ -35,6 +35,8 @@
 import { ERR_OK, newMusicListUrl } from '@/api/config'
 import { httpGet } from '@/api/httpUtil'
 import { newMusicTypeList } from '@/api/apiType'
+import { Music } from '@/common/js/music'
+import { mapActions } from 'vuex'
 import MusicList from '@/base/music-list/music-list'
 import Scroll from '@/base/scroll/scroll'
 export default {
@@ -68,6 +70,12 @@ export default {
         params: { id }
       })
     },
+    playAll() {
+      let list = this.musicList.map(item => {
+        return new Music(item)
+      })
+      this.savePlayListHistory(list)
+    },
     _getNewMusicList() {
       httpGet(newMusicListUrl, {
         type: this.currentTypeCode
@@ -83,7 +91,8 @@ export default {
           this.musicList = musicList
         }
       })
-    }
+    },
+    ...mapActions(['savePlayListHistory'])
   },
   components: {
     Scroll,

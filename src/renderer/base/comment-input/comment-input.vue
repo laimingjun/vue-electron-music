@@ -4,7 +4,8 @@
         ref="commentDiv"
         @focus="hidePlaceholder"
         @blur="isShowPlaceholder"
-        @keyup="inputComment"></div>
+        @keyup="inputComment"
+        :style="cpBorderColor"></div>
       <div class="comment-placeholder" v-show="isPlaceholderShow">期待你的神评论</div>
       <div class="residue-hint" :class="{red: isInputExceed}">
         <span v-if="!isInputExceed">剩余</span>
@@ -26,6 +27,9 @@ export default {
       isInputExceed: false
     }
   },
+  props: {
+    borderColor: String
+  },
   computed: {
     inputCount() {
       if (this.inputCommentVal.length < INPUT_MAX_COUNT) {
@@ -34,6 +38,11 @@ export default {
       } else {
         this.isInputExceed = true
         return this.inputCommentVal.length - INPUT_MAX_COUNT
+      }
+    },
+    cpBorderColor() {
+      return {
+        borderColor: this.borderColor
       }
     }
   },

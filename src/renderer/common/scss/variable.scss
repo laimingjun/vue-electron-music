@@ -1,5 +1,6 @@
 //定义常量 宽高
 $menu-width: 190px;
+$play-list-width: 300px;
 $player-height: 70px;
 $control-height: 40px;
 $music-content-height: calc(100% - #{$control-height});
@@ -12,6 +13,7 @@ $color-text-dark: #6e99a5;
 $color-text-highlight: #48e3f6;
 $color-text-hint: #ccc;
 $color-background: #0c4154;
+$color-black: #000;
 $hover-bg: #3a6a7c;
 $hover-bg-hint: rgba(#3a6a7c, 0.2);
 $tag-bg: #275767;
@@ -19,6 +21,8 @@ $light-border-color: #2d5a6d;
 $btn-border-color: #446b7b;
 $music-content-bg: #18495c;
 $detail-bg: #1b4f63;
+$white-bg: #fff;
+$progress-bg: #406978;
 
 // 字体大小规范
 $font-size-small: 12px;

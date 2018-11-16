@@ -2,6 +2,7 @@
 
 import {
   app,
+  globalShortcut,
   BrowserWindow
 } from 'electron'
 
@@ -34,6 +35,11 @@ function createWindow() {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+  // 全屏
+  // mainWindow.setFullScreen(true)
+  // globalShortcut.register('ESC', () => {
+  //   mainWindow.setFullScreen(false)
+  // })
 }
 
 app.on('ready', createWindow)

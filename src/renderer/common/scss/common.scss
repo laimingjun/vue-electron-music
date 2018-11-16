@@ -3,6 +3,21 @@
   justify-content: center;
   align-items: center;
 
+  &.border-fff {
+
+    .btn-next,
+    .btn-prev,
+    .el-input__inner {
+      border-color: rgba(255, 255, 255, 0.2) !important;
+    }
+
+    .el-pager {
+      li {
+        border-color: rgba(255, 255, 255, 0.2) !important;
+      }
+    }
+  }
+
   .el-pagination {
     background: none;
 
@@ -115,5 +130,11 @@
     &:first-child:before {
       content: '';
     }
+  }
+}
+
+.el-progress-bar {
+  .el-progress-bar__outer {
+    background-color: $progress-bg;
   }
 }

@@ -163,6 +163,7 @@ $cat-item-width: 100px;
 $li-line-height: 26px;
 .singer-wrapper {
   height: $music-content-height;
+  border-top: 1px solid $light-border-color;
   .singer-container {
     padding: 20px;
     .singer-header {

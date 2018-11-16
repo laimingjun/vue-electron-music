@@ -14,7 +14,7 @@
           </div>
           <div class="create-date">{{album.publishTime | formatDateTime}} 发行</div>
           <div class="btn-group">
-            <div class='btn-mini active'>
+            <div class='btn-mini active' @click="playAll">
               <i class="iconfont icon-bofangqi-bofang"></i>播放全部
             </div>
             <div class="btn-mini">
@@ -54,6 +54,8 @@
 import { ERR_OK, albumDetailUrl } from '@/api/config'
 import { httpGet } from '@/api/httpUtil'
 import { formatDateTime } from '@/common/js/util'
+import { mapActions } from 'vuex'
+import { createMusic } from '@/common/js/music'
 import Scroll from '@/base/scroll/scroll'
 import MusicList from '@/base/music-list/music-list'
 import AlbumDesc from './album-desc/album-desc'
@@ -79,6 +81,12 @@ export default {
     changeTab(tab) {
       this.currentTab = tab
     },
+    playAll() {
+      let list = this.musicList.map(item => {
+        return createMusic(item)
+      })
+      this.savePlayListHistory(list)
+    },
     _getAlbumDetail(id) {
       httpGet(albumDetailUrl, {
         id
@@ -88,7 +96,8 @@ export default {
           this.album = res.album
         }
       })
-    }
+    },
+    ...mapActions(['savePlayListHistory'])
   },
   components: {
     Scroll,

@@ -1,6 +1,6 @@
 <template>
   <!-- 左边菜单栏 -->
-  <div class="menu-wrapper">
+  <div class="menu-wrapper" @click="hidePlayList">
     <div class="menu-list">
       <div class="menu-item">
         <div class="menu-title">
@@ -18,8 +18,9 @@
 </template>
 
 <script>
+import { playListVisibleMixin } from '@/common/js/mixin'
 export default {
-  methods: {}
+  mixins: [playListVisibleMixin]
 }
 </script>
 

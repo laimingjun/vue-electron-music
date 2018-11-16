@@ -1,7 +1,12 @@
 import storage from 'good-storage'
+import {
+  Music
+} from './music'
 
 const SEARCH_KEY = '__search__'
 const SEARCH_MAX_LENGTH = 10
+
+const PLAYLIST_KEY = '__playlist__'
 
 function insertArray(arr, val, compare, maxLen) {
   const index = arr.findIndex(compare)
@@ -17,7 +22,7 @@ function insertArray(arr, val, compare, maxLen) {
   }
 }
 
-function deleteFromArray(arr, val, compare) {
+function deleteFromArray(arr, compare) {
   const index = arr.findIndex(compare)
   if (index > -1) {
     arr.splice(index, 1)
@@ -25,7 +30,7 @@ function deleteFromArray(arr, val, compare) {
 }
 
 export function loadSearch() {
-  return storage.get(SEARCH_KEY, ['测试'])
+  return storage.get(SEARCH_KEY, [])
 }
 
 export function saveSearch(query) {
@@ -39,7 +44,7 @@ export function saveSearch(query) {
 
 export function deleteSearch(query) {
   let searches = storage.get(SEARCH_KEY, [])
-  deleteFromArray(searches, query, item => {
+  deleteFromArray(searches, item => {
     return item === query
   })
   storage.set(SEARCH_KEY, searches)
@@ -48,5 +53,23 @@ export function deleteSearch(query) {
 
 export function removeSearch() {
   storage.set(SEARCH_KEY, [])
+  return []
+}
+
+export function loadPlayList() {
+  let list = storage.get(PLAYLIST_KEY, [])
+  list = list.map(item => {
+    return new Music(item)
+  })
+  return list
+}
+
+export function savePlayList(playlist) {
+  storage.set(PLAYLIST_KEY, playlist)
+  return playlist
+}
+
+export function removePlayList() {
+  storage.set(PLAYLIST_KEY, [])
   return []
 }

@@ -161,7 +161,7 @@ $placeholder-color: #ccc;
   width: 100%;
   height: $control-height;
   line-height: $control-height;
-  -webkit-app-region: drag;
+  // -webkit-app-region: drag;
   .icon-item {
     width: $control-height;
     text-align: center;

@@ -1,14 +1,16 @@
 <template>
   <!-- 右边容器 -->
-  <div class='m-body'>
+  <div class='m-body' @click="hidePlayList">
     <control @refresh="refresh"></control>
     <slot></slot>
   </div>
 </template>
 
 <script>
+import { playListVisibleMixin } from '@/common/js/mixin'
 import Control from '@/components/control/control'
 export default {
+  mixins: [playListVisibleMixin],
   components: {
     Control
   },
