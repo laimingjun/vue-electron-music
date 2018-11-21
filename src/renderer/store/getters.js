@@ -13,8 +13,12 @@ export const currentMusic = state => state.playList[state.currentPlayIndex] || {
 
 export const currentPlayIndex = state => state.currentPlayIndex
 
+export const playMode = state => state.playMode
+
 export const playing = state => state.playing
 
 export const fullScreen = state => state.fullScreen
 
 export const playListVisible = state => state.playListVisible
+
+export const maxWindow = state => state.maxWindow

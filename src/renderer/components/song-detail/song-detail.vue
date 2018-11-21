@@ -160,11 +160,12 @@ $cover-img-width: 160px;
 $omit-description-height: 36px;
 .song-detail-wrapper {
   height: calc(100% - #{$control-height});
-  background: $song-detail-bg;
+  background: $song-bg;
   .song-detail-container {
     .song-cover {
       display: flex;
       padding: 30px;
+      background: $song-detail-bg;
       .cover-img {
         img {
           width: $cover-img-width;

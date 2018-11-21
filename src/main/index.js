@@ -2,8 +2,9 @@
 
 import {
   app,
-  globalShortcut,
-  BrowserWindow
+  ipcMain,
+  BrowserWindow,
+  globalShortcut
 } from 'electron'
 
 /**
@@ -14,7 +15,7 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
-let mainWindow
+let mainWindow = null
 const winURL = process.env.NODE_ENV === 'development' ? `http://localhost:9080` : `file://${__dirname}/index.html`
 
 function createWindow() {
@@ -35,27 +36,49 @@ function createWindow() {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
-  // 全屏
-  // mainWindow.setFullScreen(true)
-  // globalShortcut.register('ESC', () => {
-  //   mainWindow.setFullScreen(false)
-  // })
 }
 
 app.on('ready', createWindow)
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
-
 app.on('activate', () => {
   if (mainWindow === null) {
     createWindow()
+    globalShortcut.register('ESC', () => {
+      mainWindow.setFullScreen(false)
+    })
   }
 })
 
+// 关闭
+ipcMain.on('window-all-closed', () => {
+  app.quit()
+})
+
+// 隐藏
+ipcMain.on('hide-window', () => {
+  mainWindow.minimize()
+})
+
+// 最大化
+ipcMain.on('max-window', () => {
+  mainWindow.maximize()
+})
+
+// 还原
+ipcMain.on('orignal-window', () => {
+  mainWindow.unmaximize()
+})
+
+// 全屏
+ipcMain.on('full-screen-window', () => {
+  console.log('1')
+  mainWindow.setFullScreen(true)
+})
+
+// 退出全屏
+ipcMain.on('quit-full-screen-window', () => {
+  mainWindow.setFullScreen(false)
+})
 /**
  * Auto Updater
  *

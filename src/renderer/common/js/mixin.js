@@ -11,9 +11,10 @@ import {
   mapGetters,
   mapMutations
 } from 'vuex'
+import * as types from '@/store/mutation-types'
 import {
-  SET_PLAY_LIST_VISIBLE
-} from '@/store/mutation-types'
+  ipcRenderer
+} from 'electron'
 
 export const songMixin = {
   data() {
@@ -131,7 +132,31 @@ export const playListVisibleMixin = {
       this.playListVisible && this.setPlayListVisible(false)
     },
     ...mapMutations({
-      setPlayListVisible: SET_PLAY_LIST_VISIBLE
+      setPlayListVisible: types.SET_PLAY_LIST_VISIBLE
+    })
+  }
+}
+
+export const controlWindowMixin = {
+  computed: {
+    maxWindowIcon() {
+      return this.maxWindow ? 'icon-huanyuan' : 'icon-zuidahua'
+    },
+    maxWindowTip() {
+      return this.maxWindowIcon ? '还原' : '最大化'
+    },
+    ...mapGetters(['maxWindow'])
+  },
+  methods: {
+    toggleMaxWindow() {
+      this.maxWindow ? ipcRenderer.send('orignal-window') : ipcRenderer.send('max-window')
+      this.setMaxWindow(!this.maxWindow)
+    },
+    closeWindow() {
+      ipcRenderer.send('window-all-closed')
+    },
+    ...mapMutations({
+      setMaxWindow: types.SET_MAX_WINDOW_STATE
     })
   }
 }

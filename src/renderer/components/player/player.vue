@@ -2,7 +2,7 @@
   <!-- 底部播放器 -->
   <div class="player-wrapper">
     <transition name="bottom-collapse" >
-      <div class="full-player" v-show="fullScreen">
+      <div class="full-player" v-show="fullScreen" @click="hidePlayList">
         <div class="bg" :style="{backgroundImage: 'url('+ currentMusic.album.picUrl +')'}">
         </div>
         <div class="content">
@@ -14,13 +14,13 @@
               <i class="el-icon-arrow-left"></i>返回
             </div>
             <div class="control">
-              <div class="icon" title="全屏">
-                <i class="iconfont icon-quanping"></i>
+              <div class="icon" @click="toggleFullScreenWindow" :title="fullScreenWindowTip">
+                <i class="iconfont" :class="fullScreenWindowIcon"></i>
               </div>
-              <div class="icon" title="最大化">
-                <i class="iconfont icon-zuidahua"></i>
+              <div class="icon" @click="toggleMaxWindow" :title="maxWindowTip">
+                <i class="iconfont" :class="maxWindowIcon"></i>
               </div>
-              <div class="icon" title="关闭">
+              <div class="icon" @click="closeWindow" title="关闭">
                 <i class="iconfont icon-guanbi"></i>
               </div>
             </div>
@@ -62,7 +62,9 @@
                 </div>
                 <div class="comment-detail">
                   <scroll>
-                    <music-comment :id="currentMusic.id"></music-comment>
+                    <music-comment 
+                      :id="currentMusic.id" 
+                      @update:commentCount="updateCommentCount"></music-comment>
                   </scroll>
                 </div>
             </div>
@@ -82,11 +84,18 @@
                   </div>
                   <div @click="toggleOpenComment">
                     <i class="iconfont icon-xiaoxi"></i>
+                    &nbsp;{{commentCount | formatCommentCount}}
                   </div>
                 </div>
                 <div class="center">
                   <div class="play-mode">
-                    <i class="iconfont icon-suijibofang"></i>
+                    <el-popover
+                      placement="top"
+                      :visible-arrow="false"
+                      v-model="playModeVisible.full">
+                      <play-mode-list @togglePlayMode="togglePlayMode"></play-mode-list>
+                      <i slot="reference" class="iconfont" :class="playModeIcon"></i>
+                    </el-popover>
                   </div>
                   <div class="play-control" @click="prev">
                     <i class="iconfont icon-shangyishou"></i>
@@ -143,7 +152,13 @@
         </div>
         <div class="center">
           <div class="play-mode">
-            <i class="iconfont icon-suijibofang"></i>
+            <el-popover
+              placement="top"
+              v-model="playModeVisible.mini"
+              :visible-arrow="false">
+              <play-mode-list @togglePlayMode="togglePlayMode"></play-mode-list>
+              <i slot="reference" class="iconfont" :class="playModeIcon"></i>
+            </el-popover>
           </div>
           <div class="play-control" @click="prev">
             <i class="iconfont icon-shangyishou"></i>
@@ -177,22 +192,33 @@
 <script>
 import { formatTime } from '@/common/js/util'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
+import { playMode, playModeIcon } from '@/common/js/config'
+import { controlWindowMixin } from '@/common/js/mixin'
+import { ipcRenderer } from 'electron'
 import * as types from '@/store/mutation-types'
 import Scroll from '@/base/scroll/scroll'
 import PlayList from './play-list/play-list'
 import Lyric from 'lyric-parser'
 import MusicComment from './music-comment/music-comment'
+import PlayModeList from './play-mode-list/play-mode-list'
 
 const LYRIC_ITEM_HEIGHT = 34
 export default {
+  mixins: [controlWindowMixin],
   data() {
     return {
       onScroll: true,
       musicUrl: null,
-      lyric: [],
+      lyric: {},
       currentTime: 0,
       currentLyricIndex: null,
-      isOpenComment: false
+      isOpenComment: false,
+      commentCount: 0,
+      playModeVisible: {
+        full: false,
+        mini: false
+      },
+      fullScreenWindow: false
     }
   },
   computed: {
@@ -201,6 +227,15 @@ export default {
     },
     favorIcon() {
       return 'icon-iconfontxihuan'
+    },
+    playModeIcon() {
+      return playModeIcon.get(this.playMode)
+    },
+    fullScreenWindowIcon() {
+      return this.fullScreenWindow ? 'icon-quxiaoquanping' : 'icon-quanping'
+    },
+    fullScreenWindowTip() {
+      return this.fullScreenWindow ? '退出全屏' : '全屏'
     },
     percentage() {
       return this.currentTime === 0
@@ -213,7 +248,8 @@ export default {
       'currentMusic',
       'playList',
       'playListVisible',
-      'currentPlayIndex'
+      'currentPlayIndex',
+      'playMode'
     ])
   },
   methods: {
@@ -221,6 +257,10 @@ export default {
       this.isOpenComment = !this.isOpenComment
     },
     toggleFullScreen(flag) {
+      if (this.fullScreenWindow) {
+        ipcRenderer.send('quit-full-screen-window')
+        this.fullScreenWindow = false
+      }
       this.setFullScreen(flag)
     },
     togglePlaying() {
@@ -230,9 +270,23 @@ export default {
         return
       }
       this.setPlaying(!this.playing)
+      if (this.lyric) {
+        this.lyric.togglePlay()
+      }
     },
     togglePlayList() {
       this.setPlayListVisible(!this.playListVisible)
+    },
+    togglePlayMode(mode) {
+      this.setPlayMode(playMode[mode])
+      this.playModeVisible.full = false
+      this.playModeVisible.mini = false
+    },
+    toggleFullScreenWindow() {
+      this.fullScreenWindow
+        ? ipcRenderer.send('quit-full-screen-window')
+        : ipcRenderer.send('full-screen-window')
+      this.fullScreenWindow = !this.fullScreenWindow
     },
     hidePlayList() {
       this.playListVisible && this.setPlayListVisible(false)
@@ -267,6 +321,7 @@ export default {
     getLyric() {
       this.currentMusic.getLyric().then(res => {
         this.currentMusic.lyric = res.lyric
+        this.currentLyricIndex = null
         this.lyric = new Lyric(res.lyric, this.handleLyric)
         if (this.playing) {
           this.lyric.play()
@@ -294,11 +349,16 @@ export default {
       this.musicUrl = null
       this.currentTime = 0
     },
+    updateCommentCount(val) {
+      this.commentCount = val
+    },
     ...mapMutations({
       setFullScreen: types.SET_FULL_SCREEN,
       setPlayListVisible: types.SET_PLAY_LIST_VISIBLE,
       setPlaying: types.SET_PLAYING,
-      setCurrentPlayIndex: types.SET_CURRENT_PLAY_INDEX
+      setCurrentPlayIndex: types.SET_CURRENT_PLAY_INDEX,
+      setPlayMode: types.SET_PLAY_MODE,
+      setMaxWindow: types.SET_MAX_WINDOW_STATE
     }),
     ...mapActions(['removePlayListHistory'])
   },
@@ -309,8 +369,14 @@ export default {
   },
   watch: {
     currentMusic() {
-      this.getMusicUrl()
-      this.getLyric()
+      if (this.lyric) {
+        this.lyric.stop()
+      }
+      this.$nextTick(() => {
+        this.$refs.lyricScroll.setScrollTop(0)
+        this.getMusicUrl()
+        this.getLyric()
+      })
     },
     playing(newPlaying) {
       const audio = this.$refs.musicAudio
@@ -320,12 +386,19 @@ export default {
     }
   },
   filters: {
-    formatTime
+    formatTime,
+    formatCommentCount(count) {
+      if (count > 999) {
+        return '999+'
+      }
+      return count
+    }
   },
   components: {
     PlayList,
     Scroll,
-    MusicComment
+    MusicComment,
+    PlayModeList
   }
 }
 </script>
@@ -411,10 +484,11 @@ $playlist-font-size: 24px;
           width: 100%;
           .cover-img {
             width: 50%;
+            text-align: right;
             img {
               width: 280px;
-              margin-top: 80px;
-              margin-left: 150px;
+              margin-top: 20%;
+              margin-right: 30px;
             }
           }
           .detail {
@@ -486,9 +560,10 @@ $playlist-font-size: 24px;
         }
         .control {
           display: flex;
-          margin-top: 20px;
+          margin-top: 10px;
           .left {
             display: flex;
+            align-items: center;
             width: 30%;
             div {
               cursor: pointer;
@@ -519,7 +594,12 @@ $playlist-font-size: 24px;
                 font-size: $iconfont-size-mini;
               }
             }
-            .play-mode,
+            .play-mode {
+              .iconfont {
+                color: $color-text-hint;
+                font-size: $font-size-large-x;
+              }
+            }
             .play-sound {
               .iconfont {
                 color: $color-text-hint;
@@ -635,7 +715,12 @@ $playlist-font-size: 24px;
             margin-right: 0;
           }
         }
-        .play-mode,
+        .play-mode {
+          .iconfont {
+            color: $color-text-hint;
+            font-size: $font-size-large-x;
+          }
+        }
         .play-sound {
           .iconfont {
             color: $color-text-hint;

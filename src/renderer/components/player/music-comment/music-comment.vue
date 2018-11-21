@@ -69,6 +69,7 @@ export default {
           document.querySelector('.pages-container').classList.add('border-fff')
         })
       }
+      this.$emit('update:commentCount', newVal)
     }
   },
   components: {

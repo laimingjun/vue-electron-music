@@ -1,18 +1,18 @@
 <template>
   <div class="search-detail-wrapper">
+    <div class="nav-container">
+      <ul class="nav">
+        <li 
+          v-for="item in searchTypeList" 
+          :key="item.type"
+          :class="{active: currentType === item.type}"
+          @click="changeType(item.type, item.component)"
+          >{{item.name}}
+        </li>
+      </ul>
+      <div class="hint">{{searchQuery}}共查找到{{resultCount}}条记录</div>
+    </div>
     <scroll :onScroll="true" @scrollBottom="loadMore">
-        <div class="nav-container">
-          <ul class="nav">
-            <li 
-              v-for="item in searchTypeList" 
-              :key="item.type"
-              :class="{active: currentType === item.type}"
-              @click="changeType(item.type, item.component)"
-              >{{item.name}}
-            </li>
-          </ul>
-          <div class="hint">{{searchQuery}}共查找到{{resultCount}}条记录</div>
-        </div>
         <div class="search-detail">
           <component :is="currentComponent" v-bind="result" :hasMore="hasMore"></component>
           <div class="loading-container" v-loading="loading" v-show="loading"></div>
@@ -74,7 +74,11 @@ export default {
       }
     },
     _getSearchResult() {
-      if (this.searchQuery === '') return
+      if (this.searchQuery === '') {
+        this.$router.push({
+          path: '/musicTab'
+        })
+      }
       let offset = (this.pageIndex - 1) * this.pageSize
       httpGet(searchUrl, {
         keywords: this.searchQuery,
@@ -134,12 +138,20 @@ export default {
 
 <style scoped lang='scss'>
 @import 'scss/variable.scss';
+$nav-height: 52px;
 .search-detail-wrapper {
+  position: relative;
   height: $music-content-height;
+  padding-top: $nav-height;
   padding-bottom: 20px;
   .nav-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     display: flex;
     justify-content: space-between;
+    height: $nav-height;
     padding: 10px 30px 0 30px;
     background: $music-content-bg;
     .nav {

@@ -2,15 +2,22 @@
   <div class="songs-wrapper">
     <ul class="songs-list">
       <li class="songs-item">
-        <div class="name">歌曲</div>
+        <div class="name-control">歌曲</div>
         <div class="singer" v-if="showSinger">歌手</div>
         <div class="album" v-if="showAlbum">专辑</div>
         <div class="duration">时长</div>  
       <li>
-      <li class="songs-item" v-for="(item, index) in musicList" :key="index">
-        <div class="name">
-          <i class="iconfont icon-iconfontxihuan"></i>
-          {{item.name}}
+      <li class="songs-item" v-for="(item, index) in musicList" :key="index"
+        @mouseenter="toggleItemHover(index)"
+        @mouseleave="toggleItemHover(null)">
+        <div class="name-control">
+          <div class="name">
+            <i class="iconfont icon-iconfontxihuan"></i>
+            {{item.name}}
+          </div>
+          <div class="control" v-show="currentHoverIndex === index">
+            <i class="iconfont icon-bofangqi-bofang"></i>
+          </div>
         </div>
         <div class="singer" v-if="showSinger" :title="item.ar | formatSingers">
           <span 
@@ -34,6 +41,11 @@
 <script>
 import { formatSingers, formatTime } from '@/common/js/util'
 export default {
+  data() {
+    return {
+      currentHoverIndex: null
+    }
+  },
   props: {
     musicList: {
       type: Array,
@@ -61,6 +73,9 @@ export default {
     clickAlbum(item) {
       let id = item.al ? item.al.id : item.album ? item.album.id : ''
       this.$emit('clickAlbum', id)
+    },
+    toggleItemHover(index) {
+      this.currentHoverIndex = index
     }
   },
   filters: {
@@ -101,9 +116,11 @@ $songs-hover-bg: #155263;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
-      .name {
+      .name-control {
         flex: 1;
-        padding-left: 10px;
+        padding: 0 10px;
+        display: flex;
+        justify-content: space-between;
         .iconfont {
           margin-right: 6px;
           cursor: pointer;

@@ -12,14 +12,20 @@ const mutations = {
   [types.SET_CURRENT_PLAY_INDEX](state, index) {
     state.currentPlayIndex = index
   },
-  [types.SET_PLAYING](state, boolean) {
-    state.playing = boolean
+  [types.SET_PLAY_MODE](state, mode) {
+    state.playMode = mode
   },
-  [types.SET_FULL_SCREEN](state, boolean) {
-    state.fullScreen = boolean
+  [types.SET_PLAYING](state, flag) {
+    state.playing = flag
   },
-  [types.SET_PLAY_LIST_VISIBLE](state, boolean) {
-    state.playListVisible = boolean
+  [types.SET_FULL_SCREEN](state, flag) {
+    state.fullScreen = flag
+  },
+  [types.SET_PLAY_LIST_VISIBLE](state, flag) {
+    state.playListVisible = flag
+  },
+  [types.SET_MAX_WINDOW_STATE](state, flag) {
+    state.maxWindow = flag
   }
 }
 
