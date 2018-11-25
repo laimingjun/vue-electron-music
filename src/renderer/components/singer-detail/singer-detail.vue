@@ -47,13 +47,13 @@ export default {
     return {
       singer: {},
       singerDesc: {},
-      id: 0,
       loading: true
     }
   },
-  created() {
-    this.id = this.$route.params.id
-    this._getSingerDetail()
+  computed: {
+    id() {
+      return this.$route.params.id
+    }
   },
   methods: {
     toTab(path) {
@@ -77,6 +77,15 @@ export default {
           this.singer = res.artist
         }
       })
+    }
+  },
+  watch: {
+    id: {
+      immediate: true,
+      handler() {
+        this.loading = true
+        this._getSingerDetail()
+      }
     }
   },
   components: {

@@ -26,6 +26,12 @@ const mutations = {
   },
   [types.SET_MAX_WINDOW_STATE](state, flag) {
     state.maxWindow = flag
+  },
+  [types.SET_LOGIN_DIALOG_VISIBLE](state, flag) {
+    state.loginDialogVisible = flag
+  },
+  [types.SET_USER_INFO](state, userInfo) {
+    state.userInfo = userInfo
   }
 }
 

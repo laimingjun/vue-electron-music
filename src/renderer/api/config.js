@@ -76,3 +76,15 @@ export const lyricUrl = '/lyric'
 
 // 音乐评论 *:id
 export const commentMusicUrl = '/comment/music'
+
+// 手机登录 *phone, password
+export const loginPhoneUrl = '/login/cellphone'
+
+// 邮箱登录 *email, password
+export const loginEmailUrl = '/login'
+
+// 登录状态
+export const loginStatusUrl = '/login/status'
+
+// 用户歌单 *uid
+export const userSongListUrl = '/user/playlist'

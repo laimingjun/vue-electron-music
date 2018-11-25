@@ -16,7 +16,7 @@
             {{item.name}}
           </div>
           <div class="control" v-show="currentHoverIndex === index">
-            <i class="iconfont icon-bofangqi-bofang"></i>
+            <i class="iconfont icon-bofang"></i>
           </div>
         </div>
         <div class="singer" v-if="showSinger" :title="item.ar | formatSingers">
@@ -112,6 +112,7 @@ $songs-hover-bg: #155263;
       div {
         height: $songs-height;
         line-height: $songs-height;
+        padding-left: 1px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;

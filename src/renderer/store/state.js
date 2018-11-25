@@ -16,7 +16,9 @@ const state = {
   playing: false,
   fullScreen: false,
   playListVisible: false,
-  maxWindow: false
+  maxWindow: false,
+  loginDialogVisible: false,
+  userInfo: {}
 }
 
 export default state

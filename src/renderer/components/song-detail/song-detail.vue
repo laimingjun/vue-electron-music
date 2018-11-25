@@ -2,7 +2,7 @@
   <div class="song-detail-wrapper"
     v-loading="loading"
     element-loading-background="#0b4055">
-    <scroll>
+    <scroll ref="scroll">
       <div class="song-detail-container">
         <div class="song-cover">
           <div class="cover-img">
@@ -16,6 +16,7 @@
             </div>
             <ul class="tags">
               <li>标签：</li>
+              <li v-if="songDetail.tags && songDetail.tags.length === 0">暂无</li>
               <li v-for="(item, index) in songDetail.tags" :key="index">#{{item}}</li>
             </ul>
             <div class="btn-group">
@@ -30,7 +31,7 @@
               </div>
             </div>
             <div ref="songDescriptionWrapper" class="description">
-              <pre ref="songDescription">简介：{{songDetail.description}}</pre>
+              <pre ref="songDescription">简介：{{songDetail.description || '暂无'}}</pre>
             </div>
             <div class="description-more" v-show="isShowMoreIcon">
               <i @click="toggleDescriptionMore" class="iconfont" :class="moreIcon"></i>
@@ -86,8 +87,15 @@ export default {
       return this.descriptionMoreShow ? 'icon-shang' : 'icon-xia'
     }
   },
-  created() {
-    this._getSongListDetail(this.$route.params.id)
+  watch: {
+    songId: {
+      immediate: true,
+      handler() {
+        this.loading = true
+        this.descriptionMoreShow && this.toggleDescriptionMore()
+        this._getSongListDetail()
+      }
+    }
   },
   methods: {
     toggleDescriptionMore() {
@@ -126,12 +134,13 @@ export default {
     },
     _getSongListDetail(id) {
       httpGet(songListDetailUrl, {
-        id
+        id: this.songId
       }).then(res => {
         this.loading = false
         if (res.code === ERR_OK) {
           this.songDetail = res.playlist
           this.$nextTick(() => {
+            this.$refs.scroll.setScrollTop(0)
             let songDescriptHeight = this.$refs.songDescription.offsetHeight
             this.isShowMoreIcon = songDescriptHeight > omitDescriptonHeight
           })

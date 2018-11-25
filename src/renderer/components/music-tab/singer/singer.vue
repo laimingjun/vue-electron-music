@@ -32,12 +32,7 @@
             </ul>
           </div>
         </div>
-        <div class="singer-list">
-          <div class="singer-item" v-for="item in singerList" :key="item.id" @click="toSingerDetail(item)">
-              <img v-lazy="item.img1v1Url">
-              <p>{{item.name}}</p>
-          </div>
-        </div>
+        <singer-list :singerList="singerList" @select="toSingerDetail"></singer-list>
       </div>
       <div class="loading-container" v-loading="isLoadding" v-show="isLoadding"></div>
     </scroll>
@@ -49,6 +44,7 @@ import { ERR_OK, singerListHotUrl, singerListUrl } from '@/api/config'
 import { initial, singerCatList } from '@/api/apiType'
 import { httpGet } from '@/api/httpUtil'
 import Scroll from '@/base/scroll/scroll'
+import SingerList from '@/base/singer-list/singer-list'
 export default {
   data() {
     return {
@@ -60,7 +56,7 @@ export default {
       singerCatList,
       currentPage: 1,
       pageSize: 50,
-      isLoadding: false,
+      isLoadding: true,
       hasMore: false
     }
   },
@@ -149,7 +145,8 @@ export default {
     }
   },
   components: {
-    Scroll
+    Scroll,
+    SingerList
   }
 }
 </script>
@@ -191,34 +188,6 @@ $li-line-height: 26px;
           }
           .initial-item {
             padding-right: 20px;
-          }
-        }
-      }
-    }
-    .singer-list {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-around;
-      .singer-item {
-        box-sizing: border-box;
-        width: $singer-item-width;
-        padding: 16px;
-        margin-bottom: 12px;
-        background: $singer-item-bg;
-        text-align: center;
-        cursor: pointer;
-        img {
-          width: 100%;
-          border-radius: 50%;
-        }
-        p {
-          margin-top: 8px;
-          font-size: $font-size-medium;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          &:hover {
-            color: $color-text-highlight;
           }
         }
       }

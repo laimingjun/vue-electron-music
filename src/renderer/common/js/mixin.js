@@ -137,6 +137,25 @@ export const playListVisibleMixin = {
   }
 }
 
+export const loginDialogVisibleMixin = {
+  computed: {
+    ...mapGetters(['userInfo'])
+  },
+  methods: {
+    showLoginDialog() {
+      if (this.userInfo.userId) {
+        this.setLoginDialogVisible(true)
+      }
+    },
+    hideLoginDialog() {
+      this.setLoginDialogVisible(false)
+    },
+    ...mapMutations({
+      setLoginDialogVisible: types.SET_LOGIN_DIALOG_VISIBLE
+    })
+  }
+}
+
 export const controlWindowMixin = {
   computed: {
     maxWindowIcon() {

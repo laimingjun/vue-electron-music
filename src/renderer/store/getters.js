@@ -22,3 +22,7 @@ export const fullScreen = state => state.fullScreen
 export const playListVisible = state => state.playListVisible
 
 export const maxWindow = state => state.maxWindow
+
+export const userInfo = state => state.userInfo
+
+export const loginDialogVisible = state => state.loginDialogVisible

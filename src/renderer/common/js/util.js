@@ -27,7 +27,7 @@ export function formatTime(time) {
 }
 
 export function convertUnit(val) {
-  if (!val) return ''
+  if (!val) return 0
   if (val > 10000) {
     return (val / 10000).toFixed(1) + '万'
   }

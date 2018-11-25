@@ -368,15 +368,18 @@ export default {
     }
   },
   watch: {
-    currentMusic() {
+    currentMusic(newMusic) {
+      debugger
       if (this.lyric) {
         this.lyric.stop()
       }
-      this.$nextTick(() => {
-        this.$refs.lyricScroll.setScrollTop(0)
-        this.getMusicUrl()
-        this.getLyric()
-      })
+      if (newMusic.id) {
+        this.$nextTick(() => {
+          this.$refs.lyricScroll.setScrollTop(0)
+          this.getMusicUrl()
+          this.getLyric()
+        })
+      }
     },
     playing(newPlaying) {
       const audio = this.$refs.musicAudio
