@@ -26,3 +26,7 @@ export const maxWindow = state => state.maxWindow
 export const userInfo = state => state.userInfo
 
 export const loginDialogVisible = state => state.loginDialogVisible
+
+export const userSongList = state => state.userSongList
+
+export const userLikeList = state => state.userLikeList

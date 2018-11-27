@@ -32,6 +32,12 @@ const mutations = {
   },
   [types.SET_USER_INFO](state, userInfo) {
     state.userInfo = userInfo
+  },
+  [types.SET_USER_SONG_LIST](state, list) {
+    state.userSongList = list
+  },
+  [types.SET_USER_LIKE_LIST](state, list) {
+    state.userLikeList = list
   }
 }
 

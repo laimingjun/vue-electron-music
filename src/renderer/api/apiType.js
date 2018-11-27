@@ -148,3 +148,13 @@ export const searchTypeList = [{
   type: 1014,
   component: 'SearchVideo'
 }]
+
+export const subscribeType = {
+  collect: 1,
+  cancel: 2
+}
+
+export const likeType = {
+  like: 1,
+  noLike: 0
+}

@@ -23,8 +23,8 @@
               <div class='btn-mini active' @click="playAll">
                 <i class="iconfont icon-bofangqi-bofang"></i>播放全部
               </div>
-              <div class="btn-mini">
-                <i class="iconfont icon-iconfontxihuan"></i>收藏({{songDetail.subscribedCount | convertUnit}})
+              <div class="btn-mini" @click="toggleSubscribe">
+                <i class="iconfont" :class="subscribeIcon"></i>收藏({{songDetail.subscribedCount | convertUnit}})
               </div>
               <div class="btn-mini">
                 <i class="iconfont icon-fenxiang"></i>分享({{songDetail.shareCount | convertUnit}})
@@ -58,9 +58,10 @@
 </template>
 
 <script>
-import { ERR_OK, songListDetailUrl } from '@/api/config'
+import { ERR_OK, songListDetailUrl, songListSubscribeUrl } from '@/api/config'
 import { httpGet } from '@/api/httpUtil'
-import { convertUnit } from '@/common/js/util'
+import { subscribeType } from '@/api/apiType'
+import { convertUnit, deepCopy } from '@/common/js/util'
 import { createMusic } from '@/common/js/music'
 import { mapActions } from 'vuex'
 import Scroll from '@/base/scroll/scroll'
@@ -85,6 +86,9 @@ export default {
     },
     moreIcon() {
       return this.descriptionMoreShow ? 'icon-shang' : 'icon-xia'
+    },
+    subscribeIcon() {
+      return this.songDetail.subscribed ? 'icon-xihuan' : 'icon-iconfontxihuan'
     }
   },
   watch: {
@@ -92,6 +96,7 @@ export default {
       immediate: true,
       handler() {
         this.loading = true
+        this.currentTab = 'MusicList'
         this.descriptionMoreShow && this.toggleDescriptionMore()
         this._getSongListDetail()
       }
@@ -110,6 +115,26 @@ export default {
       } else {
         this.$refs.songDescriptionWrapper.style.height = `${omitDescriptonHeight}px`
       }
+    },
+    toggleSubscribe() {
+      let t = this.songDetail.subscribed
+        ? subscribeType.cancel
+        : subscribeType.collect
+      httpGet(songListSubscribeUrl, {
+        id: this.songDetail.id,
+        t
+      }).then(res => {
+        if (res.code === ERR_OK) {
+          this.songDetail.subscribed = !this.songDetail.subscribed
+          this.$message({
+            message: this.songDetail.subscribed ? '收藏成功' : '取消收藏成功',
+            type: 'success'
+          })
+          this.songDetail.subscribed
+            ? this.saveUserSongList(deepCopy(this.songDetail))
+            : this.deleteUserSongList(this.songDetail.id)
+        }
+      })
     },
     showTabs(compName) {
       this.currentTab = compName
@@ -148,7 +173,11 @@ export default {
         }
       })
     },
-    ...mapActions(['savePlayListHistory'])
+    ...mapActions([
+      'savePlayListHistory',
+      'saveUserSongList',
+      'deleteUserSongList'
+    ])
   },
   components: {
     Scroll,

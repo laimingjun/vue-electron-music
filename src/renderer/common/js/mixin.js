@@ -1,12 +1,15 @@
 import {
   ERR_OK,
   topSongListUrl,
-  commentHotUrl
+  commentHotUrl,
+  commentLikeUrl
 } from '@/api/config'
 import {
   httpGet
 } from '@/api/httpUtil'
-
+import {
+  likeType
+} from '@/api/apiType'
 import {
   mapGetters,
   mapMutations
@@ -84,12 +87,35 @@ export const commentMixin = {
       this.currentPageHot = this.currentPageHot + 1
       this._getCommentHotList()
     },
+    toggleHotLiked(index) {
+      this.toggleLiked(index, 'hotComments')
+    },
+    toggleLiked(index, commentListName = 'comments') {
+      let _comment = this[commentListName][index]
+      httpGet(commentLikeUrl, {
+        t: _comment.liked ? likeType.noLike : likeType.like,
+        id: this.id,
+        cid: _comment.commentId,
+        type: this.hotType
+      }).then(res => {
+        if (res.code === ERR_OK) {
+          _comment.liked = !_comment.liked
+          this.$message({
+            message: _comment.liked ? '点赞成功' : '取消点赞成功',
+            type: 'success'
+          })
+          let add = _comment.liked ? 1 : -1
+          _comment.likedCount += add
+        }
+      })
+    },
     _getCommentList(commentUrl) {
       let offset = (this.currentPage - 1) * this.pageSize
       httpGet(commentUrl, {
         limit: this.pageSize,
         offset,
-        id: this.id
+        id: this.id,
+        timestamp: new Date().getTime()
       }).then(res => {
         if (res.code === ERR_OK) {
           this.comments = res.comments
@@ -111,7 +137,8 @@ export const commentMixin = {
         limit: this.pageSizeHot,
         offset,
         id: this.id,
-        type: this.hotType
+        type: this.hotType,
+        timestamp: new Date().getTime()
       }).then(res => {
         if (res.code === ERR_OK) {
           this.isMoreHot = res.hasMore
@@ -143,7 +170,7 @@ export const loginDialogVisibleMixin = {
   },
   methods: {
     showLoginDialog() {
-      if (this.userInfo.userId) {
+      if (!this.userInfo.userId) {
         this.setLoginDialogVisible(true)
       }
     },

@@ -149,12 +149,18 @@
       padding: 10px 20px;
       border-bottom: 1px solid $color-text-eee;
       cursor: pointer;
+
       &:hover {
         background: $color-text-eee;
       }
+
       .iconfont {
         margin-right: 6px;
       }
     }
   }
+}
+
+.iconfont.icon-xihuan {
+  color: #ff5f5f;
 }

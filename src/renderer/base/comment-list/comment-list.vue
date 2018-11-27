@@ -2,7 +2,7 @@
   <div class="comment-list-wrapper">
     <div class="title" :style="cpBorderColor">{{title}}({{total}})</div>
     <div class="comment-item" :style="cpBorderColor"
-      v-for="comment in commentList" :key="comment.commentId">
+      v-for="(comment, index) in commentList" :key="comment.commentId">
       <div class="avatar">
         <img v-lazy="comment.user.avatarUrl" />
       </div>
@@ -16,7 +16,9 @@
         <div class="bottom">
           <div class="time" :style="fontColor">{{comment.time | formatterTime}}</div>
           <div class="control">
-            <span class="like"><i class="iconfont icon-dianzan"></i>{{comment.likedCount}}</span>
+            <span class="like" :class="{active: comment.liked}">
+              <i class="iconfont icon-dianzan" @click="toggleLiked(index)"></i>{{comment.likedCount}}
+            </span>
             <span><i class="iconfont icon-xiaoxi"></i></span>
           </div>
         </div>
@@ -49,6 +51,11 @@ export default {
       return {
         color: this.color
       }
+    }
+  },
+  methods: {
+    toggleLiked(index) {
+      this.$emit('toggleLiked', index)
     }
   },
   filters: {
@@ -135,6 +142,9 @@ $avatar-height: 50px;
           justify-content: space-between;
           min-width: $control-width;
           .like {
+            &.active {
+              color: $color-text-highlight;
+            }
             .iconfont {
               margin-right: 5px;
               cursor: pointer;

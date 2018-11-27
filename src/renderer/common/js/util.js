@@ -33,3 +33,40 @@ export function convertUnit(val) {
   }
   return val.toFixed()
 }
+
+export function insertArray(arr, val, compare, maxLen) {
+  const index = arr.findIndex(compare)
+  if (index === 0) {
+    return
+  }
+  if (index > 0) {
+    arr.splice(index, 1)
+  }
+  arr.unshift(val)
+  if (maxLen && arr.length > maxLen) {
+    arr.pop()
+  }
+}
+
+export function deleteFromArray(arr, compare) {
+  const index = arr.findIndex(compare)
+  if (index > -1) {
+    arr.splice(index, 1)
+  }
+}
+
+export function deepCopy(obj) {
+  let result = Array.isArray(obj) ? [] : {}
+  if (obj && typeof obj === 'object') {
+    for (let key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        if (obj[key] && typeof obj[key] === 'object') {
+          result[key] = deepCopy(obj[key])
+        } else {
+          result[key] = obj[key]
+        }
+      }
+    }
+  }
+  return result
+}

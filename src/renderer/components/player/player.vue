@@ -1,10 +1,9 @@
 <template>
   <!-- 底部播放器 -->
   <div class="player-wrapper">
-    <transition name="bottom-collapse" >
+    <transition name="bottom-collapse">
       <div class="full-player" v-show="fullScreen" @click="hidePlayList">
-        <div class="bg" :style="{backgroundImage: 'url('+ currentMusic.album.picUrl +')'}">
-        </div>
+        <div class="bg" :style="{backgroundImage: 'url('+ currentMusic.album.picUrl +')'}"></div>
         <div class="content">
           <div class="header">
             <div class="hide" v-show="!isOpenComment" @click="toggleFullScreen(false)">
@@ -28,45 +27,49 @@
           <div class="main">
             <div class="cover-lyric" v-show="!isOpenComment">
               <div class="cover-img">
-                <img :src="currentMusic.album.picUrl" >
+                <img :src="currentMusic.album.picUrl">
               </div>
               <div class="detail">
                 <div class="name">{{currentMusic.name}}</div>
                 <div class="singer">
                   歌手：
-                  <span class="singer-item" 
-                    v-for="(singer, index) in currentMusic.artists" :key="index">
-                    {{singer.name}}
-                  </span>
+                  <span
+                    class="singer-item"
+                    v-for="(singer, index) in currentMusic.artists"
+                    :key="index"
+                  >{{singer.name}}</span>
                   &nbsp;&nbsp;&nbsp;专辑：
-                  <span class="album">{{currentMusic.album.name}}</span>
+                  <span
+                    class="album"
+                  >{{currentMusic.album.name}}</span>
                 </div>
                 <div class="lyric">
                   <scroll ref="lyricScroll">
                     <ul>
-                      <li :class="{active: currentLyricIndex === index}" 
-                        v-for="(item, index) in lyric.lines" :key="index">
-                        {{item.txt}}
-                      </li>
+                      <li
+                        :class="{active: currentLyricIndex === index}"
+                        v-for="(item, index) in lyric.lines"
+                        :key="index"
+                      >{{item.txt}}</li>
                     </ul>
                   </scroll>
-                </div> 
+                </div>
               </div>
             </div>
             <div class="comment" v-show="isOpenComment">
-                <div class="name">{{currentMusic.name}}</div>
-                <div class="singer">
-                  <span class="singer-item" v-for="(singer, index) in currentMusic.artists" :key="index">
-                  {{singer.name}}
-                  </span>
-                </div>
-                <div class="comment-detail">
-                  <scroll>
-                    <music-comment 
-                      :id="currentMusic.id" 
-                      @update:commentCount="updateCommentCount"></music-comment>
-                  </scroll>
-                </div>
+              <div class="name">{{currentMusic.name}}</div>
+              <div class="singer">
+                <span
+                  class="singer-item"
+                  v-for="(singer, index) in currentMusic.artists"
+                  :key="index"
+                >{{singer.name}}</span>
+              </div>
+              <div class="comment-detail">
+                <scroll>
+                  <music-comment :id="currentMusic.id" @update:commentCount="updateCommentCount"></music-comment>
+                </scroll>
+              </div>
             </div>
           </div>
           <div class="player">
@@ -75,8 +78,12 @@
               <div>{{currentMusic.duration | formatTime}}</div>
             </div>
             <div class="progress">
-              <el-progress :percentage="percentage" :stroke-width="2" :show-text="false" color="#48e3f6">
-              </el-progress>
+              <el-progress
+                :percentage="percentage"
+                :stroke-width="2"
+                :show-text="false"
+                color="#48e3f6"
+              ></el-progress>
               <div class="control">
                 <div class="left">
                   <div>
@@ -92,7 +99,8 @@
                     <el-popover
                       placement="top"
                       :visible-arrow="false"
-                      v-model="playModeVisible.full">
+                      v-model="playModeVisible.full"
+                    >
                       <play-mode-list @togglePlayMode="togglePlayMode"></play-mode-list>
                       <i slot="reference" class="iconfont" :class="playModeIcon"></i>
                     </el-popover>
@@ -116,7 +124,7 @@
                     <span>{{playList.length}}</span>
                   </div>
                 </div>
-              </div> 
+              </div>
             </div>
           </div>
         </div>
@@ -124,8 +132,7 @@
     </transition>
     <div class="mini-player" @click="hidePlayList">
       <div class="progress">
-        <el-progress :percentage="percentage" :stroke-width="2" :show-text="false" color="#48e3f6">
-        </el-progress>
+        <el-progress :percentage="percentage" :stroke-width="2" :show-text="false" color="#48e3f6"></el-progress>
       </div>
       <div class="mini-content">
         <div class="left">
@@ -140,22 +147,21 @@
               <span class="music">{{currentMusic.name}}</span>
               <span v-show="currentMusic.id">&nbsp;-&nbsp;</span>
               <div class="singer">
-                <span class="singer-item" v-for="(singer, index) in currentMusic.artists" :key="index">
-                  {{singer.name}}
-                </span>
-              </div>  
+                <span
+                  class="singer-item"
+                  v-for="(singer, index) in currentMusic.artists"
+                  :key="index"
+                >{{singer.name}}</span>
+              </div>
             </div>
             <div class="control">
-              <i class="iconfont icon-iconfontxihuan"></i>
+              <i class="iconfont" :class="favorIcon"></i>
             </div>
           </div>
         </div>
         <div class="center">
           <div class="play-mode">
-            <el-popover
-              placement="top"
-              v-model="playModeVisible.mini"
-              :visible-arrow="false">
+            <el-popover placement="top" v-model="playModeVisible.mini" :visible-arrow="false">
               <play-mode-list @togglePlayMode="togglePlayMode"></play-mode-list>
               <i slot="reference" class="iconfont" :class="playModeIcon"></i>
             </el-popover>
@@ -178,11 +184,20 @@
             <i class="iconfont icon-pajian_gequliebiao_"></i>
             <span>{{playList.length}}</span>
           </div>
-          <div class="duration">{{currentTime | formatTime}} / {{currentMusic.duration | formatTime}}</div>
+          <div
+            class="duration"
+          >{{currentTime | formatTime}} / {{currentMusic.duration | formatTime}}</div>
         </div>
-      </div>   
+      </div>
     </div>
-    <audio ref="musicAudio" @play="ready" @ended="next" @timeupdate="updateTime" :src="musicUrl" @error="musicError"></audio>
+    <audio
+      ref="musicAudio"
+      @play="ready"
+      @ended="next"
+      @timeupdate="updateTime"
+      :src="musicUrl"
+      @error="musicError"
+    ></audio>
     <transition name="right-collapse">
       <play-list v-if="playListVisible" @clearPlayList="clearPlayList"></play-list>
     </transition>
@@ -226,7 +241,7 @@ export default {
       return this.playing ? 'icon-bofangqi-zanting' : 'icon-bofangqi-bofang'
     },
     favorIcon() {
-      return 'icon-iconfontxihuan'
+      return this.userLikeList.includes(this.currentMusic.id) ? 'icon-xihuan' : 'icon-iconfontxihuan'
     },
     playModeIcon() {
       return playModeIcon.get(this.playMode)
@@ -249,7 +264,8 @@ export default {
       'playList',
       'playListVisible',
       'currentPlayIndex',
-      'playMode'
+      'playMode',
+      'userLikeList'
     ])
   },
   methods: {
@@ -338,7 +354,7 @@ export default {
     musicError() {
       this.currentMusic.url = `http://music.163.com/song/media/outer/url?id=${
         this.currentMusic.id
-      }.mp3`
+        }.mp3`
     },
     updateTime(e) {
       this.currentTime = e.target.currentTime * 1000
@@ -369,7 +385,6 @@ export default {
   },
   watch: {
     currentMusic(newMusic) {
-      debugger
       if (this.lyric) {
         this.lyric.stop()
       }
@@ -407,7 +422,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import 'scss/variable.scss';
+@import "scss/variable.scss";
 $proess-height: 2px;
 $mini-player-bg: #0a3a4d;
 $lyric-item-height: 34px;

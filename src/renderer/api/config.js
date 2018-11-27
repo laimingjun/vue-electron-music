@@ -23,8 +23,11 @@ export const commentSongListUrl = '/comment/playlist'
 // 歌单类别
 export const songTagUrl = '/playlist/catlist'
 
-// 热门评论 ：id, type: 0 歌曲 1 MV 2 歌单 3 专辑 4 电台 5 视频
+// 热门评论 :id, type: 0 歌曲 1 MV 2 歌单 3 专辑 4 电台 5 视频
 export const commentHotUrl = '/comment/hot'
+
+// 评论点赞 *:id 资源id, cid: 评论id, type: 同上
+export const commentLikeUrl = '/comment/like'
 
 // 排行榜单摘要
 export const topListDigestUrl = '/toplist/detail'
@@ -88,3 +91,12 @@ export const loginStatusUrl = '/login/status'
 
 // 用户歌单 *uid
 export const userSongListUrl = '/user/playlist'
+
+// 收藏/取消收藏歌单 *id, t:操作， 1:收藏、2:取消收藏
+export const songListSubscribeUrl = '/playlist/subscribe'
+
+// 收藏/取消收藏歌手 *id t:操作, 1: 收藏、2: 取消收藏
+export const singerSubscribeUrl = '/artist/sub'
+
+// 用户喜欢歌曲列表 *uid
+export const userLikeListUrl = '/likelist'

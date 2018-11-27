@@ -1,36 +1,47 @@
 <template>
   <!-- 左边菜单栏 -->
   <div class="menu-wrapper" @click="hidePlayList">
-    <div class="user-info" @click="showLoginDialog">
-      <div class="head-photo">
-        <img :src="userInfo.avatarUrl || headPhotoSrc" />
+    <scroll>
+      <div class="user-info" @click="showLoginDialog">
+        <div class="head-photo">
+          <img :src="userInfo.avatarUrl || headPhotoSrc">
+        </div>
+        <div class="name">{{userInfo.nickname || '登录网易云音乐'}}</div>
       </div>
-      <div class="name">{{userInfo.nickname || '登录网易云音乐'}}</div>
-    </div>
-    <div class="menu-list">
-      <div class="menu-item">
-        <div class="menu-title">在线音乐</div>
-        <ul>
-          <router-link to="/musicTab" tag="li">
-            <i class="iconfont icon-yinle"></i>
-            <span>音乐馆</span>
-          </router-link>
-        </ul>
-      </div>
-      <div class="menu-item" v-if="item.songList.length"
-        v-for="(item, index) in categorySongList" :key="index">
-        <div class="menu-title">{{item.title}}</div>
-        <ul>
-          <router-link 
-            :to="`/songDetail/${songList.id}`" tag="li" 
-            v-for="songList in item.songList" :key="songList.id">
-            <i class="iconfont"
-              :class="[songList.name === likeName ? 'icon-iconfontxihuan' : 'icon-yinyue']"></i>
+      <div class="menu-list">
+        <div class="menu-item">
+          <div class="menu-title">在线音乐</div>
+          <ul>
+            <router-link to="/musicTab" tag="li">
+              <i class="iconfont icon-yinle"></i>
+              <span>音乐馆</span>
+            </router-link>
+          </ul>
+        </div>
+        <div
+          class="menu-item"
+          v-if="item.songList.length"
+          v-for="(item, index) in categorySongList"
+          :key="index"
+        >
+          <div class="menu-title">{{item.title}}</div>
+          <ul>
+            <router-link
+              :to="`/songDetail/${songList.id}`"
+              tag="li"
+              v-for="songList in item.songList"
+              :key="songList.id"
+            >
+              <i
+                class="iconfont"
+                :class="[songList.name === likeName ? 'icon-iconfontxihuan' : 'icon-yinle1']"
+              ></i>
               {{songList.name}}
-          </router-link>
-        </ul>
+            </router-link>
+          </ul>
+        </div>
       </div>
-    </div>
+    </scroll>
   </div>
 </template>
 
@@ -40,14 +51,16 @@ import {
   loginDialogVisibleMixin
 } from '@/common/js/mixin'
 import { httpGet } from '@/api/httpUtil'
-import { ERR_OK, userSongListUrl } from '@/api/config'
+import { ERR_OK, userSongListUrl, userLikeListUrl } from '@/api/config'
+import * as types from '@/store/mutation-types'
+import { mapGetters, mapMutations } from 'vuex'
+import Scroll from '@/base/scroll/scroll'
 
 export default {
   mixins: [playListVisibleMixin, loginDialogVisibleMixin],
   data() {
     return {
       headPhotoSrc: 'src/renderer/common/images/default.png',
-      userSongList: [],
       likeName: '我喜欢'
     }
   },
@@ -71,27 +84,50 @@ export default {
         }
       })
       return _arr
-    }
+    },
+    ...mapGetters(['userSongList'])
+  },
+  methods: {
+    _getUserSongList(uid) {
+      httpGet(userSongListUrl, {
+        uid
+      }).then(res => {
+        if (res.code === ERR_OK) {
+          res.playlist[0].name = this.likeName
+          this.setUserSongList(res.playlist)
+        }
+      })
+    },
+    _getUserLikeList(uid) {
+      httpGet(userLikeListUrl, {
+        uid
+      }).then(res => {
+        if (res.code === ERR_OK) {
+          this.setUserLikeList(res.ids)
+        }
+      })
+    },
+    ...mapMutations({
+      setUserSongList: types.SET_USER_SONG_LIST,
+      setUserLikeList: types.SET_USER_LIKE_LIST
+    })
   },
   watch: {
     userInfo(newVal) {
       if (newVal.userId) {
-        httpGet(userSongListUrl, {
-          uid: newVal.userId
-        }).then(res => {
-          if (res.code === ERR_OK) {
-            res.playlist[0].name = this.likeName
-            this.userSongList = res.playlist
-          }
-        })
+        this._getUserSongList(newVal.userId)
+        this._getUserLikeList(newVal.userId)
       }
     }
+  },
+  components: {
+    Scroll
   }
 }
 </script>
 
 <style scoped lang="scss">
-@import 'scss/variable.scss';
+@import "scss/variable.scss";
 $menu-title-color: #bee1e5;
 $item-hover-color: rgba(69, 174, 187, 0.2);
 $head-photo-width: 40px;

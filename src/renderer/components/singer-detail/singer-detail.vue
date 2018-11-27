@@ -10,8 +10,9 @@
         <div class="singer-desc">
           <div class="singer-title">
             <h3>{{singer.name}}</h3>
-            <div class="btn-mini">
-              <i class="iconfont icon-xihuan"></i>收藏</div>
+            <div class="btn-mini" @click="toggleFollow">
+              <i class="iconfont" :class="followIcon"></i>{{followTip}}
+            </div>
           </div>
           <div class="desc">
             {{singerDesc}}
@@ -39,8 +40,9 @@
 </template>
 
 <script>
-import { ERR_OK, singerMusicListUrl } from '@/api/config'
+import { ERR_OK, singerMusicListUrl, singerSubscribeUrl } from '@/api/config'
 import { httpGet } from '@/api/httpUtil'
+import { subscribeType } from '@/api/apiType'
 import Scroll from '@/base/scroll/scroll'
 export default {
   data() {
@@ -53,6 +55,12 @@ export default {
   computed: {
     id() {
       return this.$route.params.id
+    },
+    followIcon() {
+      return this.singer.followed ? 'icon-xihuan' : 'icon-iconfontxihuan'
+    },
+    followTip() {
+      return this.singer.followed ? '已收藏' : '收藏'
     }
   },
   methods: {
@@ -61,6 +69,23 @@ export default {
         path,
         query: {
           id: this.id
+        }
+      })
+    },
+    toggleFollow() {
+      let t = this.singer.followed
+        ? subscribeType.cancel
+        : subscribeType.collect
+      httpGet(singerSubscribeUrl, {
+        id: this.id,
+        t
+      }).then(res => {
+        if (res.code === ERR_OK) {
+          this.singer.followed = !this.singer.followed
+          this.$message({
+            message: this.singer.followed ? '收藏成功' : '取消收藏成功',
+            type: 'success'
+          })
         }
       })
     },

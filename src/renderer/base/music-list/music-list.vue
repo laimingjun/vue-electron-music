@@ -5,14 +5,19 @@
         <div class="name-control">歌曲</div>
         <div class="singer" v-if="showSinger">歌手</div>
         <div class="album" v-if="showAlbum">专辑</div>
-        <div class="duration">时长</div>  
-      <li>
-      <li class="songs-item" v-for="(item, index) in musicList" :key="index"
+        <div class="duration">时长</div>
+      </li>
+      <li></li>
+      <li
+        class="songs-item"
+        v-for="(item, index) in musicList"
+        :key="index"
         @mouseenter="toggleItemHover(index)"
-        @mouseleave="toggleItemHover(null)">
+        @mouseleave="toggleItemHover(null)"
+      >
         <div class="name-control">
           <div class="name">
-            <i class="iconfont icon-iconfontxihuan"></i>
+            <i class="iconfont" :class="likeIcon(item.id)"></i>
             {{item.name}}
           </div>
           <div class="control" v-show="currentHoverIndex === index">
@@ -20,26 +25,26 @@
           </div>
         </div>
         <div class="singer" v-if="showSinger" :title="item.ar | formatSingers">
-          <span 
+          <span
             class="singer-item"
-            v-for="(singer, index) in item.ar || item.artists" 
+            v-for="(singer, index) in item.ar || item.artists"
             :key="index"
             :title="singer.id"
-            @click="clickSinger(singer.id)">
-            {{singer.name}}
-          </span>
+            @click="clickSinger(singer.id)"
+          >{{singer.name}}</span>
         </div>
         <div class="album" v-if="showAlbum">
           <span :title="item | formatAlbum" @click="clickAlbum(item)">{{item | formatAlbum}}</span>
-        </div>   
-        <div class="duration">{{item.dt || item.duration | formatTime}}</div>   
+        </div>
+        <div class="duration">{{item.dt || item.duration | formatTime}}</div>
       </li>
-    </ul>  
+    </ul>
   </div>
 </template>
 
 <script>
 import { formatSingers, formatTime } from '@/common/js/util'
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -62,7 +67,13 @@ export default {
       default: true
     }
   },
+  computed: {
+    ...mapGetters(['userLikeList'])
+  },
   methods: {
+    likeIcon(id) {
+      return this.userLikeList.includes(id) ? 'icon-xihuan' : 'icon-iconfontxihuan'
+    },
     clickSinger(id) {
       if (id === 0) {
         this.$alert('暂无歌手详情', '提示')
@@ -89,9 +100,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import 'scss/variable.scss';
+@import "scss/variable.scss";
 $songs-height: 40px;
 $songs-hover-bg: #155263;
+$like-hover-color: #e45050;
 .songs-wrapper {
   .songs-list {
     .songs-item {
@@ -125,7 +137,10 @@ $songs-hover-bg: #155263;
         .iconfont {
           margin-right: 6px;
           cursor: pointer;
-          &:hover {
+          &.icon-xihuan:hover {
+            color: $like-hover-color;
+          }
+          &.icon-iconfontxihuan:hover {
             color: $color-text-highlight;
           }
         }

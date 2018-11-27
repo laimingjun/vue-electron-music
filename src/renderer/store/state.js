@@ -18,7 +18,9 @@ const state = {
   playListVisible: false,
   maxWindow: false,
   loginDialogVisible: false,
-  userInfo: {}
+  userInfo: {},
+  userSongList: [],
+  userLikeList: []
 }
 
 export default state

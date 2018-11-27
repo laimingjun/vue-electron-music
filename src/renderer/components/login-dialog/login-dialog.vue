@@ -11,12 +11,12 @@
     <div class="main">
       <div class="input-row">
         <el-input v-model="username" placeholder="手机号/邮箱" @keyup.enter.native="login">
-          <i slot="prefix" class="el-input__icon el-icon-service"></i>
+          <i slot="prefix" class="el-input__icon iconfont icon-yonghu"></i>
         </el-input>
       </div>
       <div class="input-row">
         <el-input v-model="password" type="password" placeholder="密码" @keyup.enter.native="login">
-          <i slot="prefix" class="el-input__icon el-icon-service"></i>  
+          <i slot="prefix" class="el-input__icon iconfont icon-mima"></i>  
         </el-input>
       </div>
       <div class="error">{{errorMsg}}</div>
