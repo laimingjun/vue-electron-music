@@ -16,7 +16,7 @@
       </div>
       <div class="input-row">
         <el-input v-model="password" type="password" placeholder="密码" @keyup.enter.native="login">
-          <i slot="prefix" class="el-input__icon iconfont icon-mima"></i>  
+          <i slot="prefix" class="el-input__icon iconfont icon-mima"></i>
         </el-input>
       </div>
       <div class="error">{{errorMsg}}</div>
@@ -93,7 +93,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import 'scss/variable.scss';
+@import "scss/variable.scss";
 $login-dialog-width: 320px;
 $login-dialog-height: 380px;
 $login-color: #31c27c;

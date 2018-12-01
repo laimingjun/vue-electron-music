@@ -100,3 +100,6 @@ export const singerSubscribeUrl = '/artist/sub'
 
 // 用户喜欢歌曲列表 *uid
 export const userLikeListUrl = '/likelist'
+
+// 喜欢音乐 *id, like: true 喜欢, false 取消喜欢
+export const likeMuiscUrl = '/like'

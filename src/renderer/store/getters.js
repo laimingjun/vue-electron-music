@@ -4,6 +4,8 @@ export const searchQuery = state => state.searchQuery
 
 export const playList = state => state.playList
 
+export const sequenceList = state => state.sequenceList
+
 export const currentMusic = state => state.playList[state.currentPlayIndex] || {
   name: '音乐让生活更美好',
   album: {

@@ -27,7 +27,7 @@
           <div class="main">
             <div class="cover-lyric" v-show="!isOpenComment">
               <div class="cover-img">
-                <img :src="currentMusic.album.picUrl">
+                <img ref="coverImg" :src="currentMusic.album.picUrl">
               </div>
               <div class="detail">
                 <div class="name">{{currentMusic.name}}</div>
@@ -86,7 +86,7 @@
               ></el-progress>
               <div class="control">
                 <div class="left">
-                  <div>
+                  <div @click="toggleLike(currentMusic.id)">
                     <i class="iconfont" :class="favorIcon"></i>
                   </div>
                   <div @click="toggleOpenComment">
@@ -154,7 +154,7 @@
                 >{{singer.name}}</span>
               </div>
             </div>
-            <div class="control">
+            <div class="control" @click="toggleLike(currentMusic.id)">
               <i class="iconfont" :class="favorIcon"></i>
             </div>
           </div>
@@ -166,13 +166,13 @@
               <i slot="reference" class="iconfont" :class="playModeIcon"></i>
             </el-popover>
           </div>
-          <div class="play-control" @click="prev">
+          <div class="play-control" @click="prev" :class="disableCls">
             <i class="iconfont icon-shangyishou"></i>
           </div>
-          <div class="play-state" @click="togglePlaying">
+          <div class="play-state" @click="togglePlaying" :class="disableCls">
             <i class="iconfont" :class="playIcon"></i>
           </div>
-          <div class="play-control" @click="next">
+          <div class="play-control" @click="next" :class="disableCls">
             <i class="iconfont icon-xiayishou"></i>
           </div>
           <div class="play-sound">
@@ -192,7 +192,7 @@
     </div>
     <audio
       ref="musicAudio"
-      @play="ready"
+      @canplay="ready"
       @ended="next"
       @timeupdate="updateTime"
       :src="musicUrl"
@@ -208,6 +208,8 @@
 import { formatTime } from '@/common/js/util'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { playMode, playModeIcon } from '@/common/js/config'
+import { httpGet } from '@/api/httpUtil'
+import { ERR_OK, likeMuiscUrl } from '@/api/config'
 import { controlWindowMixin } from '@/common/js/mixin'
 import { ipcRenderer } from 'electron'
 import * as types from '@/store/mutation-types'
@@ -222,6 +224,7 @@ export default {
   mixins: [controlWindowMixin],
   data() {
     return {
+      musicReady: true,
       onScroll: true,
       musicUrl: null,
       lyric: {},
@@ -245,6 +248,9 @@ export default {
     },
     playModeIcon() {
       return playModeIcon.get(this.playMode)
+    },
+    disableCls() {
+      return this.musicReady ? '' : 'disabled'
     },
     fullScreenWindowIcon() {
       return this.fullScreenWindow ? 'icon-quxiaoquanping' : 'icon-quanping'
@@ -285,7 +291,10 @@ export default {
         this.getMusicUrl()
         return
       }
-      this.setPlaying(!this.playing)
+      if (!this.musicReady) {
+        return
+      }
+      this.setPlayingState(!this.playing)
       if (this.lyric) {
         this.lyric.togglePlay()
       }
@@ -304,34 +313,63 @@ export default {
         : ipcRenderer.send('full-screen-window')
       this.fullScreenWindow = !this.fullScreenWindow
     },
+    toggleLike(id) {
+      let like = !this.userLikeList.includes(id)
+      httpGet(likeMuiscUrl, {
+        id,
+        like,
+        timestamp: new Date().getTime()
+      }).then(res => {
+        if (res.code === ERR_OK) {
+          this.$message({
+            message: like ? '喜欢成功' : '取消喜欢成功',
+            type: 'success'
+          })
+          this.userLikeList.includes(id) ? this.deleteUserLikeList(id) : this.insertUserLikeList(id)
+        }
+      })
+    },
     hidePlayList() {
       this.playListVisible && this.setPlayListVisible(false)
     },
     ready() {
-      console.log('ready')
+      this.musicReady = true
     },
     prev() {
+      if (!this.musicReady) {
+        return
+      }
       let index =
         this.currentPlayIndex === 0
           ? this.playList.length - 1
           : this.currentPlayIndex - 1
       this.setCurrentPlayIndex(index)
+      this.musicReady = false
     },
     next() {
+      if (!this.musicReady) {
+        return
+      }
       let index = this.currentPlayIndex + 1
       if (index >= this.playList.length) {
         index = 0
       }
       this.setCurrentPlayIndex(index)
+      this.musicReady = false
     },
     getMusicUrl() {
       this.currentMusic.getMusicUrl().then(res => {
-        this.musicUrl = this.currentMusic.url = res.url
-        this.$nextTick(() => {
-          this.setPlaying(true)
-          this.$refs.musicAudio.play()
-          this.lyric.play()
-        })
+        if (res.code === ERR_OK) {
+          this.musicUrl = this.currentMusic.url = res.url
+        } else {
+          this.musicUrl = null
+          this.currentTime = 0
+          this.musicReady = true
+          this.next()
+          // if (this.playing) {
+          //   this.setPlayingState(false)
+          // }
+        }
       })
     },
     getLyric() {
@@ -352,31 +390,47 @@ export default {
       this.$refs.lyricScroll.setScrollTop(LYRIC_ITEM_HEIGHT * (lineNum - 5))
     },
     musicError() {
+      this.musicReady = true
       this.currentMusic.url = `http://music.163.com/song/media/outer/url?id=${
         this.currentMusic.id
         }.mp3`
     },
     updateTime(e) {
+      if (this.musicUrl === null) {
+        return
+      }
       this.currentTime = e.target.currentTime * 1000
     },
     clearPlayList() {
       this.removePlayListHistory()
-      this.setPlaying(false)
+      this.setPlayingState(false)
       this.musicUrl = null
       this.currentTime = 0
     },
     updateCommentCount(val) {
       this.commentCount = val
     },
+    _getPosAndScale() {
+      const imgEl = this.$refs.coverImg
+      const targetWidth = 40
+      const paddingLeft = 30
+      const paddingBottom = 30
+      const paddingTop = imgEl.offsetTop
+      const width = 280
+      const scale = targetWidth / width
+      const x = -(imgEl.offsetLeft + width / 2 - paddingLeft)
+      const y = window.innerHeight - paddingTop - width / 2 - paddingBottom
+      return { x, y, scale }
+    },
     ...mapMutations({
       setFullScreen: types.SET_FULL_SCREEN,
       setPlayListVisible: types.SET_PLAY_LIST_VISIBLE,
-      setPlaying: types.SET_PLAYING,
+      setPlayingState: types.SET_PLAYING_STATE,
       setCurrentPlayIndex: types.SET_CURRENT_PLAY_INDEX,
       setPlayMode: types.SET_PLAY_MODE,
       setMaxWindow: types.SET_MAX_WINDOW_STATE
     }),
-    ...mapActions(['removePlayListHistory'])
+    ...mapActions(['removePlayListHistory', 'deleteUserLikeList', 'insertUserLikeList'])
   },
   mounted() {
     if (this.currentMusic.id) {
@@ -394,6 +448,18 @@ export default {
           this.getMusicUrl()
           this.getLyric()
         })
+      }
+    },
+    musicUrl(newUrl) {
+      if (newUrl !== null) {
+        if (this.playing) {
+          this.$nextTick(() => {
+            this.$refs.musicAudio.play()
+          })
+        } else {
+          this.setPlayingState(true)
+          this.lyric.play()
+        }
       }
     },
     playing(newPlaying) {
@@ -425,6 +491,7 @@ export default {
 @import "scss/variable.scss";
 $proess-height: 2px;
 $mini-player-bg: #0a3a4d;
+$disable-color: #206d76 !important;
 $lyric-item-height: 34px;
 $duration-height: 20px;
 $playlist-font-size: 24px;
@@ -718,6 +785,7 @@ $playlist-font-size: 24px;
           }
           .control {
             margin-top: 14px;
+            cursor: pointer;
           }
         }
       }
@@ -731,6 +799,13 @@ $playlist-font-size: 24px;
           cursor: pointer;
           &:last-child {
             margin-right: 0;
+          }
+        }
+        .disabled {
+          border-color: $disable-color;
+          pointer-events: none;
+          .iconfont {
+            color: $disable-color;
           }
         }
         .play-mode {
@@ -790,7 +865,7 @@ $playlist-font-size: 24px;
 
   .bottom-collapse-enter-active,
   .bottom-collapse-leave-active {
-    transition: all 0.2s linear;
+    transition: all 0.3s linear;
   }
   .bottom-collapse-enter,
   .bottom-collapse-leave-to {

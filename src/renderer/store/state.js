@@ -11,6 +11,7 @@ const state = {
   searchQuery: '',
   searchHistory: loadSearch(),
   playList: loadPlayList(),
+  sequenceList: loadPlayList(),
   currentPlayIndex: 0,
   playMode: playMode.sequence,
   playing: false,

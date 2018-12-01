@@ -5,7 +5,12 @@
         <i class="iconfont icon-bofangqi-bofang"></i>全部播放
       </div>
     </div>
-    <music-list :musicList="musicList" :showSinger="showSinger" @clickAlbum="toAlbumDetail"></music-list>
+    <music-list
+      :musicList="musicList"
+      :showSinger="showSinger"
+      @clickAlbum="toAlbumDetail"
+      @select="selectItem"
+    ></music-list>
   </div>
 </template>
 
@@ -34,6 +39,12 @@ export default {
         params: { id }
       })
     },
+    selectItem(item, index) {
+      let list = this.musicList.map(item => {
+        return createMusic(item)
+      })
+      this.selectPlay({ list, index })
+    },
     playAll() {
       let list = this.musicList.map(item => {
         return createMusic(item)
@@ -49,7 +60,7 @@ export default {
         }
       })
     },
-    ...mapActions(['savePlayListHistory'])
+    ...mapActions(['savePlayListHistory', 'selectPlay'])
   },
   components: {
     MusicList

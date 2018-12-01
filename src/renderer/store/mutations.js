@@ -9,13 +9,16 @@ const mutations = {
   [types.SET_PLAY_LIST](state, list) {
     state.playList = list
   },
+  [types.SET_SEQUENCE_LIST](state, list) {
+    state.sequenceList = list
+  },
   [types.SET_CURRENT_PLAY_INDEX](state, index) {
     state.currentPlayIndex = index
   },
   [types.SET_PLAY_MODE](state, mode) {
     state.playMode = mode
   },
-  [types.SET_PLAYING](state, flag) {
+  [types.SET_PLAYING_STATE](state, flag) {
     state.playing = flag
   },
   [types.SET_FULL_SCREEN](state, flag) {

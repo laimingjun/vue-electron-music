@@ -7,7 +7,6 @@
         <div class="album" v-if="showAlbum">专辑</div>
         <div class="duration">时长</div>
       </li>
-      <li></li>
       <li
         class="songs-item"
         v-for="(item, index) in musicList"
@@ -17,11 +16,11 @@
       >
         <div class="name-control">
           <div class="name">
-            <i class="iconfont" :class="likeIcon(item.id)"></i>
+            <i class="iconfont" @click="toggleLike(item)" :class="likeIcon(item.id)"></i>
             {{item.name}}
           </div>
           <div class="control" v-show="currentHoverIndex === index">
-            <i class="iconfont icon-bofang"></i>
+            <i @click="clickItem(item, index)" class="iconfont icon-bofang"></i>
           </div>
         </div>
         <div class="singer" v-if="showSinger" :title="item.ar | formatSingers">
@@ -44,7 +43,9 @@
 
 <script>
 import { formatSingers, formatTime } from '@/common/js/util'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
+import { ERR_OK, likeMuiscUrl } from '@/api/config'
+import { httpGet } from '@/api/httpUtil'
 export default {
   data() {
     return {
@@ -85,9 +86,31 @@ export default {
       let id = item.al ? item.al.id : item.album ? item.album.id : ''
       this.$emit('clickAlbum', id)
     },
+    clickItem(item, index) {
+      this.$emit('select', item, index)
+    },
     toggleItemHover(index) {
       this.currentHoverIndex = index
-    }
+    },
+    toggleLike(item) {
+      let id = item.id
+      let like = !this.userLikeList.includes(id)
+      httpGet(likeMuiscUrl, {
+        id,
+        like,
+        timestamp: new Date().getTime()
+      }).then(res => {
+        if (res.code === ERR_OK) {
+          this.$message({
+            message: like ? '喜欢成功' : '取消喜欢成功',
+            type: 'success'
+          })
+          this.userLikeList.includes(id) ? this.deleteUserLikeList(id) : this.insertUserLikeList(id)
+          this.$emit('toggleLike', item)
+        }
+      })
+    },
+    ...mapActions(['insertUserLikeList', 'deleteUserLikeList'])
   },
   filters: {
     formatSingers,

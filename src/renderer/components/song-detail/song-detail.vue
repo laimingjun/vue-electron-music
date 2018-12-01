@@ -1,7 +1,5 @@
 <template>
-  <div class="song-detail-wrapper"
-    v-loading="loading"
-    element-loading-background="#0b4055">
+  <div class="song-detail-wrapper" v-loading="loading" element-loading-background="#0b4055">
     <scroll ref="scroll">
       <div class="song-detail-container">
         <div class="song-cover">
@@ -11,7 +9,7 @@
           <div class="song-detail">
             <h2>{{songDetail.name}}</h2>
             <div class="avatar">
-              <img :src="songDetail.creator && songDetail.creator.avatarUrl" alt="作者头像" />
+              <img :src="songDetail.creator && songDetail.creator.avatarUrl" alt="作者头像">
               <span>{{songDetail.creator && songDetail.creator.nickname}}</span>
             </div>
             <ul class="tags">
@@ -20,14 +18,20 @@
               <li v-for="(item, index) in songDetail.tags" :key="index">#{{item}}</li>
             </ul>
             <div class="btn-group">
-              <div class='btn-mini active' @click="playAll">
+              <div class="btn-mini active" @click="playAll">
                 <i class="iconfont icon-bofangqi-bofang"></i>播放全部
               </div>
-              <div class="btn-mini" @click="toggleSubscribe">
-                <i class="iconfont" :class="subscribeIcon"></i>收藏({{songDetail.subscribedCount | convertUnit}})
+              <div
+                class="btn-mini"
+                @click="toggleSubscribe"
+                v-if="songDetail.creator && songDetail.creator.userId !== userInfo.userId"
+              >
+                <i class="iconfont" :class="subscribeIcon"></i>
+                收藏({{songDetail.subscribedCount | convertUnit}})
               </div>
               <div class="btn-mini">
-                <i class="iconfont icon-fenxiang"></i>分享({{songDetail.shareCount | convertUnit}})
+                <i class="iconfont icon-fenxiang"></i>
+                分享({{songDetail.shareCount | convertUnit}})
               </div>
             </div>
             <div ref="songDescriptionWrapper" class="description">
@@ -40,18 +44,26 @@
         </div>
         <div class="songs">
           <ul class="tabs">
-            <li :class="{active: currentTab === 'MusicList'}" @click="showTabs('MusicList')">歌曲{{songDetail.trackCount}}</li>
-            <li :class="{active: currentTab === 'SongComment'}" @click="showTabs('SongComment')">评论{{songDetail.commentCount}}</li>
+            <li
+              :class="{active: currentTab === 'MusicList'}"
+              @click="showTabs('MusicList')"
+            >歌曲{{songDetail.trackCount}}</li>
+            <li
+              :class="{active: currentTab === 'SongComment'}"
+              @click="showTabs('SongComment')"
+            >评论{{songDetail.commentCount}}</li>
           </ul>
           <keep-alive>
-            <component 
+            <component
               :is="currentTab"
-              :musicList="musicList" 
-              :id="songId" 
+              :musicList="musicList"
+              :id="songId"
               @clickSinger="toSingerDetail"
-              @clickAlbum="toAlbumDetail"></component>
+              @clickAlbum="toAlbumDetail"
+              @select="selectItem"
+            ></component>
           </keep-alive>
-        </div> 
+        </div>
       </div>
     </scroll>
   </div>
@@ -63,7 +75,7 @@ import { httpGet } from '@/api/httpUtil'
 import { subscribeType } from '@/api/apiType'
 import { convertUnit, deepCopy } from '@/common/js/util'
 import { createMusic } from '@/common/js/music'
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import Scroll from '@/base/scroll/scroll'
 import MusicList from '@/base/music-list/music-list'
 import SongComment from './song-comment/song-comment'
@@ -89,7 +101,8 @@ export default {
     },
     subscribeIcon() {
       return this.songDetail.subscribed ? 'icon-xihuan' : 'icon-iconfontxihuan'
-    }
+    },
+    ...mapGetters(['userInfo'])
   },
   watch: {
     songId: {
@@ -131,7 +144,7 @@ export default {
             type: 'success'
           })
           this.songDetail.subscribed
-            ? this.saveUserSongList(deepCopy(this.songDetail))
+            ? this.insertUserSongList(deepCopy(this.songDetail))
             : this.deleteUserSongList(this.songDetail.id)
         }
       })
@@ -157,9 +170,16 @@ export default {
       })
       this.savePlayListHistory(list)
     },
+    selectItem(item, index) {
+      let list = this.musicList.map(item => {
+        return createMusic(item)
+      })
+      this.selectPlay({ list, index })
+    },
     _getSongListDetail(id) {
       httpGet(songListDetailUrl, {
-        id: this.songId
+        id: this.songId,
+        timestamp: new Date().getTime()
       }).then(res => {
         this.loading = false
         if (res.code === ERR_OK) {
@@ -175,8 +195,9 @@ export default {
     },
     ...mapActions([
       'savePlayListHistory',
-      'saveUserSongList',
-      'deleteUserSongList'
+      'insertUserSongList',
+      'deleteUserSongList',
+      'selectPlay'
     ])
   },
   components: {
@@ -191,7 +212,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import 'scss/variable.scss';
+@import "scss/variable.scss";
 $song-detail-bg: #1b4f63;
 $song-bg: #0d465a;
 $cover-img-width: 160px;

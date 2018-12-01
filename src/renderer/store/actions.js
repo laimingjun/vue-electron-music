@@ -33,6 +33,9 @@ export const savePlayListHistory = function ({
   commit
 }, list) {
   commit(types.SET_PLAY_LIST, savePlayList(list))
+  commit(types.SET_SEQUENCE_LIST, list)
+  commit(types.SET_CURRENT_PLAY_INDEX, 0)
+  commit(types.SET_PLAYING_STATE, true)
 }
 
 export const removePlayListHistory = function ({
@@ -41,7 +44,7 @@ export const removePlayListHistory = function ({
   commit(types.SET_PLAY_LIST, removePlayList())
 }
 
-export const saveUserSongList = function ({
+export const insertUserSongList = function ({
   commit,
   state
 }, song) {
@@ -61,4 +64,39 @@ export const deleteUserSongList = function ({
     return item.id === id
   })
   commit(types.SET_USER_SONG_LIST, songList)
+}
+
+export const insertUserLikeList = function ({
+  commit,
+  state
+}, id) {
+  let likeList = [...state.userLikeList]
+  insertArray(likeList, id, item => {
+    return item === id
+  })
+  commit(types.SET_USER_LIKE_LIST, likeList)
+}
+
+export const deleteUserLikeList = function ({
+  commit,
+  state
+}, id) {
+  let likeList = [...state.userLikeList]
+  deleteFromArray(likeList, item => {
+    return item === id
+  })
+  commit(types.SET_USER_LIKE_LIST, likeList)
+}
+
+export const selectPlay = function ({
+  commit,
+  state
+}, {
+  list,
+  index
+}) {
+  commit(types.SET_SEQUENCE_LIST, list)
+  commit(types.SET_PLAY_LIST, list)
+  commit(types.SET_CURRENT_PLAY_INDEX, index)
+  commit(types.SET_PLAYING_STATE, true)
 }
