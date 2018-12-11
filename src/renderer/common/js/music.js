@@ -1,7 +1,8 @@
 import {
   ERR_OK,
   musicUrl,
-  lyricUrl
+  lyricUrl,
+  checkMusicUrl
 } from '@/api/config'
 import {
   httpGet
@@ -26,12 +27,14 @@ export class Music {
     if (this.lyric) {
       return Promise.resolve(this.lyric)
     }
-    return httpGet(lyricUrl, {
-      id: this.id
-    }).then((res) => {
-      if (res.code === ERR_OK) {
-        return Promise.resolve(res.lrc)
-      }
+    return new Promise((resolve, reject) => {
+      httpGet(lyricUrl, {
+        id: this.id
+      }).then((res) => {
+        if (res.code === ERR_OK) {
+          resolve(res)
+        }
+      })
     })
   }
 
@@ -45,6 +48,16 @@ export class Music {
       if (res.code === ERR_OK) {
         return Promise.resolve(res.data[0])
       }
+    })
+  }
+
+  checkMusic() {
+    return httpGet(checkMusicUrl, {
+      id: this.id
+    }).then(res => {
+      return Promise.resolve(res)
+    }).catch(err => {
+      return Promise.reject(err)
     })
   }
 }

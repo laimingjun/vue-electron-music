@@ -72,7 +72,6 @@ export default {
         .then(res => {
           if (res.code === ERR_OK) {
             this.setUserInfo(res.profile)
-            document.cookie = '__remember_me=true'
             this.hideLoginDialog()
           }
         })

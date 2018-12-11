@@ -139,7 +139,7 @@
   }
 }
 
-.el-popover.el-popper {
+.play-mode.el-popover.el-popper {
   min-width: 0;
   padding: 0;
   border-radius: 1px;
@@ -156,6 +156,35 @@
 
       .iconfont {
         margin-right: 6px;
+      }
+    }
+  }
+}
+
+.player-wrapper {
+  .el-slider {
+    .el-slider__runway {
+      height: 2px;
+      margin: 0;
+      background-color: $progress-bg;
+
+      .el-slider__bar {
+        height: 2px;
+        background-color: $color-text-highlight;
+      }
+
+      .el-slider__button-wrapper {
+        width: 12px;
+        height: 12px;
+        top: -7px;
+        transform: translateX(0);
+
+        .el-slider__button {
+          width: 100%;
+          height: 100%;
+          border: none;
+          background-color: $color-text-highlight;
+        }
       }
     }
   }

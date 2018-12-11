@@ -13,6 +13,7 @@
         :key="index"
         @mouseenter="toggleItemHover(index)"
         @mouseleave="toggleItemHover(null)"
+        @dblclick="clickItem(item, index)"
       >
         <div class="name-control">
           <div class="name">

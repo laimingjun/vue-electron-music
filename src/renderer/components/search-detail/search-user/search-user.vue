@@ -7,13 +7,13 @@
       <div class="content">
         <div>
           {{item.nickname}}
-          <i class="iconfont" :class="item.gender === 1 ? 'icon-nan': item.gender === 2 ? 'icon-nv' : ''"></i>
+          <i
+            class="iconfont"
+            :class="item.gender === 1 ? 'icon-nan': item.gender === 2 ? 'icon-nv' : ''"
+          ></i>
         </div>
-        <div class="desc">
-          {{item.signature}}
-        </div>
+        <div class="desc">{{item.signature}}</div>
       </div>
-      
     </div>
   </div>
 </template>
@@ -32,11 +32,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import 'scss/variable.scss';
+@import "scss/variable.scss";
 $item-height: 70px;
 $avatar-width: $item-height;
-$icon-nv-color: #e38ed0;
-$icon-nan-color: #91dbff;
 .search-user-wrapper {
   .user-item {
     display: flex;

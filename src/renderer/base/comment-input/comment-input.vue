@@ -1,19 +1,23 @@
 <template>
   <div class="comment-input-wrapper">
-    <div class="comment-div" contenteditable="true"
-        ref="commentDiv"
-        @focus="hidePlaceholder"
-        @blur="isShowPlaceholder"
-        @keyup="inputComment"
-        :style="cpBorderColor"></div>
-      <div class="comment-placeholder" v-show="isPlaceholderShow">期待你的神评论</div>
-      <div class="residue-hint" :class="{red: isInputExceed}">
-        <span v-if="!isInputExceed">剩余</span>
-        <span v-else>超出</span>{{inputCount}}字
-      </div>
-      <div class="comment-btn">
-        <div class="btn-mini active" @click="sendComment">发表评论</div>
-      </div>
+    <div
+      class="comment-div"
+      contenteditable="true"
+      ref="commentDiv"
+      @focus="hidePlaceholder"
+      @blur="isShowPlaceholder"
+      @keyup="inputComment"
+      :style="cpBorderColor"
+    ></div>
+    <div class="comment-placeholder" v-show="isPlaceholderShow">期待你的神评论</div>
+    <div class="residue-hint" :class="{red: isInputExceed}">
+      <span v-if="!isInputExceed">剩余</span>
+      <span v-else>超出</span>
+      {{inputCount}}字
+    </div>
+    <div class="comment-btn">
+      <div class="btn-mini active" @click="sendComment">发表评论</div>
+    </div>
   </div>
 </template>
 
@@ -58,13 +62,18 @@ export default {
     },
     sendComment() {
       this.$emit('sendComment', this.inputCommentVal)
+    },
+    clear() {
+      this.$refs.commentDiv.innerHTML = ''
+      this.inputCommentVal = ''
+      this.isPlaceholderShow = true
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
-@import 'scss/variable.scss';
+@import "scss/variable.scss";
 .comment-input-wrapper {
   position: relative;
   .comment-div {

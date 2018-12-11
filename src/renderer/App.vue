@@ -41,7 +41,9 @@ export default {
     })
   },
   created() {
-    httpGet(loginStatusUrl).then(res => {
+    httpGet(loginStatusUrl, {
+      timestamp: new Date().getTime()
+    }).then(res => {
       if (res.code === ERR_OK) {
         this.setUserInfo(res.profile)
       }
@@ -57,8 +59,8 @@ export default {
 </script>
 
 <style lang='scss'>
-@import 'scss/variable.scss';
-@import 'scss/common.scss';
+@import "scss/variable.scss";
+@import "scss/common.scss";
 #app {
   display: flex;
   width: 100%;

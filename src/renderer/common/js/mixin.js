@@ -2,13 +2,15 @@ import {
   ERR_OK,
   topSongListUrl,
   commentHotUrl,
-  commentLikeUrl
+  commentLikeUrl,
+  commentUrl
 } from '@/api/config'
 import {
   httpGet
 } from '@/api/httpUtil'
 import {
-  likeType
+  likeType,
+  commentType
 } from '@/api/apiType'
 import {
   mapGetters,
@@ -81,7 +83,32 @@ export const commentMixin = {
   },
   methods: {
     sendComment(comment) {
-      console.log('发表评论：', comment)
+      if (comment.length < 300) {
+        httpGet(commentUrl, {
+          type: this.hotType,
+          id: this.id,
+          t: commentType.send,
+          content: comment
+        }).then(res => {
+          if (res.code === ERR_OK) {
+            this.$message({
+              message: '评论成功!',
+              type: 'success'
+            })
+            let list = [...this.comments]
+            if (this.currentPage === 1) {
+              list.unshift(res.comment)
+            }
+            if (this.total > this.currentPage) {
+              list.pop()
+            }
+            this.comments = list
+            this.total = this.total + 1
+            this.$emit('addComment')
+            this.$refs.commentInput.clear()
+          }
+        })
+      }
     },
     loadHotMore() {
       this.currentPageHot = this.currentPageHot + 1
@@ -172,6 +199,13 @@ export const loginDialogVisibleMixin = {
     showLoginDialog() {
       if (!this.userInfo.userId) {
         this.setLoginDialogVisible(true)
+      } else {
+        this.$router.push({
+          name: 'UserDetail',
+          params: {
+            uid: this.userInfo.userId
+          }
+        })
       }
     },
     hideLoginDialog() {

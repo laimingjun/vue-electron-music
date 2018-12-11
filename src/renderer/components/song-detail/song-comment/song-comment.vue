@@ -1,6 +1,6 @@
 <template>
   <div class="comment-wrapper">
-    <comment-input @sendComment="sendComment"></comment-input>
+    <comment-input @sendComment="sendComment" ref="commentInput"></comment-input>
     <comment-list
       v-if="hotComments.length && currentPage == 1"
       title="精彩评论"
@@ -33,7 +33,7 @@ import CommentList from '@/base/comment-list/comment-list'
 
 export default {
   mixins: [commentMixin],
-  data () {
+  data() {
     return {
       hotType: commentTypeList.SONG_LIST_TYPE
     }
@@ -41,11 +41,11 @@ export default {
   props: {
     id: Number
   },
-  created () {
+  created() {
     this._getCommentList(commentSongListUrl)
   },
   methods: {
-    currentChange (num) {
+    currentChange(num) {
       this.currentPage = num
       this.comments = []
       this._getCommentList(commentSongListUrl)
@@ -54,7 +54,7 @@ export default {
   watch: {
     id: {
       immediate: false,
-      handler () {
+      handler() {
         this._getCommentList(commentSongListUrl)
       }
     }

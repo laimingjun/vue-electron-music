@@ -1,5 +1,13 @@
 export function pad(num) {
-  return num < 10 ? '0' + num : num
+  // return num < 10 ? '0' + num : num
+  return `00${num}`.slice(-2)
+}
+
+export function formatTime(time) {
+  time = (time / 1000) | 0
+  const minute = (time / 60) | 0
+  const second = pad(time % 60)
+  return `${minute}:${second}`
 }
 
 export function formatSingers(arr) {
@@ -17,13 +25,6 @@ export function formatDateTime(time) {
   var mouth = date.getMonth() + 1
   var day = date.getDate()
   return `${year}-${mouth}-${day}`
-}
-
-export function formatTime(time) {
-  time = (time / 1000) | 0
-  const minute = (time / 60) | 0
-  const second = pad(time % 60)
-  return `${minute}:${second}`
 }
 
 export function convertUnit(val) {
@@ -69,4 +70,17 @@ export function deepCopy(obj) {
     }
   }
   return result
+}
+
+export function shuffle(arr) {
+  let _arr = [...arr]
+  for (let i = 0; i < _arr.length; i++) {
+    let j = getRandomInt(0, i);
+    [_arr[i], _arr[j]] = [_arr[j], _arr[i]]
+  }
+  return _arr
+}
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min)
 }

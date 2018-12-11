@@ -3,7 +3,7 @@
     <div class="header">
       <h3>播放列表</h3>
       <div class="control">
-        <div class="count">{{playList.length}}首歌曲</div>
+        <div class="count">{{sequenceList.length}}首歌曲</div>
         <div class="clear" @click="clearPlayList">
           <i class="iconfont icon-asmkticon0154"></i>
           <span>清空</span>
@@ -11,15 +11,23 @@
       </div>
     </div>
     <div class="content">
-      <scroll>
-        <div class="music-item" :class="{active : index === currentPlayIndex }" 
-          v-for="(item, index) in playList" :key="item.id">
+      <scroll ref="playListScroll">
+        <div
+          class="music-item"
+          :class="{active : item.id === currentMusic.id }"
+          v-for="(item, index) in sequenceList"
+          :key="item.id"
+          @dblclick="playIndex(index)"
+        >
           <div class="name">{{item.name}}</div>
           <div class="detail">
             <div class="singer">
-              <span class="singer-item" v-for="(singer, index) in item.artists" :key="index">
-                {{singer.name}} 
-              </span>
+              <span
+                class="singer-item"
+                v-for="(singer, index) in item.artists"
+                :key="index"
+                @click="toSingerDetail(singer.id)"
+              >{{singer.name}}</span>
             </div>
             <div class="duration">{{item.duration | formatTime}}</div>
           </div>
@@ -32,18 +40,56 @@
 <script>
 import Scroll from '@/base/scroll/scroll'
 import { formatTime } from '@/common/js/util'
-import { mapGetters } from 'vuex'
+import { playMode } from '@/common/js/config'
+import { playListVisibleMixin } from '@/common/js/mixin'
+import { mapGetters, mapActions } from 'vuex'
+
+const playItemHeight = 52.6
 export default {
+  mixins: [playListVisibleMixin],
   data() {
     return {}
   },
   computed: {
-    ...mapGetters(['playList', 'currentPlayIndex'])
+    ...mapGetters(['sequenceList', 'playList', 'currentMusic', 'playMode'])
+  },
+  mounted() {
+    if (this.currentMusic.id) {
+      let index = 0
+      index = this.sequenceList.findIndex(item => {
+        return item.id === this.currentMusic.id
+      })
+      this.$refs.playListScroll.setScrollTop(index * playItemHeight)
+    }
   },
   methods: {
     clearPlayList() {
       this.$emit('clearPlayList')
-    }
+    },
+    toSingerDetail(id) {
+      this.$router.push({
+        name: 'SingerDetail',
+        params: { id }
+      })
+      this.hidePlayList()
+    },
+    playIndex(index) {
+      if (this.playMode === playMode.random) {
+        index = this.playList.findIndex(item => {
+          return item.id === this.sequenceList[index].id
+        })
+      }
+      this.playList[index].checkMusic().then(res => {
+        if (res.success) {
+          this.saveCurrentPlayIndexHistory(index)
+        }
+      }).catch(() => {
+        this.$message({
+          message: '该歌曲暂无版权'
+        })
+      })
+    },
+    ...mapActions(['saveCurrentPlayIndexHistory'])
   },
   components: {
     Scroll
@@ -55,7 +101,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import 'scss/variable.scss';
+@import "scss/variable.scss";
 $header-bg: #f9f9f9;
 $header-height: 80px;
 $music-item-border-color: #f3f3f3;

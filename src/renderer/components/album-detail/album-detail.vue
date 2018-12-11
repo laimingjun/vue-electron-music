@@ -3,48 +3,48 @@
     <scroll>
       <div class="album-detail">
         <div class="cover-img">
-          <img v-lazy="album.picUrl" />
+          <img v-lazy="album.picUrl">
         </div>
         <div class="detail">
           <div class="album-name">{{album.name}}</div>
           <div class="singer">
-            <span class="singer-item" v-for="item in album.artists" :key="item.id">
-              {{item.name}}
-            </span>
+            <span class="singer-item" v-for="item in album.artists" :key="item.id">{{item.name}}</span>
           </div>
           <div class="create-date">{{album.publishTime | formatDateTime}} 发行</div>
           <div class="btn-group">
-            <div class='btn-mini active' @click="playAll">
+            <div class="btn-mini active" @click="playAll">
               <i class="iconfont icon-bofangqi-bofang"></i>播放全部
             </div>
             <div class="btn-mini">
               <i class="iconfont icon-iconfontxihuan"></i>收藏
             </div>
             <div class="btn-mini">
-              <i class="iconfont icon-fenxiang"></i>分享({{album.info && album.info.shareCount}})
+              <i class="iconfont icon-fenxiang"></i>
+              分享({{album.info && album.info.shareCount}})
             </div>
           </div>
         </div>
       </div>
       <div class="album-content">
         <ul class="tabs">
-          <li 
-            :class="{active: currentTab === 'MusicList'}" 
-            @click="changeTab('MusicList')">歌曲({{album.size}})</li>
-          <li 
-            :class="{active: currentTab === 'AlbumDesc'}" 
-            @click="changeTab('AlbumDesc')">专辑信息</li>
-          <li 
+          <li
+            :class="{active: currentTab === 'MusicList'}"
+            @click="changeTab('MusicList')"
+          >歌曲({{album.size}})</li>
+          <li :class="{active: currentTab === 'AlbumDesc'}" @click="changeTab('AlbumDesc')">专辑信息</li>
+          <li
             :class="{active: currentTab === 'AlbumComment'}"
-            @click="changeTab('AlbumComment')">
-            评论({{album.info && album.info.commentCount}})</li>
+            @click="changeTab('AlbumComment')"
+          >评论({{album.info && album.info.commentCount}})</li>
         </ul>
-        <component :is="currentTab"
-          :musicList="musicList" 
+        <component
+          :is="currentTab"
+          :musicList="musicList"
           :showAlbum="false"
           :album="album"
           :id="album.id"
-          @clickSinger="toSingerDetail"></component>
+          @clickSinger="toSingerDetail"
+        ></component>
       </div>
     </scroll>
   </div>
@@ -85,7 +85,7 @@ export default {
       let list = this.musicList.map(item => {
         return createMusic(item)
       })
-      this.savePlayListHistory(list)
+      this.savePlayListHistory({ list })
     },
     _getAlbumDetail(id) {
       httpGet(albumDetailUrl, {
@@ -112,7 +112,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import 'scss/variable.scss';
+@import "scss/variable.scss";
 $cover-img-width: 150px;
 $content-bg: #0d465a;
 .album-detail-wrapper {

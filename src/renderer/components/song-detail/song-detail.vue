@@ -61,6 +61,7 @@
               @clickSinger="toSingerDetail"
               @clickAlbum="toAlbumDetail"
               @select="selectItem"
+              @addComment="addComment"
             ></component>
           </keep-alive>
         </div>
@@ -168,13 +169,25 @@ export default {
       let list = this.musicList.map(item => {
         return createMusic(item)
       })
-      this.savePlayListHistory(list)
+      this.savePlayListHistory({ list })
     },
     selectItem(item, index) {
-      let list = this.musicList.map(item => {
-        return createMusic(item)
+      let music = createMusic(item)
+      music.checkMusic().then(res => {
+        if (res.success) {
+          let list = this.musicList.map(item => {
+            return createMusic(item)
+          })
+          this.savePlayListHistory({ list, index })
+        }
+      }).catch(() => {
+        this.$message({
+          message: '该歌曲暂无版权'
+        })
       })
-      this.selectPlay({ list, index })
+    },
+    addComment() {
+      this.songDetail.commentCount = this.songDetail.commentCount + 1
     },
     _getSongListDetail(id) {
       httpGet(songListDetailUrl, {
@@ -196,8 +209,7 @@ export default {
     ...mapActions([
       'savePlayListHistory',
       'insertUserSongList',
-      'deleteUserSongList',
-      'selectPlay'
+      'deleteUserSongList'
     ])
   },
   components: {

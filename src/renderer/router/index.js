@@ -17,6 +17,7 @@ import SingerDesc from '@/components/singer-detail/singer-desc/singer-desc'
 import SingerSimilarity from '@/components/singer-detail/singer-similarity/singer-similarity'
 import AlbumDetail from '@/components/album-detail/album-detail'
 import SearchDetail from '@/components/search-detail/search-detail'
+import UserDetail from '@/components/user-detail/user-detail'
 
 Vue.use(Router)
 
@@ -101,5 +102,9 @@ export default new Router({
     path: '/searchDetail/:keyword',
     name: 'SearchDetail',
     component: SearchDetail
+  }, {
+    path: '/userDetail/:uid',
+    name: 'UserDetail',
+    component: UserDetail
   }]
 })

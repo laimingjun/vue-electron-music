@@ -71,6 +71,9 @@ export const searchSuggestUrl = '/search/suggest'
 // 搜索 *:keywords
 export const searchUrl = '/search'
 
+// 音乐是否可用 *id
+export const checkMusicUrl = '/check/music'
+
 // 音乐url *:id
 export const musicUrl = '/song/url'
 
@@ -89,6 +92,9 @@ export const loginEmailUrl = '/login'
 // 登录状态
 export const loginStatusUrl = '/login/status'
 
+// 退出登录
+export const logoutUrl = '/logout'
+
 // 用户歌单 *uid
 export const userSongListUrl = '/user/playlist'
 
@@ -103,3 +109,9 @@ export const userLikeListUrl = '/likelist'
 
 // 喜欢音乐 *id, like: true 喜欢, false 取消喜欢
 export const likeMuiscUrl = '/like'
+
+// 用户详情 *uid
+export const userDetailUrl = '/user/detail'
+
+// 发送/删除评论 *t: 0 删除 、1 发送, *type：资源类型, *id: 对应资源id
+export const commentUrl = '/comment'

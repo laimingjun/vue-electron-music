@@ -1,9 +1,9 @@
 <template>
-  <!-- 底部播放器 -->
+  <!-- 全屏播放器 -->
   <div class="player-wrapper">
-    <transition name="bottom-collapse">
+    <transition name="bottom-collapse" appear>
       <div class="full-player" v-show="fullScreen" @click="hidePlayList">
-        <div class="bg" :style="{backgroundImage: 'url('+ currentMusic.album.picUrl +')'}"></div>
+        <div class="bg" :style="{backgroundImage: `url(${currentMusic.album.picUrl})`}"></div>
         <div class="content">
           <div class="header">
             <div class="hide" v-show="!isOpenComment" @click="toggleFullScreen(false)">
@@ -78,12 +78,7 @@
               <div>{{currentMusic.duration | formatTime}}</div>
             </div>
             <div class="progress">
-              <el-progress
-                :percentage="percentage"
-                :stroke-width="2"
-                :show-text="false"
-                color="#48e3f6"
-              ></el-progress>
+              <el-slider v-model="percent" :show-tooltip="false" @change="changeCurrentTime"></el-slider>
               <div class="control">
                 <div class="left">
                   <div @click="toggleLike(currentMusic.id)">
@@ -98,8 +93,9 @@
                   <div class="play-mode">
                     <el-popover
                       placement="top"
-                      :visible-arrow="false"
+                      :visible-arrow="popoverArrow"
                       v-model="playModeVisible.full"
+                      popper-class="play-mode"
                     >
                       <play-mode-list @togglePlayMode="togglePlayMode"></play-mode-list>
                       <i slot="reference" class="iconfont" :class="playModeIcon"></i>
@@ -130,9 +126,10 @@
         </div>
       </div>
     </transition>
+    <!-- 底部播放器 -->
     <div class="mini-player" @click="hidePlayList">
       <div class="progress">
-        <el-progress :percentage="percentage" :stroke-width="2" :show-text="false" color="#48e3f6"></el-progress>
+        <el-slider v-model="percent" :show-tooltip="false" @change="changeCurrentTime"></el-slider>
       </div>
       <div class="mini-content">
         <div class="left">
@@ -161,7 +158,12 @@
         </div>
         <div class="center">
           <div class="play-mode">
-            <el-popover placement="top" v-model="playModeVisible.mini" :visible-arrow="false">
+            <el-popover
+              placement="top"
+              v-model="playModeVisible.mini"
+              :visible-arrow="popoverArrow"
+              popper-class="play-mode"
+            >
               <play-mode-list @togglePlayMode="togglePlayMode"></play-mode-list>
               <i slot="reference" class="iconfont" :class="playModeIcon"></i>
             </el-popover>
@@ -190,22 +192,22 @@
         </div>
       </div>
     </div>
+    <transition name="right-collapse">
+      <play-list v-if="playListVisible" @clearPlayList="clearPlayList" @close="hidePlayList"></play-list>
+    </transition>
     <audio
       ref="musicAudio"
       @canplay="ready"
-      @ended="next"
+      @ended="ended"
       @timeupdate="updateTime"
       :src="musicUrl"
       @error="musicError"
     ></audio>
-    <transition name="right-collapse">
-      <play-list v-if="playListVisible" @clearPlayList="clearPlayList"></play-list>
-    </transition>
   </div>
 </template>
 
 <script>
-import { formatTime } from '@/common/js/util'
+import { formatTime, shuffle } from '@/common/js/util'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { playMode, playModeIcon } from '@/common/js/config'
 import { httpGet } from '@/api/httpUtil'
@@ -229,9 +231,11 @@ export default {
       musicUrl: null,
       lyric: {},
       currentTime: 0,
-      currentLyricIndex: null,
+      currentLyricIndex: 0,
       isOpenComment: false,
       commentCount: 0,
+      percent: 0,
+      popoverArrow: false,
       playModeVisible: {
         full: false,
         mini: false
@@ -258,16 +262,12 @@ export default {
     fullScreenWindowTip() {
       return this.fullScreenWindow ? '退出全屏' : '全屏'
     },
-    percentage() {
-      return this.currentTime === 0
-        ? 0
-        : (this.currentTime / this.currentMusic.duration) * 100
-    },
     ...mapGetters([
       'playing',
       'fullScreen',
       'currentMusic',
       'playList',
+      'sequenceList',
       'playListVisible',
       'currentPlayIndex',
       'playMode',
@@ -303,9 +303,21 @@ export default {
       this.setPlayListVisible(!this.playListVisible)
     },
     togglePlayMode(mode) {
-      this.setPlayMode(playMode[mode])
+      this.savePlayModeHistory(playMode[mode])
       this.playModeVisible.full = false
       this.playModeVisible.mini = false
+      let list = null
+      let index = 0
+      if (playMode[mode] === playMode.random) {
+        list = shuffle(this.playList)
+      } else {
+        list = this.sequenceList
+      }
+      index = list.findIndex(item => {
+        return item.id === this.currentMusic.id
+      })
+      this.saveCurrentPlayIndexHistory(index)
+      this.setPlayList(list)
     },
     toggleFullScreenWindow() {
       this.fullScreenWindow
@@ -335,27 +347,59 @@ export default {
     ready() {
       this.musicReady = true
     },
+    ended() {
+      if (this.playMode === playMode.singleLoop) {
+        this.singleLoop()
+      } else {
+        this.next()
+      }
+    },
+    singleLoop() {
+      this.$refs.musicAudio.currentTime = 0
+      this.$refs.musicAudio.play()
+      if (this.lyric) {
+        this.lyric.seek(0)
+      }
+    },
     prev() {
       if (!this.musicReady) {
         return
       }
-      let index =
-        this.currentPlayIndex === 0
-          ? this.playList.length - 1
-          : this.currentPlayIndex - 1
-      this.setCurrentPlayIndex(index)
+      if (this.playList.length === 1) {
+        this.singleLoop()
+      } else {
+        let index =
+          this.currentPlayIndex === 0
+            ? this.playList.length - 1
+            : this.currentPlayIndex - 1
+        this.saveCurrentPlayIndexHistory(index)
+      }
       this.musicReady = false
     },
     next() {
       if (!this.musicReady) {
         return
       }
-      let index = this.currentPlayIndex + 1
-      if (index >= this.playList.length) {
-        index = 0
+      if (this.playList.length === 1) {
+        this.singleLoop()
+      } else {
+        let index = this.currentPlayIndex + 1
+        if (index >= this.playList.length) {
+          index = 0
+        }
+        this.saveCurrentPlayIndexHistory(index)
       }
-      this.setCurrentPlayIndex(index)
       this.musicReady = false
+    },
+    changeCurrentTime(percent) {
+      const currentTime = this.currentMusic.duration * percent / 100
+      this.$refs.musicAudio.currentTime = currentTime / 1000
+      if (!this.playing) {
+        this.togglePlaying()
+      }
+      if (this.lyric) {
+        this.lyric.seek(currentTime)
+      }
     },
     getMusicUrl() {
       this.currentMusic.getMusicUrl().then(res => {
@@ -366,28 +410,31 @@ export default {
           this.currentTime = 0
           this.musicReady = true
           this.next()
-          // if (this.playing) {
-          //   this.setPlayingState(false)
-          // }
         }
       })
     },
     getLyric() {
       this.currentMusic.getLyric().then(res => {
-        this.currentMusic.lyric = res.lyric
-        this.currentLyricIndex = null
-        this.lyric = new Lyric(res.lyric, this.handleLyric)
-        if (this.playing) {
-          this.lyric.play()
+        if (res.nolyric) {
+          this.lyric = false
+          this.currentMusic.lyric = false
+        } else {
+          this.currentMusic.lyric = res.lrc.lyric
+          this.currentLyricIndex = 0
+          this.lyric = new Lyric(res.lrc.lyric, this.handleLyric)
+          if (this.playing) {
+            this.lyric.play()
+          }
         }
       })
     },
     handleLyric({ lineNum, txt }) {
       this.currentLyricIndex = lineNum
       if (lineNum < 5) {
-        return
+        this.$refs.lyricScroll.setScrollTop(0)
+      } else {
+        this.$refs.lyricScroll.setScrollTop(LYRIC_ITEM_HEIGHT * (lineNum - 5))
       }
-      this.$refs.lyricScroll.setScrollTop(LYRIC_ITEM_HEIGHT * (lineNum - 5))
     },
     musicError() {
       this.musicReady = true
@@ -426,11 +473,10 @@ export default {
       setFullScreen: types.SET_FULL_SCREEN,
       setPlayListVisible: types.SET_PLAY_LIST_VISIBLE,
       setPlayingState: types.SET_PLAYING_STATE,
-      setCurrentPlayIndex: types.SET_CURRENT_PLAY_INDEX,
-      setPlayMode: types.SET_PLAY_MODE,
-      setMaxWindow: types.SET_MAX_WINDOW_STATE
+      setMaxWindow: types.SET_MAX_WINDOW_STATE,
+      setPlayList: types.SET_PLAY_LIST
     }),
-    ...mapActions(['removePlayListHistory', 'deleteUserLikeList', 'insertUserLikeList'])
+    ...mapActions(['removePlayListHistory', 'deleteUserLikeList', 'insertUserLikeList', 'savePlayModeHistory', 'saveCurrentPlayIndexHistory'])
   },
   mounted() {
     if (this.currentMusic.id) {
@@ -438,8 +484,11 @@ export default {
     }
   },
   watch: {
-    currentMusic(newMusic) {
-      if (this.lyric) {
+    currentMusic(newMusic, oldMusic) {
+      if (newMusic.id === oldMusic.id) {
+        return
+      }
+      if (this.lyric && this.playing) {
         this.lyric.stop()
       }
       if (newMusic.id) {
@@ -458,9 +507,16 @@ export default {
           })
         } else {
           this.setPlayingState(true)
-          this.lyric.play()
+          if (this.lyric) {
+            this.lyric.play()
+          }
         }
       }
+    },
+    currentTime(newTime) {
+      this.percent = newTime === 0
+        ? 0
+        : (newTime / this.currentMusic.duration) * 100
     },
     playing(newPlaying) {
       const audio = this.$refs.musicAudio
@@ -495,6 +551,7 @@ $disable-color: #206d76 !important;
 $lyric-item-height: 34px;
 $duration-height: 20px;
 $playlist-font-size: 24px;
+$avator-width: 50px;
 .player-wrapper {
   .full-player {
     z-index: 99;
@@ -572,7 +629,7 @@ $playlist-font-size: 24px;
             text-align: right;
             img {
               width: 280px;
-              margin-top: 20%;
+              margin-top: 10%;
               margin-right: 30px;
             }
           }
@@ -740,8 +797,10 @@ $playlist-font-size: 24px;
         .avator {
           position: relative;
           height: 100%;
+          width: $avator-width;
           img {
             height: 100%;
+            width: 100%;
           }
           .hover-bg {
             position: absolute;

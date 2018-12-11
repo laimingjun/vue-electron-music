@@ -4,12 +4,18 @@ import {
   deleteSearch,
   removeSearch,
   savePlayList,
-  removePlayList
+  removePlayList,
+  savePlayMode,
+  saveCurrentPlayIndex
 } from '@/common/js/cache'
 import {
   insertArray,
-  deleteFromArray
+  deleteFromArray,
+  shuffle
 } from '@/common/js/util'
+import {
+  playMode
+} from '@/common/js/config'
 
 export const saveSearchHistory = function ({
   commit
@@ -30,11 +36,22 @@ export const removeSearchHistory = function ({
 }
 
 export const savePlayListHistory = function ({
-  commit
-}, list) {
-  commit(types.SET_PLAY_LIST, savePlayList(list))
-  commit(types.SET_SEQUENCE_LIST, list)
-  commit(types.SET_CURRENT_PLAY_INDEX, 0)
+  commit,
+  state
+}, {
+  list,
+  index = 0
+}) {
+  let playlist = [...list]
+  if (state.playMode === playMode.random) {
+    playlist = shuffle(list)
+    index = playlist.findIndex(item => {
+      return item.id === list[index].id
+    })
+  }
+  commit(types.SET_PLAY_LIST, playlist)
+  commit(types.SET_SEQUENCE_LIST, savePlayList(list))
+  commit(types.SET_CURRENT_PLAY_INDEX, index)
   commit(types.SET_PLAYING_STATE, true)
 }
 
@@ -42,6 +59,18 @@ export const removePlayListHistory = function ({
   commit
 }) {
   commit(types.SET_PLAY_LIST, removePlayList())
+}
+
+export const savePlayModeHistory = function ({
+  commit
+}, mode) {
+  commit(types.SET_PLAY_MODE, savePlayMode(mode))
+}
+
+export const saveCurrentPlayIndexHistory = function ({
+  commit
+}, index) {
+  commit(types.SET_CURRENT_PLAY_INDEX, saveCurrentPlayIndex(index))
 }
 
 export const insertUserSongList = function ({
@@ -86,17 +115,4 @@ export const deleteUserLikeList = function ({
     return item === id
   })
   commit(types.SET_USER_LIKE_LIST, likeList)
-}
-
-export const selectPlay = function ({
-  commit,
-  state
-}, {
-  list,
-  index
-}) {
-  commit(types.SET_SEQUENCE_LIST, list)
-  commit(types.SET_PLAY_LIST, list)
-  commit(types.SET_CURRENT_PLAY_INDEX, index)
-  commit(types.SET_PLAYING_STATE, true)
 }

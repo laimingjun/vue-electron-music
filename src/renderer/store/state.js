@@ -1,19 +1,17 @@
 import {
   loadSearch,
-  loadPlayList
+  loadPlayList,
+  loadPlayMode,
+  loadCurrentPlayIndex
 } from '@/common/js/cache'
-
-import {
-  playMode
-} from '@/common/js/config'
 
 const state = {
   searchQuery: '',
   searchHistory: loadSearch(),
   playList: loadPlayList(),
   sequenceList: loadPlayList(),
-  currentPlayIndex: 0,
-  playMode: playMode.sequence,
+  currentPlayIndex: loadCurrentPlayIndex(),
+  playMode: loadPlayMode(),
   playing: false,
   fullScreen: false,
   playListVisible: false,

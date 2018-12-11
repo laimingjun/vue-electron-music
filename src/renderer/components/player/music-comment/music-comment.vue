@@ -1,6 +1,6 @@
 <template>
   <div class="comment-wrapper">
-    <comment-input @sendComment="sendComment" :borderColor="borderColor"></comment-input>
+    <comment-input @sendComment="sendComment" :borderColor="borderColor" ref="commentInput"></comment-input>
     <comment-list
       v-if="hotComments.length && currentPage == 1"
       title="精彩评论"
@@ -42,7 +42,7 @@ import CommentList from '@/base/comment-list/comment-list'
 
 export default {
   mixins: [commentMixin],
-  data () {
+  data() {
     return {
       hotType: commentTypeList.MUSIC_TYPE,
       borderColor: 'rgba(255, 255, 255, 0.2)'
@@ -51,27 +51,27 @@ export default {
   props: {
     id: Number
   },
-  created () {
+  created() {
     if (this.id) {
       this._getCommentList(commentMusicUrl)
     }
   },
   methods: {
-    currentChange (num) {
+    currentChange(num) {
       this.currentPage = num
       this.comments = []
       this._getCommentList(commentMusicUrl)
     }
   },
   watch: {
-    id (newVal) {
+    id(newVal) {
       if (this.id) {
         this.hotComments = []
         this.comments = []
         this._getCommentList(commentMusicUrl)
       }
     },
-    total (newVal) {
+    total(newVal) {
       if (newVal > this.pageSize) {
         this.$nextTick(() => {
           document.querySelector('.pages-container').classList.add('border-fff')

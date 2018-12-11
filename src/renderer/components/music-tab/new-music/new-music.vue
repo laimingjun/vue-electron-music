@@ -4,27 +4,23 @@
       <div class="new-music-content">
         <ul class="type-list">
           <li
-            v-for="item in newMusicTypeList" 
+            v-for="item in newMusicTypeList"
             :key="item.code"
             :class="{active: currentTypeCode === item.code}"
-            @click="changeType(item.code)">
-            {{item.name}}
-          </li>
+            @click="changeType(item.code)"
+          >{{item.name}}</li>
         </ul>
         <div class="btn-group">
           <div class="btn-mini active" @click="playAll">
             <i class="iconfont icon-play"></i>播放全部
           </div>
         </div>
-        <div
-          class="music-list" 
-          v-loading="loading"
-          element-loading-background="#18495c">
-          <music-list 
+        <div class="music-list" v-loading="loading" element-loading-background="#18495c">
+          <music-list
             :musicList="musicList"
             @clickSinger="toSingerDetail"
-            @clickAlbum="toAlbumDetail">
-          </music-list>
+            @clickAlbum="toAlbumDetail"
+          ></music-list>
         </div>
       </div>
     </scroll>
@@ -74,7 +70,7 @@ export default {
       let list = this.musicList.map(item => {
         return new Music(item)
       })
-      this.savePlayListHistory(list)
+      this.savePlayListHistory({ list })
     },
     _getNewMusicList() {
       httpGet(newMusicListUrl, {
@@ -102,7 +98,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import 'scss/variable.scss';
+@import "scss/variable.scss";
 .new-music-wrapper {
   height: $music-content-height;
   background: $music-content-bg;

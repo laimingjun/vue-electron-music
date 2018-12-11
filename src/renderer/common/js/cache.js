@@ -2,12 +2,20 @@ import storage from 'good-storage'
 import {
   Music
 } from './music'
-import { insertArray, deleteFromArray } from './util'
+import {
+  insertArray,
+  deleteFromArray
+} from './util'
+import {
+  playMode
+} from './config'
 
 const SEARCH_KEY = '__search__'
 const SEARCH_MAX_LENGTH = 10
 
 const PLAYLIST_KEY = '__playlist__'
+const PLAYMODE_KEY = '__playmode__'
+const CURRENT_PLAY_INDEX_KEY = '__currentPlayIndex__'
 
 export function loadSearch() {
   return storage.get(SEARCH_KEY, [])
@@ -52,4 +60,21 @@ export function savePlayList(playlist) {
 export function removePlayList() {
   storage.set(PLAYLIST_KEY, [])
   return []
+}
+
+export function loadPlayMode() {
+  return storage.get(PLAYMODE_KEY, playMode.sequence)
+}
+
+export function savePlayMode(mode) {
+  storage.set(PLAYMODE_KEY, mode)
+  return mode
+}
+
+export function loadCurrentPlayIndex() {
+  return storage.get(CURRENT_PLAY_INDEX_KEY, 0)
+}
+
+export function saveCurrentPlayIndex(index) {
+  return storage.set(CURRENT_PLAY_INDEX_KEY, index)
 }

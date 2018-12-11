@@ -8,5 +8,7 @@ export function httpGet(url, params = {}) {
     params
   }).then((res) => {
     return Promise.resolve(res.data)
+  }).catch(err => {
+    return Promise.reject(err)
   })
 }

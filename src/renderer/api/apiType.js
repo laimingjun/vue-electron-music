@@ -9,6 +9,11 @@ export const commentTypeList = {
   VIDEO_TYPE: 5
 }
 
+export const commentType = {
+  delete: 0,
+  send: 1
+}
+
 export const singerCatList = [{
     name: '入驻歌手',
     code: 5001
