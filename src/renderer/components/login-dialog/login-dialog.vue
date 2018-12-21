@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { ERR_OK, loginPhoneUrl, loginEmailUrl } from '@/api/config'
+import { ERR_OK, DEFAULT_ERR_MSG, loginPhoneUrl, loginEmailUrl } from '@/api/config'
 import { httpGet } from '@/api/httpUtil'
 import { loginDialogVisibleMixin } from '@/common/js/mixin'
 import * as types from '@/store/mutation-types'
@@ -76,11 +76,10 @@ export default {
           }
         })
         .catch(err => {
-          console.log(err)
-          if (err.response.data.msg) {
+          if (err && err.response.data.msg) {
             this.errorMsg = err.response.data.msg
           } else {
-            this.errorMsg = '未知报错'
+            this.errorMsg = DEFAULT_ERR_MSG
           }
         })
     },

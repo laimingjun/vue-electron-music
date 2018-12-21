@@ -40,7 +40,10 @@ export class Music {
 
   getMusicUrl() {
     if (this.url) {
-      return Promise.resolve(this.url)
+      return Promise.resolve({
+        code: ERR_OK,
+        url: this.url
+      })
     }
     return httpGet(musicUrl, {
       id: this.id

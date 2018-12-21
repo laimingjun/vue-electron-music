@@ -163,3 +163,8 @@ export const likeType = {
   like: 1,
   noLike: 0
 }
+
+export const followType = {
+  unfollow: 0,
+  follow: 1
+}

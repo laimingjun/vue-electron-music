@@ -1,12 +1,21 @@
 <template>
-  <div class="song-list-wrapper"
+  <div
+    class="song-list-wrapper"
     v-loading="!songList.length"
-    element-loading-background="#18495c">
-    <div class="song-list-item" v-for="item in songList" :key="item.id" @click="selectItem(item.id)">
-      <div class="item-bg" 
-        @mouseenter="toggleItemHover($event, true)" 
-        @mouseleave="toggleItemHover($event, false)">
-        <img v-lazy="item.picUrl" />
+    :element-loading-background="loadingBgColor"
+  >
+    <div
+      class="song-list-item"
+      v-for="item in songList"
+      :key="item.id"
+      @click="selectItem(item.id)"
+    >
+      <div
+        class="item-bg"
+        @mouseenter="toggleItemHover($event, true)"
+        @mouseleave="toggleItemHover($event, false)"
+      >
+        <img v-lazy="item.picUrl || item.coverImgUrl">
         <div class="cover-hover-bg">
           <div class="item-play-icon">
             <i class="iconfont icon-play"></i>
@@ -19,7 +28,7 @@
           </div>
         </div>
       </div>
-      <p class='item-name'>{{item.name}}</p>
+      <p class="item-name">{{item.name}}</p>
     </div>
   </div>
 </template>
@@ -33,6 +42,10 @@ export default {
       default() {
         return []
       }
+    },
+    loadingBgColor: {
+      type: String,
+      default: '#18495c'
     }
   },
   methods: {
@@ -54,7 +67,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import 'scss/variable.scss';
+@import "scss/variable.scss";
 $song-list-item-width: 19%;
 .song-list-wrapper {
   display: flex;

@@ -3,13 +3,18 @@
     <div class="suggest-item" v-for="(title, index) in order" :key="index">
       <div class="title">
         <i class="iconfont" :class="suggestTypeConvert[title].icon"></i>
-        {{suggestTypeConvert[title].title}}</div>
+        {{suggestTypeConvert[title].title}}
+      </div>
       <ul>
-        <li @click.stop="handleSuggest(item.name)" v-for="item in suggestList[title]" :key="item.id">
+        <li
+          @click.stop="handleSuggest(item.name)"
+          v-for="item in suggestList[title]"
+          :key="item.id"
+        >
           {{item.name}}
-          <span v-if="title === 'songs' || title === 'albums'">
-            - {{item | formatArtist}}
-          </span>
+          <span
+            v-if="title === 'songs' || title === 'albums'"
+          >- {{item | formatArtist}}</span>
         </li>
       </ul>
     </div>
@@ -38,10 +43,10 @@ export default {
   },
   watch: {
     suggestList: {
+      immediate: true,
       handler() {
         this.order = this.suggestList.order
-      },
-      immediate: true
+      }
     }
   },
   filters: {
@@ -59,7 +64,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import 'scss/variable.scss';
+@import "scss/variable.scss";
 $li-height: 26px;
 $search-wrapper-width: 260px;
 .search-suggest-wrapper {

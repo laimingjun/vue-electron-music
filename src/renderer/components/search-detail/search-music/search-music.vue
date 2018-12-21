@@ -8,14 +8,21 @@
     </div>
     <music-list
       v-if="songs.length"
-      :musicList="songs" 
+      :musicList="songs"
       @clickSinger="toSingerDetail"
-      @clickAlbum="toAlbumDetail"></music-list>
+      @clickAlbum="toAlbumDetail"
+      @select="addPlayList"
+    ></music-list>
   </div>
 </template>
 
 <script>
 import MusicList from '@/base/music-list/music-list'
+import { DEFAULT_ERR_MSG } from '@/api/config'
+import { mapActions } from 'vuex'
+import {
+  Music
+} from '@/common/js/music'
 export default {
   props: {
     songs: {
@@ -41,7 +48,24 @@ export default {
         name: 'AlbumDetail',
         params: { id }
       })
-    }
+    },
+    addPlayList(item) {
+      let music = new Music(item)
+      music.checkMusic().then(res => {
+        if (res.success) {
+          this.insertMusic({ music })
+        }
+      }).catch((err) => {
+        let message = DEFAULT_ERR_MSG
+        if (err.response && err.response.data.message) {
+          message = err.response.data.message
+        }
+        this.$message({
+          message
+        })
+      })
+    },
+    ...mapActions(['insertMusic'])
   },
   components: {
     MusicList

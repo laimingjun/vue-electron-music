@@ -1,7 +1,7 @@
 <template>
-    <el-scrollbar :wrap-class="[className, '_scroll_']" :style="defaultStyle">
-      <slot></slot>
-    </el-scrollbar>
+  <el-scrollbar :wrap-class="[className, '_scroll_']" :style="defaultStyle">
+    <slot></slot>
+  </el-scrollbar>
 </template>
 
 <script>
@@ -38,12 +38,12 @@ export default {
     let _this = this
     const scrollDom = document.querySelector(`.${this.className}`)
     if (this.onScroll) {
-      scrollDom.addEventListener('scroll', function(e) {
+      scrollDom.addEventListener('scroll', function (e) {
         if (
           scrollDom.scrollTop >
           scrollDom.scrollHeight -
-            scrollDom.clientHeight -
-            TRIGGER_SCROLL_BOTTOM_HEIGHT
+          scrollDom.clientHeight -
+          TRIGGER_SCROLL_BOTTOM_HEIGHT
         ) {
           _this.$emit('scrollBottom')
         }

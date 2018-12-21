@@ -18,6 +18,7 @@ import SingerSimilarity from '@/components/singer-detail/singer-similarity/singe
 import AlbumDetail from '@/components/album-detail/album-detail'
 import SearchDetail from '@/components/search-detail/search-detail'
 import UserDetail from '@/components/user-detail/user-detail'
+import UserFollow from '@/components/user-follow/user-follow'
 
 Vue.use(Router)
 
@@ -106,5 +107,9 @@ export default new Router({
     path: '/userDetail/:uid',
     name: 'UserDetail',
     component: UserDetail
+  }, {
+    path: '/userFollow/:uid',
+    name: 'UserFollow',
+    component: UserFollow
   }]
 })

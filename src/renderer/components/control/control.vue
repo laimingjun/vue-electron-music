@@ -2,7 +2,7 @@
   <!-- 顶部控制栏 -->
   <div class="control">
     <div class="left">
-      <div class="icon-item"> 
+      <div class="icon-item">
         <i class="el-icon-arrow-left" @click="back"></i>
       </div>
       <div class="icon-item">
@@ -12,15 +12,19 @@
         <i class="iconfont icon-shuaxin" @click="refresh"></i>
       </div>
       <div class="search-group">
-        <div class="search-placeholder" 
-          v-show="isPlaceholderShow" 
-          @click="searchFocus">
+        <div class="search-placeholder" v-show="isPlaceholderShow" @click="searchFocus">
           <i class="iconfont icon-sousuo"></i>
           <span>搜索音乐、MV、歌单</span>
         </div>
-        <input class="search-input" ref="searchInput" v-model="keyword" 
-            @focus="searchFocus" @blur="searchBlur" @keydown.enter="searchEnter"
-            type="text">     
+        <input
+          class="search-input"
+          ref="searchInput"
+          v-model="keyword"
+          @focus="searchFocus"
+          @blur="searchBlur"
+          @keydown.enter="searchEnter"
+          type="text"
+        >
       </div>
     </div>
     <div class="btn-group">
@@ -35,13 +39,14 @@
       </div>
     </div>
     <div class="search-content" v-if="isShowSearchContent">
-      <component 
-        :suggestList="suggestList" 
+      <component
+        :suggestList="suggestList"
         :is="isShowSeach"
         @clickSuggest="toSearchDetail"
         @clickWrapper="clickWrapper"
         @clickDelete="deleteSearch"
-        @clickRemove="removeSearch"></component>
+        @clickRemove="removeSearch"
+      ></component>
     </div>
   </div>
 </template>
@@ -134,7 +139,7 @@ export default {
     hideWindow() {
       ipcRenderer.send('hide-window')
     },
-    closeWindow() {},
+    closeWindow() { },
     _getSerachSuggest(keyword) {
       httpGet(searchSuggestUrl, {
         keywords: this.keyword
@@ -172,7 +177,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import 'scss/variable.scss';
+@import "scss/variable.scss";
 $search-input-width: 220px;
 $search-bg: #235164;
 $placeholder-color: #ccc;
@@ -239,7 +244,7 @@ $placeholder-color: #ccc;
     left: 120px;
     color: #000;
     background: #fff;
-    z-index: 99;
+    z-index: 999;
   }
 }
 </style>

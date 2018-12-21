@@ -1,5 +1,5 @@
 <template>
-  <div class="user-detail-wrapper">
+  <div class="user-detail-wrapper" v-loading="loading" element-loading-background="#0b4055">
     <scroll>
       <div class="user-detail">
         <div class="avatar">
@@ -22,34 +22,60 @@
                 class="logout"
                 slot="reference"
                 v-if="currentUserInfo.userId === userInfo.userId"
+                @click="logoutProver = true"
               >
                 <i class="iconfont icon-guanbi"></i>退出
               </div>
             </el-popover>
           </div>
           <div class="label-group">
-            <div class="label">粉丝：{{userInfo.followeds}}</div>
-            <div class="label">关注: {{userInfo.follows}}</div>
+            <div
+              class="label"
+              @click="toUserFollow('followeds', userInfo.followeds)"
+            >粉丝：{{userInfo.followeds}}</div>
+            <div
+              class="label"
+              @click="toUserFollow('follow', userInfo.follows)"
+            >关注: {{userInfo.follows}}</div>
           </div>
           <div class="desc">个人介绍：{{userInfo.signature}}</div>
+          <div class="btn-group" v-show="currentUserInfo.userId !== userInfo.userId">
+            <div class="btn-mini">
+              <span v-if="userInfo.followed" @click="follow(userInfo.userId, 'unfollow')">
+                <i class="el-icon-check"></i>已关注
+              </span>
+              <span v-else @click="follow(userInfo.userId, 'follow')">
+                <i class="el-icon-plus"></i>关注
+              </span>
+            </div>
+          </div>
         </div>
+      </div>
+      <div class="song-detail">
+        <div class="title">收藏的歌单</div>
+        <song-list :songList="songList" @selectSong="toSongDetail" loadingBgColor="#093a4e"></song-list>
       </div>
     </scroll>
   </div>
 </template>
 
 <script>
-import { ERR_OK, userDetailUrl, logoutUrl } from '@/api/config'
+import { ERR_OK, userSongListUrl, userDetailUrl, logoutUrl } from '@/api/config'
 import { httpGet } from '@/api/httpUtil'
-import Scroll from '@/base/scroll/scroll'
 import * as types from '@/store/mutation-types'
-import { mapGetters, mapMutations } from 'vuex'
+import { mapMutations } from 'vuex'
+import { userFollowMixin } from '@/common/js/mixin'
+import Scroll from '@/base/scroll/scroll'
+import SongList from '@/base/song-list/song-list'
 export default {
+  mixins: [userFollowMixin],
   data() {
     return {
       userInfo: {},
       level: null,
-      logoutProver: false
+      logoutProver: false,
+      loading: false,
+      songList: []
     }
   },
   computed: {
@@ -59,10 +85,7 @@ export default {
     },
     userId() {
       return this.$route.params.uid
-    },
-    ...mapGetters({
-      currentUserInfo: 'userInfo'
-    })
+    }
   },
   methods: {
     logout() {
@@ -86,10 +109,39 @@ export default {
       httpGet(userDetailUrl, {
         uid
       }).then(res => {
+        this.loading = false
         if (res.code === ERR_OK) {
           this.userInfo = res.profile
           this.level = res.level
         }
+      })
+    },
+    getUserSongList(uid) {
+      httpGet(userSongListUrl, {
+        uid
+      }).then(res => {
+        if (res.code === ERR_OK) {
+          this.songList = res.playlist
+        }
+      })
+    },
+    toUserFollow(type, total) {
+      this.$router.push({
+        name: 'UserFollow',
+        params: {
+          uid: this.userId
+        },
+        query: {
+          type,
+          total,
+          nickname: this.userInfo.nickname
+        }
+      })
+    },
+    toSongDetail(id) {
+      this.$router.push({
+        name: 'SongDetail',
+        params: { id }
       })
     },
     ...mapMutations({
@@ -105,12 +157,15 @@ export default {
     userId: {
       immediate: true,
       handler(newId) {
+        this.loadding = true
         this.getUserDetail(newId)
+        this.getUserSongList(newId)
       }
     }
   },
   components: {
-    Scroll
+    Scroll,
+    SongList
   }
 }
 </script>
@@ -173,12 +228,26 @@ $avatar-width: 140px;
         margin: 10px 0;
         font-size: $font-size-medium;
         .label {
-          margin-right: 10px;
+          margin-right: 20px;
+          cursor: pointer;
         }
       }
       .desc {
+        margin: 14px 0;
         font-size: $font-size-medium;
       }
+      .btn-group {
+        display: flex;
+        i {
+          margin-right: 2px;
+        }
+      }
+    }
+  }
+  .song-detail {
+    padding: 30px;
+    .title {
+      font-size: $font-size-medium-x;
     }
   }
 }

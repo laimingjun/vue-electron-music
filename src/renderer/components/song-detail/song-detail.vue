@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import { ERR_OK, songListDetailUrl, songListSubscribeUrl } from '@/api/config'
+import { ERR_OK, DEFAULT_ERR_MSG, songListDetailUrl, songListSubscribeUrl } from '@/api/config'
 import { httpGet } from '@/api/httpUtil'
 import { subscribeType } from '@/api/apiType'
 import { convertUnit, deepCopy } from '@/common/js/util'
@@ -180,9 +180,13 @@ export default {
           })
           this.savePlayListHistory({ list, index })
         }
-      }).catch(() => {
+      }).catch((err) => {
+        let message = DEFAULT_ERR_MSG
+        if (err.response && err.response.data.message) {
+          message = err.response.data.message
+        }
         this.$message({
-          message: '该歌曲暂无版权'
+          message
         })
       })
     },

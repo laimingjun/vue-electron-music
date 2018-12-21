@@ -13,8 +13,9 @@ import {
 const SEARCH_KEY = '__search__'
 const SEARCH_MAX_LENGTH = 10
 
-const PLAYLIST_KEY = '__playlist__'
-const PLAYMODE_KEY = '__playmode__'
+const SEQUENCE_LIST_KEY = '__sequenceList__'
+const PLAYLIST_KEY = '__playList__'
+const PLAYMODE_KEY = '__playMode__'
 const CURRENT_PLAY_INDEX_KEY = '__currentPlayIndex__'
 
 export function loadSearch() {
@@ -52,13 +53,31 @@ export function loadPlayList() {
   return list
 }
 
-export function savePlayList(playlist) {
-  storage.set(PLAYLIST_KEY, playlist)
-  return playlist
+export function savePlayList(list) {
+  storage.set(PLAYLIST_KEY, list)
+  return list
 }
 
 export function removePlayList() {
   storage.set(PLAYLIST_KEY, [])
+  return []
+}
+
+export function loadSequenceList() {
+  let list = storage.get(SEQUENCE_LIST_KEY, [])
+  list = list.map(item => {
+    return new Music(item)
+  })
+  return list
+}
+
+export function saveSequenceList(list) {
+  storage.set(SEQUENCE_LIST_KEY, list)
+  return list
+}
+
+export function removeSequenceList() {
+  storage.set(SEQUENCE_LIST_KEY, [])
   return []
 }
 

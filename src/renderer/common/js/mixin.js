@@ -1,16 +1,19 @@
 import {
   ERR_OK,
+  DEFAULT_ERR_MSG,
   topSongListUrl,
   commentHotUrl,
   commentLikeUrl,
-  commentUrl
+  commentUrl,
+  followUrl
 } from '@/api/config'
 import {
   httpGet
 } from '@/api/httpUtil'
 import {
   likeType,
-  commentType
+  commentType,
+  followType
 } from '@/api/apiType'
 import {
   mapGetters,
@@ -107,6 +110,14 @@ export const commentMixin = {
             this.$emit('addComment')
             this.$refs.commentInput.clear()
           }
+        }).catch((err) => {
+          let message = DEFAULT_ERR_MSG
+          if (err && err.response.data) {
+            message = err.response.data.msg
+          }
+          this.$message({
+            message
+          })
         })
       }
     },
@@ -238,5 +249,48 @@ export const controlWindowMixin = {
     ...mapMutations({
       setMaxWindow: types.SET_MAX_WINDOW_STATE
     })
+  }
+}
+
+export const userFollowMixin = {
+  computed: {
+    ...mapGetters({
+      currentUserInfo: 'userInfo'
+    })
+  },
+  methods: {
+    follow(id, type, index = -1) {
+      if (id === this.currentUserInfo.userId) {
+        this.$message({
+          message: '操作失败！'
+        })
+        return
+      }
+      httpGet(followUrl, {
+        id,
+        t: followType[type]
+      }).then(res => {
+        if (res.code === ERR_OK) {
+          this.$message({
+            message: type === 'follow' ? '关注成功' : '取消关注成功!',
+            type: 'success'
+          })
+          if (type === 'unfollow') {
+            if (index > -1) {
+              this.followList.splice(index, 1)
+            }
+            this.total = this.total - 1
+          }
+        } else {
+          this.$message({
+            message: res.message
+          })
+        }
+      }).catch(err => {
+        this.$message({
+          message: err.response.message
+        })
+      })
+    }
   }
 }

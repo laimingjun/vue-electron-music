@@ -2,22 +2,23 @@
   <div class="search-detail-wrapper">
     <div class="nav-container">
       <ul class="nav">
-        <li 
-          v-for="item in searchTypeList" 
+        <li
+          v-for="item in searchTypeList"
           :key="item.type"
           :class="{active: currentType === item.type}"
           @click="changeType(item.type, item.component)"
-          >{{item.name}}
-        </li>
+        >{{item.name}}</li>
       </ul>
       <div class="hint">{{searchQuery}}共查找到{{resultCount}}条记录</div>
     </div>
-    <scroll :onScroll="true" @scrollBottom="loadMore">
+    <div class="search-container">
+      <scroll :onScroll="true" @scrollBottom="loadMore">
         <div class="search-detail">
           <component :is="currentComponent" v-bind="result" :hasMore="hasMore"></component>
           <div class="loading-container" v-loading="loading" v-show="loading"></div>
         </div>
-    </scroll> 
+      </scroll>
+    </div>
   </div>
 </template>
 
@@ -64,6 +65,7 @@ export default {
       this.result = {}
       this.resultList = []
       this.resultCount = 0
+      this.loading = true
       this._getSearchResult()
     },
     loadMore() {
@@ -137,7 +139,7 @@ export default {
 </script>
 
 <style scoped lang='scss'>
-@import 'scss/variable.scss';
+@import "scss/variable.scss";
 $nav-height: 52px;
 .search-detail-wrapper {
   position: relative;
@@ -154,6 +156,7 @@ $nav-height: 52px;
     height: $nav-height;
     padding: 10px 30px 0 30px;
     background: $music-content-bg;
+    z-index: 99;
     .nav {
       display: flex;
       li {
@@ -177,9 +180,13 @@ $nav-height: 52px;
       color: $color-text-hint;
     }
   }
-  .search-detail {
-    padding: 0 30px;
+  .search-container {
+    height: calc(100% - #{$control-height - 10px});
+    .search-detail {
+      padding: 10px 30px;
+    }
   }
+
   .loading-container {
     margin-top: 30px;
   }

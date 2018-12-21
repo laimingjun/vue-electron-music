@@ -43,17 +43,20 @@
                     class="album"
                   >{{currentMusic.album.name}}</span>
                 </div>
-                <div class="lyric">
+                <div class="lyric" v-if="lyric.lines">
                   <scroll ref="lyricScroll">
                     <ul>
                       <li
                         :class="{active: currentLyricIndex === index}"
                         v-for="(item, index) in lyric.lines"
                         :key="index"
+                        ref="lyricLine"
                       >{{item.txt}}</li>
                     </ul>
                   </scroll>
                 </div>
+                <div v-else-if="currentMusic.id" class="no-lyric">暂获取不到歌词</div>
+                <div v-else class="no-lyric">让生活充满音乐~</div>
               </div>
             </div>
             <div class="comment" v-show="isOpenComment">
@@ -78,7 +81,12 @@
               <div>{{currentMusic.duration | formatTime}}</div>
             </div>
             <div class="progress">
-              <el-slider v-model="percent" :show-tooltip="false" @change="changeCurrentTime"></el-slider>
+              <el-slider
+                v-if="fullScreen"
+                v-model="percent"
+                :show-tooltip="false"
+                @change="changeCurrentTime"
+              ></el-slider>
               <div class="control">
                 <div class="left">
                   <div @click="toggleLike(currentMusic.id)">
@@ -101,13 +109,13 @@
                       <i slot="reference" class="iconfont" :class="playModeIcon"></i>
                     </el-popover>
                   </div>
-                  <div class="play-control" @click="prev">
+                  <div class="play-control" @click="prev" :class="disableCls">
                     <i class="iconfont icon-shangyishou"></i>
                   </div>
                   <div class="play-state" @click="togglePlaying">
                     <i class="iconfont" :class="playIcon"></i>
                   </div>
-                  <div class="play-control" @click="next">
+                  <div class="play-control" @click="next" :class="disableCls">
                     <i class="iconfont icon-xiayishou"></i>
                   </div>
                   <div class="play-sound">
@@ -129,7 +137,12 @@
     <!-- 底部播放器 -->
     <div class="mini-player" @click="hidePlayList">
       <div class="progress">
-        <el-slider v-model="percent" :show-tooltip="false" @change="changeCurrentTime"></el-slider>
+        <el-slider
+          v-if="!fullScreen"
+          v-model="percent"
+          :show-tooltip="false"
+          @change="changeCurrentTime"
+        ></el-slider>
       </div>
       <div class="mini-content">
         <div class="left">
@@ -221,7 +234,6 @@ import Lyric from 'lyric-parser'
 import MusicComment from './music-comment/music-comment'
 import PlayModeList from './play-mode-list/play-mode-list'
 
-const LYRIC_ITEM_HEIGHT = 34
 export default {
   mixins: [controlWindowMixin],
   data() {
@@ -282,6 +294,11 @@ export default {
       if (this.fullScreenWindow) {
         ipcRenderer.send('quit-full-screen-window')
         this.fullScreenWindow = false
+      }
+      if (flag && this.lyric && this.currentLyricIndex > 5) {
+        this.$nextTick(() => {
+          this.$refs.lyricScroll.setScrollTop(this.$refs.lyricLine[this.currentLyricIndex - 5].offsetTop)
+        })
       }
       this.setFullScreen(flag)
     },
@@ -372,6 +389,7 @@ export default {
           this.currentPlayIndex === 0
             ? this.playList.length - 1
             : this.currentPlayIndex - 1
+        console.log('prev')
         this.saveCurrentPlayIndexHistory(index)
       }
       this.musicReady = false
@@ -387,6 +405,7 @@ export default {
         if (index >= this.playList.length) {
           index = 0
         }
+        console.log('next')
         this.saveCurrentPlayIndexHistory(index)
       }
       this.musicReady = false
@@ -409,13 +428,14 @@ export default {
           this.musicUrl = null
           this.currentTime = 0
           this.musicReady = true
+          console.log(res)
           this.next()
         }
       })
     },
     getLyric() {
       this.currentMusic.getLyric().then(res => {
-        if (res.nolyric) {
+        if (res.nolyric || (res.lrc && res.lrc.lyric === '')) {
           this.lyric = false
           this.currentMusic.lyric = false
         } else {
@@ -433,7 +453,9 @@ export default {
       if (lineNum < 5) {
         this.$refs.lyricScroll.setScrollTop(0)
       } else {
-        this.$refs.lyricScroll.setScrollTop(LYRIC_ITEM_HEIGHT * (lineNum - 5))
+        if (this.$refs.lyricLine[lineNum - 5]) {
+          this.$refs.lyricScroll.setScrollTop(this.$refs.lyricLine[lineNum - 5].offsetTop)
+        }
       }
     },
     musicError() {
@@ -493,7 +515,9 @@ export default {
       }
       if (newMusic.id) {
         this.$nextTick(() => {
-          this.$refs.lyricScroll.setScrollTop(0)
+          if (this.lyric) {
+            this.$refs.lyricScroll.setScrollTop(0)
+          }
           this.getMusicUrl()
           this.getLyric()
         })
@@ -561,16 +585,18 @@ $avator-width: 50px;
     right: 0;
     bottom: 0;
     overflow: hidden;
+    z-index: 2001;
     .bg {
       position: absolute;
       width: 100%;
       height: 100%;
       filter: blur(20px);
+      background-color: $mini-player-bg;
       background-size: 120% 120%;
       background-position: center center;
       background-attachment: fixed;
       transform: scale(1.2);
-      transition: background-image 1s;
+      transition: background-image 5s;
     }
     .content {
       box-sizing: border-box;
@@ -657,13 +683,19 @@ $avator-width: 50px;
               margin: 50px 0;
               overflow: auto;
               li {
-                height: $lyric-item-height;
                 line-height: $lyric-item-height;
                 font-size: $font-size-medium-x;
                 &.active {
                   color: $color-text-highlight;
                 }
               }
+            }
+            .no-lyric {
+              flex: 1;
+              display: flex;
+              align-items: center;
+              font-size: $font-size-medium-x;
+              color: $color-text-highlight;
             }
           }
         }
@@ -796,11 +828,9 @@ $avator-width: 50px;
         width: 30%;
         .avator {
           position: relative;
-          height: 100%;
           width: $avator-width;
           img {
             height: 100%;
-            width: 100%;
           }
           .hover-bg {
             position: absolute;

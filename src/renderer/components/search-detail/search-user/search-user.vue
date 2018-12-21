@@ -1,6 +1,11 @@
 <template>
   <div class="search-user-wrapper">
-    <div class="user-item" v-for="item in userprofiles" :key="item.userId">
+    <div
+      class="user-item"
+      v-for="item in userprofiles"
+      :key="item.userId"
+      @click="toUserDetail(item.userId)"
+    >
       <div class="avatar">
         <img v-lazy="item.avatarUrl">
       </div>
@@ -26,6 +31,14 @@ export default {
       default() {
         return []
       }
+    }
+  },
+  methods: {
+    toUserDetail(uid) {
+      this.$router.push({
+        name: 'UserDetail',
+        params: { uid }
+      })
     }
   }
 }

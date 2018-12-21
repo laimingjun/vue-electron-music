@@ -44,6 +44,7 @@
           :album="album"
           :id="album.id"
           @clickSinger="toSingerDetail"
+          @addComment="addComment"
         ></component>
       </div>
     </scroll>
@@ -96,6 +97,9 @@ export default {
           this.album = res.album
         }
       })
+    },
+    addComment() {
+      this.album.info.commentCount = this.album.info.commentCount + 1
     },
     ...mapActions(['savePlayListHistory'])
   },

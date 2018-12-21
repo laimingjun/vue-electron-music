@@ -2,6 +2,8 @@ export const HOST = 'http://localhost:3000'
 
 export const ERR_OK = 200
 
+export const DEFAULT_ERR_MSG = '未知报错'
+
 // 轮播图
 export const bannerUrl = '/banner'
 
@@ -113,5 +115,14 @@ export const likeMuiscUrl = '/like'
 // 用户详情 *uid
 export const userDetailUrl = '/user/detail'
 
+// 用户关注列表 *uid
+export const userFollowsUrl = '/user/follows'
+
+// 用户粉丝列表 *uid
+export const userFollowedUrl = '/user/followeds'
+
 // 发送/删除评论 *t: 0 删除 、1 发送, *type：资源类型, *id: 对应资源id
 export const commentUrl = '/comment'
+
+// 关注/取消关注用户 *id, t: 0 取消关注、 1 关注
+export const followUrl = '/follow'

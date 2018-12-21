@@ -18,6 +18,7 @@
           v-for="(item, index) in sequenceList"
           :key="item.id"
           @dblclick="playIndex(index)"
+          ref="playListItem"
         >
           <div class="name">{{item.name}}</div>
           <div class="detail">
@@ -39,12 +40,12 @@
 
 <script>
 import Scroll from '@/base/scroll/scroll'
+import { DEFAULT_ERR_MSG } from '@/api/config'
 import { formatTime } from '@/common/js/util'
 import { playMode } from '@/common/js/config'
 import { playListVisibleMixin } from '@/common/js/mixin'
 import { mapGetters, mapActions } from 'vuex'
 
-const playItemHeight = 52.6
 export default {
   mixins: [playListVisibleMixin],
   data() {
@@ -59,7 +60,7 @@ export default {
       index = this.sequenceList.findIndex(item => {
         return item.id === this.currentMusic.id
       })
-      this.$refs.playListScroll.setScrollTop(index * playItemHeight)
+      this.$refs.playListScroll.setScrollTop(this.$refs.playListItem[index].offsetTop)
     }
   },
   methods: {
@@ -83,9 +84,13 @@ export default {
         if (res.success) {
           this.saveCurrentPlayIndexHistory(index)
         }
-      }).catch(() => {
+      }).catch((err) => {
+        let message = DEFAULT_ERR_MSG
+        if (err.response && err.response.data.message) {
+          message = err.response.data.message
+        }
         this.$message({
-          message: '该歌曲暂无版权'
+          message
         })
       })
     },
@@ -114,7 +119,7 @@ $play-list-active-color: #44c988;
   width: $play-list-width;
   background: $white-bg;
   color: $color-black;
-  z-index: 999;
+  z-index: 9999;
   .header {
     box-sizing: border-box;
     height: $header-height;

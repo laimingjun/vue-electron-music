@@ -57,7 +57,7 @@
     "create-keyframe-animation": "^0.1.0",
     "element-ui": "^2.4.11",
     "good-storage": "^1.1.0",
-    "lyric-parser": "^1.0.1",
+    "lyric-parser": "git+https://github.com/laimingjun/lyric-parser.git",
     "vue": "^2.5.17",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",

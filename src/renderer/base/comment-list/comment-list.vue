@@ -8,7 +8,7 @@
       :key="comment.id"
     >
       <div class="avatar">
-        <img v-lazy="comment.user.avatarUrl" :key="comment.user.avatarUr">
+        <img v-lazy="comment.user.avatarUrl" :key="comment.commentId">
       </div>
       <div class="container">
         <div
