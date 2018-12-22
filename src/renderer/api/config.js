@@ -76,6 +76,9 @@ export const searchUrl = '/search'
 // 音乐是否可用 *id
 export const checkMusicUrl = '/check/music'
 
+// 音乐详情 *ids
+export const musicDetailUrl = '/song/detail'
+
 // 音乐url *:id
 export const musicUrl = '/song/url'
 

@@ -107,7 +107,8 @@ export default {
     },
     getUserDetail(uid) {
       httpGet(userDetailUrl, {
-        uid
+        uid,
+        timestamp: new Date().getTime()
       }).then(res => {
         this.loading = false
         if (res.code === ERR_OK) {

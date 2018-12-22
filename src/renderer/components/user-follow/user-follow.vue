@@ -22,7 +22,7 @@
                 <span v-if="item.followed" @click="follow(item.userId, 'unfollow', index)">
                   <i class="el-icon-check"></i>已关注
                 </span>
-                <span v-else @click="follow(item.userId, 'follow')">
+                <span v-else @click="follow(item.userId, 'follow', index)">
                   <i class="el-icon-plus"></i>关注
                 </span>
               </div>
@@ -108,7 +108,8 @@ export default {
       httpGet(this.followUrl, {
         uid: this.uid,
         limit: this.pageSize,
-        offset
+        offset,
+        timestamp: new Date().getTime()
       }).then(res => {
         this.loading = false
         if (res.code === ERR_OK) {

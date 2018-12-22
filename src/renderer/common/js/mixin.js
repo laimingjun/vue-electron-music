@@ -275,11 +275,13 @@ export const userFollowMixin = {
             message: type === 'follow' ? '关注成功' : '取消关注成功!',
             type: 'success'
           })
-          if (type === 'unfollow') {
-            if (index > -1) {
+          if (index > -1) {
+            if (type === 'follow') {
+              this.followList.splice(index, 1, res.user)
+            } else {
               this.followList.splice(index, 1)
+              this.total = this.total - 1
             }
-            this.total = this.total - 1
           }
         } else {
           this.$message({

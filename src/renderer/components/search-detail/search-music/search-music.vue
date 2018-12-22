@@ -1,7 +1,7 @@
 <template>
   <div class="search-music-wrapper">
     <div class="btn-group">
-      <div class="btn-mini active">
+      <div class="btn-mini active" @click="playAll">
         <i class="iconfont icon-play"></i>
         播放全部
       </div>
@@ -18,10 +18,11 @@
 
 <script>
 import MusicList from '@/base/music-list/music-list'
-import { DEFAULT_ERR_MSG } from '@/api/config'
+import { ERR_OK, musicDetailUrl } from '@/api/config'
+import { httpGet } from '@/api/httpUtil'
 import { mapActions } from 'vuex'
 import {
-  Music
+  createMusic
 } from '@/common/js/music'
 export default {
   props: {
@@ -50,22 +51,27 @@ export default {
       })
     },
     addPlayList(item) {
-      let music = new Music(item)
-      music.checkMusic().then(res => {
-        if (res.success) {
+      httpGet(musicDetailUrl, { ids: item.id }).then(res => {
+        if (res.code === ERR_OK) {
+          let music = createMusic(res.songs[0])
           this.insertMusic({ music })
         }
-      }).catch((err) => {
-        let message = DEFAULT_ERR_MSG
-        if (err.response && err.response.data.message) {
-          message = err.response.data.message
-        }
-        this.$message({
-          message
-        })
       })
     },
-    ...mapActions(['insertMusic'])
+    playAll() {
+      let ids = this.songs.map(item => {
+        return item.id
+      })
+      httpGet(musicDetailUrl, { ids: ids.join(',') }).then(res => {
+        if (res.code === ERR_OK) {
+          let list = res.songs.map(item => {
+            return createMusic(item)
+          })
+          this.savePlayListHistory({ list })
+        }
+      })
+    },
+    ...mapActions(['insertMusic', 'savePlayListHistory'])
   },
   components: {
     MusicList

@@ -6,6 +6,7 @@ import {
   saveSequenceList,
   savePlayList,
   removeSequenceList,
+  removePlayList,
   savePlayMode,
   saveCurrentPlayIndex
 } from '@/common/js/cache'
@@ -65,24 +66,38 @@ export const insertMusic = function ({
   let sequenceList = [...state.sequenceList] // 顺序播放列表
   let playList = [...state.playList]
   let currentIndex = state.currentPlayIndex // 播放列表索引
-  if (state.playMode === playMode.random) { // 判断是否为随机播放
-    let currentSong = state.playList[currentIndex] // 当前播放歌曲
-    currentIndex = sequenceList.findIndex(item => {
-      return item.id === currentSong.id
-    }) // 获取顺序列表 播放索引
+  let index = sequenceList.findIndex(item => {
+    return item.id === music.id
+  })
+  // 判断播放列表是否存在播放歌曲
+  if (index > -1) {
+    currentIndex = index
+  } else {
+    if (state.playMode === playMode.random) { // 判断是否为随机播放
+      let currentSong = state.playList[currentIndex] // 当前播放歌曲
+      currentIndex = sequenceList.findIndex(item => {
+        return item.id === currentSong.id
+      }) // 获取顺序列表 播放索引
+    }
+    currentIndex += 1 // 在当前歌曲后添加
+    sequenceList.splice(currentIndex, 0, music)
+    playList.splice(currentIndex, 0, music)
+    commit(types.SET_PLAY_LIST, savePlayList(playList))
+    commit(types.SET_SEQUENCE_LIST, saveSequenceList(sequenceList))
   }
-  currentIndex += 1 // 在当前歌曲后添加
-  sequenceList.splice(currentIndex, 0, music)
-  playList.splice(currentIndex, 0, music)
-  commit(types.SET_PLAY_LIST, savePlayList(playList))
-  commit(types.SET_SEQUENCE_LIST, saveSequenceList(sequenceList))
   commit(types.SET_CURRENT_PLAY_INDEX, saveCurrentPlayIndex(currentIndex))
 }
 
 export const removePlayListHistory = function ({
   commit
 }) {
-  commit(types.SET_PLAY_LIST, removeSequenceList())
+  commit(types.SET_PLAY_LIST, removePlayList())
+}
+
+export const removeSequenceListHistory = function ({
+  commit
+}) {
+  commit(types.SET_SEQUENCE_LIST, removeSequenceList())
 }
 
 export const savePlayModeHistory = function ({

@@ -233,6 +233,7 @@ import PlayList from './play-list/play-list'
 import Lyric from 'lyric-parser'
 import MusicComment from './music-comment/music-comment'
 import PlayModeList from './play-mode-list/play-mode-list'
+import { setTimeout } from 'timers'
 
 export default {
   mixins: [controlWindowMixin],
@@ -296,9 +297,10 @@ export default {
         this.fullScreenWindow = false
       }
       if (flag && this.lyric && this.currentLyricIndex > 5) {
-        this.$nextTick(() => {
+        // 设置延迟，全屏展开动画为300ms
+        setTimeout(() => {
           this.$refs.lyricScroll.setScrollTop(this.$refs.lyricLine[this.currentLyricIndex - 5].offsetTop)
-        })
+        }, 300)
       }
       this.setFullScreen(flag)
     },
@@ -389,7 +391,6 @@ export default {
           this.currentPlayIndex === 0
             ? this.playList.length - 1
             : this.currentPlayIndex - 1
-        console.log('prev')
         this.saveCurrentPlayIndexHistory(index)
       }
       this.musicReady = false
@@ -405,7 +406,6 @@ export default {
         if (index >= this.playList.length) {
           index = 0
         }
-        console.log('next')
         this.saveCurrentPlayIndexHistory(index)
       }
       this.musicReady = false
@@ -428,7 +428,6 @@ export default {
           this.musicUrl = null
           this.currentTime = 0
           this.musicReady = true
-          console.log(res)
           this.next()
         }
       })
@@ -471,25 +470,25 @@ export default {
       this.currentTime = e.target.currentTime * 1000
     },
     clearPlayList() {
+      this.removeSequenceListHistory()
       this.removePlayListHistory()
       this.setPlayingState(false)
+      this.updateWindowTitle()
       this.musicUrl = null
       this.currentTime = 0
     },
     updateCommentCount(val) {
       this.commentCount = val
     },
-    _getPosAndScale() {
-      const imgEl = this.$refs.coverImg
-      const targetWidth = 40
-      const paddingLeft = 30
-      const paddingBottom = 30
-      const paddingTop = imgEl.offsetTop
-      const width = 280
-      const scale = targetWidth / width
-      const x = -(imgEl.offsetLeft + width / 2 - paddingLeft)
-      const y = window.innerHeight - paddingTop - width / 2 - paddingBottom
-      return { x, y, scale }
+    updateWindowTitle() {
+      let title = 'Fish Muisc'
+      if (this.currentMusic.id) {
+        let artists = this.currentMusic.artists.map(item => {
+          return item.name
+        })
+        title = `${this.currentMusic.name}-${artists.join('/')}`
+      }
+      document.title = title
     },
     ...mapMutations({
       setFullScreen: types.SET_FULL_SCREEN,
@@ -498,10 +497,11 @@ export default {
       setMaxWindow: types.SET_MAX_WINDOW_STATE,
       setPlayList: types.SET_PLAY_LIST
     }),
-    ...mapActions(['removePlayListHistory', 'deleteUserLikeList', 'insertUserLikeList', 'savePlayModeHistory', 'saveCurrentPlayIndexHistory'])
+    ...mapActions(['removeSequenceListHistory', 'removePlayListHistory', 'deleteUserLikeList', 'insertUserLikeList', 'savePlayModeHistory', 'saveCurrentPlayIndexHistory'])
   },
   mounted() {
     if (this.currentMusic.id) {
+      this.updateWindowTitle()
       this.getLyric()
     }
   },
@@ -518,6 +518,7 @@ export default {
           if (this.lyric) {
             this.$refs.lyricScroll.setScrollTop(0)
           }
+          this.updateWindowTitle()
           this.getMusicUrl()
           this.getLyric()
         })
