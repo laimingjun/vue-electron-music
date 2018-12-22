@@ -8,7 +8,7 @@
           </div>
           <div class="song-detail">
             <h2>{{songDetail.name}}</h2>
-            <div class="avatar">
+            <div class="avatar" @click="toUserDetail(songDetail.creator.userId)">
               <img :src="songDetail.creator && songDetail.creator.avatarUrl" alt="作者头像">
               <span>{{songDetail.creator && songDetail.creator.nickname}}</span>
             </div>
@@ -165,6 +165,12 @@ export default {
         params: { id }
       })
     },
+    toUserDetail(uid) {
+      this.$router.push({
+        name: 'UserDetail',
+        params: { uid }
+      })
+    },
     playAll() {
       let list = this.musicList.map(item => {
         return createMusic(item)
@@ -266,6 +272,7 @@ $omit-description-height: 36px;
           }
           span {
             vertical-align: middle;
+            cursor: pointer;
           }
         }
         .tags {

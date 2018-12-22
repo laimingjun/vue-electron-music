@@ -470,7 +470,6 @@ export default {
       this.currentTime = e.target.currentTime * 1000
     },
     clearPlayList() {
-      this.removeSequenceListHistory()
       this.removePlayListHistory()
       this.setPlayingState(false)
       this.updateWindowTitle()
@@ -497,7 +496,7 @@ export default {
       setMaxWindow: types.SET_MAX_WINDOW_STATE,
       setPlayList: types.SET_PLAY_LIST
     }),
-    ...mapActions(['removeSequenceListHistory', 'removePlayListHistory', 'deleteUserLikeList', 'insertUserLikeList', 'savePlayModeHistory', 'saveCurrentPlayIndexHistory'])
+    ...mapActions(['removePlayListHistory', 'deleteUserLikeList', 'insertUserLikeList', 'savePlayModeHistory', 'saveCurrentPlayIndexHistory'])
   },
   mounted() {
     if (this.currentMusic.id) {

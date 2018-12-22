@@ -92,11 +92,6 @@ export const removePlayListHistory = function ({
   commit
 }) {
   commit(types.SET_PLAY_LIST, removePlayList())
-}
-
-export const removeSequenceListHistory = function ({
-  commit
-}) {
   commit(types.SET_SEQUENCE_LIST, removeSequenceList())
 }
 
