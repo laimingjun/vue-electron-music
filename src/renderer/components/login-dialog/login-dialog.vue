@@ -21,7 +21,7 @@
       </div>
       <div class="error">{{errorMsg}}</div>
       <div class="button">
-        <button @click="login">立即登录</button>
+        <button :class="{disabled: logging}" @click="login">立即登录</button>
       </div>
     </div>
   </div>
@@ -43,11 +43,15 @@ export default {
     return {
       username: '',
       password: '',
-      errorMsg: ''
+      errorMsg: '',
+      logging: false
     }
   },
   methods: {
     login() {
+      if (this.logging) {
+        return
+      }
       if (!this.username) {
         this.errorMsg = '请输入手机号或邮箱'
         return
@@ -68,8 +72,10 @@ export default {
         this.errorMsg = '请输入正确的手机号或邮箱'
       }
       params.password = this.password
+      this.logging = true
       httpGet(url, params)
         .then(res => {
+          this.logging = false
           if (res.code === ERR_OK) {
             this.setUserInfo(res.profile)
             this.hideLoginDialog()
@@ -96,6 +102,7 @@ $login-dialog-width: 320px;
 $login-dialog-height: 380px;
 $login-color: #31c27c;
 $login-hover-color: #2fb876;
+$login-disable-color: #3fed98;
 .login-dialog-wrapper {
   position: fixed;
   left: 50%;
@@ -153,6 +160,10 @@ $login-hover-color: #2fb876;
         background: $login-color;
         letter-spacing: 4px;
         cursor: pointer;
+        &.disabled {
+          background: $login-disable-color;
+          pointer-events: none;
+        }
         &:focus {
           outline: none;
         }

@@ -19,6 +19,7 @@ import AlbumDetail from '@/components/album-detail/album-detail'
 import SearchDetail from '@/components/search-detail/search-detail'
 import UserDetail from '@/components/user-detail/user-detail'
 import UserFollow from '@/components/user-follow/user-follow'
+import MvDetail from '@/components/mv-detail/mv-detail'
 
 Vue.use(Router)
 
@@ -111,5 +112,9 @@ export default new Router({
     path: '/userFollow/:uid',
     name: 'UserFollow',
     component: UserFollow
+  }, {
+    path: '/mvDetail/:mvid',
+    name: 'MvDetail',
+    component: MvDetail
   }]
 })

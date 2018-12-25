@@ -1,32 +1,36 @@
 <template>
   <div class="singer-mv-list">
-      <div class="singer-mv-item" v-for="(item, index) in mvList" :key="item.id">
-        <div class="cover-img"
-          @mouseenter="changeCurrentHover(index)"
-          @mouseleave="changeCurrentHover(null)">
-          <img v-lazy="item.imgurl16v9 || item.cover">
-          <div class="cover-bg-hover" v-show="currentHoverIndex === index">
-            <div class="cover-play-icon">
-              <i class="iconfont icon-play"></i>
-            </div>
-          </div>
-          <div class="play-count">
-            <div class="play-count-icon">
-              <i class="iconfont icon-shipin"></i>
-              {{item.playCount | convertUnit}}人播放
-            </div>
+    <div class="singer-mv-item" v-for="(item, index) in mvList" :key="item.id">
+      <div
+        class="cover-img"
+        @mouseenter="changeCurrentHover(index)"
+        @mouseleave="changeCurrentHover(null)"
+        @click="selectItem(item)"
+      >
+        <img v-lazy="item.imgurl16v9 || item.cover">
+        <div class="cover-bg-hover" v-show="currentHoverIndex === index">
+          <div class="cover-play-icon">
+            <i class="iconfont icon-play"></i>
           </div>
         </div>
-        <div class="name" :title="item.name">{{item.name}}</div>
-        <div class="singer">
-          <span 
-            class="singer-item" 
-            v-for="(singer, index) in item.artists" 
-            :key="index"
-            @click="clickSinger(singer.id)">{{singer.name}}</span>
+        <div class="play-count">
+          <div class="play-count-icon">
+            <i class="iconfont icon-shipin"></i>
+            {{item.playCount | convertUnit}}人播放
+          </div>
         </div>
       </div>
+      <div class="name" :title="item.name">{{item.name}}</div>
+      <div class="singer">
+        <span
+          class="singer-item"
+          v-for="(singer, index) in item.artists"
+          :key="index"
+          @click="clickSinger(singer.id)"
+        >{{singer.name}}</span>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -54,6 +58,9 @@ export default {
       }
       this.$emit('clickSinger', id)
     },
+    selectItem(mv) {
+      this.$emit('select', mv)
+    },
     changeCurrentHover(index) {
       this.currentHoverIndex = index
     }
@@ -65,7 +72,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import 'scss/variable.scss';
+@import "scss/variable.scss";
 .singer-mv-list {
   display: flex;
   flex-wrap: wrap;

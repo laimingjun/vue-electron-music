@@ -129,3 +129,15 @@ export const commentUrl = '/comment'
 
 // 关注/取消关注用户 *id, t: 0 取消关注、 1 关注
 export const followUrl = '/follow'
+
+// MV详情 *mvid
+export const mvDetailUrl = '/mv/detail'
+
+// MV Url *id
+export const mvUrl = '/mv/url'
+
+// 相似MV *mvid
+export const similarMvUrl = '/simi/mv'
+
+// 收藏MV *id
+export const mvSubscribeUrl = '/mv/sub'
