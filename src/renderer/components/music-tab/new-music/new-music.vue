@@ -16,11 +16,7 @@
           </div>
         </div>
         <div class="music-list" v-loading="loading" element-loading-background="#18495c">
-          <music-list
-            :musicList="musicList"
-            @clickSinger="toSingerDetail"
-            @clickAlbum="toAlbumDetail"
-          ></music-list>
+          <music-list :musicList="musicList" @select="selectItem"></music-list>
         </div>
       </div>
     </scroll>
@@ -54,23 +50,17 @@ export default {
       this.loading = true
       this._getNewMusicList()
     },
-    toSingerDetail(id) {
-      this.$router.push({
-        name: 'SingerDetail',
-        params: { id }
-      })
-    },
-    toAlbumDetail(id) {
-      this.$router.push({
-        name: 'AlbumDetail',
-        params: { id }
-      })
-    },
     playAll() {
       let list = this.musicList.map(item => {
         return new Music(item)
       })
       this.savePlayListHistory({ list })
+    },
+    selectItem(item, index) {
+      let list = this.musicList.map(item => {
+        return new Music(item)
+      })
+      this.savePlayListHistory({ list, index })
     },
     _getNewMusicList() {
       httpGet(newMusicListUrl, {

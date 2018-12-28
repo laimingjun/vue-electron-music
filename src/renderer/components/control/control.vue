@@ -60,6 +60,7 @@ import SearchSuggest from './search-suggest/search-suggest'
 import * as types from '@/store/mutation-types'
 import { mapActions, mapMutations } from 'vuex'
 import { controlWindowMixin } from '@/common/js/mixin'
+import { debounce } from '@/common/js/util'
 export default {
   mixins: [controlWindowMixin],
   data() {
@@ -140,7 +141,7 @@ export default {
       ipcRenderer.send('hide-window')
     },
     closeWindow() { },
-    _getSerachSuggest(keyword) {
+    _getSerachSuggest() {
       httpGet(searchSuggestUrl, {
         keywords: this.keyword
       }).then(res => {
@@ -159,14 +160,14 @@ export default {
     })
   },
   watch: {
-    keyword(val) {
-      if (val === '') return
+    keyword(newVal) {
+      if (newVal === '') return
       if (this.isSelect) {
         this.isSelect = false
         return
       }
       this.isShowSearchContent = true
-      this._getSerachSuggest(val)
+      debounce(this._getSerachSuggest, 200)()
     }
   },
   components: {

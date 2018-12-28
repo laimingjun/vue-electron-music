@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { commentSongListUrl } from '@/api/config'
+import { commentMvUrl } from '@/api/config'
 import { commentTypeList } from '@/api/apiType'
 import { commentMixin } from '@/common/js/mixin'
 import CommentInput from '@/base/comment-input/comment-input'
@@ -42,20 +42,20 @@ export default {
     id: Number
   },
   created() {
-    this._getCommentList(commentSongListUrl)
+    this._getCommentList(commentMvUrl)
   },
   methods: {
     currentChange(num) {
       this.currentPage = num
       this.comments = []
-      this._getCommentList(commentSongListUrl)
+      this._getCommentList(commentMvUrl)
     }
   },
   watch: {
     id: {
       immediate: false,
       handler() {
-        this._getCommentList(commentSongListUrl)
+        this._getCommentList(commentMvUrl)
       }
     }
   },

@@ -58,8 +58,6 @@
               :is="currentTab"
               :musicList="musicList"
               :id="songId"
-              @clickSinger="toSingerDetail"
-              @clickAlbum="toAlbumDetail"
               @select="selectItem"
               @addComment="addComment"
             ></component>
@@ -152,18 +150,6 @@ export default {
     },
     showTabs(compName) {
       this.currentTab = compName
-    },
-    toSingerDetail(id) {
-      this.$router.push({
-        name: 'SingerDetail',
-        params: { id }
-      })
-    },
-    toAlbumDetail(id) {
-      this.$router.push({
-        name: 'AlbumDetail',
-        params: { id }
-      })
     },
     toUserDetail(uid) {
       this.$router.push({

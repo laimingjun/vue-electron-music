@@ -16,9 +16,12 @@
         @dblclick="clickItem(item, index)"
       >
         <div class="name-control">
-          <div class="name">
-            <i class="iconfont" @click="toggleLike(item)" :class="likeIcon(item.id)"></i>
-            {{item.name}}
+          <div class="name-mv">
+            <div class="name">
+              <i class="iconfont" @click="toggleLike(item)" :class="likeIcon(item.id)"></i>
+              {{item.name}}
+            </div>
+            <div class="mv" @click="clickMv(item.mv)" v-show="item.mv > 0">MV</div>
           </div>
           <div class="control" v-show="currentHoverIndex === index">
             <i @click="clickItem(item, index)" class="iconfont icon-bofang"></i>
@@ -81,14 +84,26 @@ export default {
         this.$alert('暂无歌手详情', '提示')
         return
       }
-      this.$emit('clickSinger', id)
+      this.$router.push({
+        name: 'SingerDetail',
+        params: { id }
+      })
     },
     clickAlbum(item) {
       let id = item.al ? item.al.id : item.album ? item.album.id : ''
-      this.$emit('clickAlbum', id)
+      this.$router.push({
+        name: 'AlbumDetail',
+        params: { id }
+      })
     },
     clickItem(item, index) {
       this.$emit('select', item, index)
+    },
+    clickMv(id) {
+      this.$router.push({
+        name: 'MvDetail',
+        params: { mvid: id }
+      })
     },
     toggleItemHover(index) {
       this.currentHoverIndex = index
@@ -128,6 +143,10 @@ export default {
 $songs-height: 40px;
 $songs-hover-bg: #155263;
 $like-hover-color: #e45050;
+$control-width: 24px;
+$mv-width: 28px;
+$mv-height: 16px;
+$mv-bg: #ced9dc;
 .songs-wrapper {
   .songs-list {
     .songs-item {
@@ -158,15 +177,42 @@ $like-hover-color: #e45050;
         padding: 0 10px;
         display: flex;
         justify-content: space-between;
-        .iconfont {
-          margin-right: 6px;
+        .name-mv {
+          display: flex;
+          align-items: center;
+          .name {
+            .iconfont {
+              margin-right: 6px;
+              cursor: pointer;
+              &.icon-xihuan:hover {
+                color: $like-hover-color;
+              }
+              &.icon-iconfontxihuan:hover {
+                color: $color-text-highlight;
+              }
+            }
+          }
+          .mv {
+            width: $mv-width;
+            height: $mv-height;
+            line-height: $mv-height;
+            margin-left: 6px;
+            border-radius: 2px;
+            text-align: center;
+            color: $color-text-dark;
+            background: $mv-bg;
+            transform: scale(0.9);
+            cursor: pointer;
+            &:hover {
+              background: $white-bg;
+            }
+          }
+        }
+
+        .control {
+          width: $control-width;
+          margin-left: 10px;
           cursor: pointer;
-          &.icon-xihuan:hover {
-            color: $like-hover-color;
-          }
-          &.icon-iconfontxihuan:hover {
-            color: $color-text-highlight;
-          }
         }
       }
       .singer {

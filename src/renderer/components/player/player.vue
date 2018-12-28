@@ -585,7 +585,7 @@ $avator-width: 50px;
     right: 0;
     bottom: 0;
     overflow: hidden;
-    z-index: 2001;
+    z-index: 2000;
     .bg {
       position: absolute;
       width: 100%;
@@ -655,8 +655,9 @@ $avator-width: 50px;
             text-align: right;
             img {
               width: 280px;
-              margin-top: 10%;
+              margin-top: 50%;
               margin-right: 30px;
+              transform: translateY(-50%);
             }
           }
           .detail {
@@ -812,6 +813,7 @@ $avator-width: 50px;
     height: $player-height;
     padding: 10px 30px 10px 10px;
     background: $mini-player-bg;
+    z-index: 1900;
     .progress {
       position: fixed;
       left: 0;

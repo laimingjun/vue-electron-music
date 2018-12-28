@@ -9,8 +9,6 @@
     <music-list
       v-if="songs.length"
       :musicList="songs"
-      @clickSinger="toSingerDetail"
-      @clickAlbum="toAlbumDetail"
       @select="addPlayList"
     ></music-list>
   </div>
@@ -38,18 +36,6 @@ export default {
     }
   },
   methods: {
-    toSingerDetail(id) {
-      this.$router.push({
-        name: 'SingerDetail',
-        params: { id }
-      })
-    },
-    toAlbumDetail(id) {
-      this.$router.push({
-        name: 'AlbumDetail',
-        params: { id }
-      })
-    },
     addPlayList(item) {
       httpGet(musicDetailUrl, { ids: item.id }).then(res => {
         if (res.code === ERR_OK) {

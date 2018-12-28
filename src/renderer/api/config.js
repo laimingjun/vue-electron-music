@@ -136,6 +136,9 @@ export const mvDetailUrl = '/mv/detail'
 // MV Url *id
 export const mvUrl = '/mv/url'
 
+// MV 评论
+export const commentMvUrl = '/comment/mv'
+
 // 相似MV *mvid
 export const similarMvUrl = '/simi/mv'
 

@@ -49,7 +49,7 @@ export default {
       resultList: [],
       resultCount: 0,
       hasMore: true,
-      loading: false
+      loading: true
     }
   },
   computed: {

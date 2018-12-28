@@ -6,22 +6,19 @@
       </div>
       <div class="mv-detail">
         <h3 class="title">{{mvDetail.name}}</h3>
-        <div class="mini-desc">
-          <div class="content">
-            演唱：
-            <span class="singer">
-              <span
-                class="singer-item"
-                v-for="(singer, index) in mvDetail.artists"
-                :key="index"
-                @click="toSingerDetail(singer.id)"
-              >{{singer.name}}</span>
-            </span>
-            <span>{{mvDetail.playCount | convertUnit}}次观看</span>
-            <span>发布时间：{{mvDetail.publishTime}}</span>
-            <span v-if="mvDetail.desc">简介 {{mvDetail.desc}}</span>
-          </div>
-          <div class="detail-btn" @click="showDesc" v-if="mvDetail.desc">[详情]</div>
+        <div class="desc">
+          演唱：
+          <span class="singer">
+            <span
+              class="singer-item"
+              v-for="(singer, index) in mvDetail.artists"
+              :key="index"
+              @click="toSingerDetail(singer.id)"
+            >{{singer.name}}</span>
+          </span>
+          <span>{{mvDetail.playCount | convertUnit}}次观看</span>
+          <span>发布时间：{{mvDetail.publishTime}}</span>
+          <span v-if="mvDetail.desc">简介 {{mvDetail.desc}}</span>
         </div>
       </div>
       <div class="btn-group">
@@ -82,9 +79,6 @@ export default {
     }
   },
   methods: {
-    showDesc() {
-
-    },
     toggleLike() {
       // 获取不到 点赞标识
       this.liked = !this.liked
@@ -177,22 +171,21 @@ export default {
       font-size: $font-size-medium-x;
       font-weight: bold;
     }
-    .mini-desc {
-      display: flex;
-      justify-content: space-between;
-      .content {
-        padding-right: 4px;
-        flex: 1;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        color: $color-text-dark;
-        .singer-item {
-          color: $color-text;
-        }
+    .desc {
+      flex: 1;
+      padding-right: 4px;
+      line-height: $p-line-height;
+      color: $color-text-dark;
+      .singer-item {
+        color: $color-text;
       }
-      .detail-btn {
-        cursor: pointer;
+    }
+    .full-desc {
+      padding: 20px;
+      pre {
+        line-height: $p-line-height;
+        white-space: pre-wrap;
+        word-wrap: break-word;
       }
     }
   }
