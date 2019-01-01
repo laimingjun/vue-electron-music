@@ -31,6 +31,7 @@
               tag="li"
               v-for="songList in item.songList"
               :key="songList.id"
+              :title="songList.name"
             >
               <i
                 class="iconfont"

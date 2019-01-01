@@ -1,6 +1,6 @@
 <template>
-  <div class="mv-detail-wrapper">
-    <scroll>
+  <div class="mv-detail-wrapper" v-loading="loading" element-loading-background="#0b4055">
+    <scroll ref="scroll">
       <div class="mv-video">
         <video controls :src="mvUrl"></video>
       </div>
@@ -36,7 +36,7 @@
         </div>
       </div>
       <div class="mv-similar">
-        <mv-list :mvList="mvList"></mv-list>
+        <mv-list :mvList="mvList" @select="toMvDetail"></mv-list>
       </div>
       <div class="mv-comment">
         <div class="title">评论 {{mvDetail.commentCount}}</div>
@@ -61,7 +61,8 @@ export default {
       mvUrl: null,
       mvList: [],
       subed: false,
-      liked: false
+      liked: false,
+      loading: false
     }
   },
   created() {
@@ -113,6 +114,12 @@ export default {
         params: { id }
       })
     },
+    toMvDetail(mv) {
+      this.$router.push({
+        name: 'MvDetail',
+        params: { mvid: mv.id }
+      })
+    },
     _getSimilarMvList(mvid) {
       httpGet(similarMvUrl, {
         mvid
@@ -123,10 +130,13 @@ export default {
       })
     },
     _getMvDetail(mvid) {
+      this.loading = true
       httpGet(mvDetailUrl, {
         mvid
       }).then(res => {
+        this.loading = false
         if (res.code === ERR_OK) {
+          this.$refs.scroll.setScrollTop(0)
           this.mvDetail = res.data
           this.subed = res.subed
           this._getMvUrl(mvid)
@@ -142,6 +152,11 @@ export default {
           this.mvUrl = res.data.url
         }
       })
+    }
+  },
+  watch: {
+    mvid(newVal) {
+      this._getMvDetail(newVal)
     }
   },
   components: {

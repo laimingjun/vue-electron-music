@@ -1,7 +1,7 @@
 <template>
-  <!-- 全屏播放器 -->
   <div class="player-wrapper">
     <transition name="bottom-collapse" appear>
+      <!-- 全屏播放器 -->
       <div class="full-player" v-show="fullScreen" @click="hidePlayList">
         <div class="bg" :style="{backgroundImage: `url(${currentMusic.album.picUrl})`}"></div>
         <div class="content">
@@ -30,17 +30,26 @@
                 <img ref="coverImg" :src="currentMusic.album.picUrl">
               </div>
               <div class="detail">
-                <div class="name">{{currentMusic.name}}</div>
+                <div class="name">
+                  {{currentMusic.name}}
+                  <span
+                    v-show="currentMusic.mv > 0"
+                    @click="toMvDetail(currentMusic.mv)"
+                    class="mv"
+                  >MV</span>
+                </div>
                 <div class="singer">
                   歌手：
                   <span
                     class="singer-item"
                     v-for="(singer, index) in currentMusic.artists"
                     :key="index"
+                    @click="toSingerDetail(singer.id)"
                   >{{singer.name}}</span>
                   &nbsp;&nbsp;&nbsp;专辑：
                   <span
                     class="album"
+                    @click="toAlbumDetail(currentMusic.album.id)"
                   >{{currentMusic.album.name}}</span>
                 </div>
                 <div class="lyric" v-if="lyric.lines">
@@ -66,6 +75,7 @@
                   class="singer-item"
                   v-for="(singer, index) in currentMusic.artists"
                   :key="index"
+                  @click="toSingerDetail(singer.id)"
                 >{{singer.name}}</span>
               </div>
               <div class="comment-detail">
@@ -161,6 +171,7 @@
                   class="singer-item"
                   v-for="(singer, index) in currentMusic.artists"
                   :key="index"
+                  @click="toSingerDetail(singer.id)"
                 >{{singer.name}}</span>
               </div>
             </div>
@@ -168,6 +179,7 @@
               <i class="iconfont" :class="favorIcon"></i>
             </div>
           </div>
+          <div class="mv" @click="toMvDetail(currentMusic.mv)" v-show="currentMusic.mv > 0">MV</div>
         </div>
         <div class="center">
           <div class="play-mode">
@@ -288,6 +300,35 @@ export default {
     ])
   },
   methods: {
+    toSingerDetail(id) {
+      if (id === 0) {
+        this.$alert('暂无歌手详情', '提示')
+        return
+      }
+      this.$router.push({
+        name: 'SingerDetail',
+        params: { id }
+      })
+      if (this.fullScreen) {
+        this.setFullScreen(false)
+      }
+    },
+    toMvDetail(mvid) {
+      this.$router.push({
+        name: 'MvDetail',
+        params: { mvid }
+      })
+      if (this.fullScreen) {
+        this.setFullScreen(false)
+      }
+    },
+    toAlbumDetail(id) {
+      this.$router.push({
+        name: 'AlbumDetail',
+        params: { id }
+      })
+      this.setFullScreen(false)
+    },
     toggleOpenComment() {
       this.isOpenComment = !this.isOpenComment
     },
@@ -300,7 +341,7 @@ export default {
         // 设置延迟，全屏展开动画为300ms
         setTimeout(() => {
           this.$refs.lyricScroll.setScrollTop(this.$refs.lyricLine[this.currentLyricIndex - 5].offsetTop)
-        }, 300)
+        }, 400)
       }
       this.setFullScreen(flag)
     },
@@ -576,6 +617,9 @@ $lyric-item-height: 34px;
 $duration-height: 20px;
 $playlist-font-size: 24px;
 $avator-width: 50px;
+$mv-width: 28px;
+$mv-height: 16px;
+$mv-bg: #ced9dc;
 .player-wrapper {
   .full-player {
     z-index: 99;
@@ -668,8 +712,25 @@ $avator-width: 50px;
             padding-left: 50px;
             padding-right: 100px;
             .name {
+              display: flex;
               margin-bottom: 10px;
               font-size: $font-size-large;
+              .mv {
+                width: $mv-width;
+                height: $mv-height;
+                line-height: $mv-height;
+                margin-left: 6px;
+                border-radius: 2px;
+                text-align: center;
+                color: $color-black;
+                background: $mv-bg;
+                font-size: $font-size-small;
+                transform: scale(0.9);
+                cursor: pointer;
+                &:hover {
+                  background: $white-bg;
+                }
+              }
             }
             .singer {
               font-size: $font-size-medium;
@@ -677,6 +738,7 @@ $avator-width: 50px;
               .singer-item,
               .album {
                 color: $color-text;
+                cursor: pointer;
               }
             }
             .lyric {
@@ -877,6 +939,20 @@ $avator-width: 50px;
           .control {
             margin-top: 14px;
             cursor: pointer;
+          }
+        }
+        .mv {
+          width: $mv-width;
+          height: $mv-height;
+          line-height: $mv-height;
+          border-radius: 2px;
+          text-align: center;
+          color: $color-text-dark;
+          background: $mv-bg;
+          transform: scale(0.9);
+          cursor: pointer;
+          &:hover {
+            background: $white-bg;
           }
         }
       }

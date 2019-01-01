@@ -14,13 +14,15 @@ export class Music {
     artists,
     album,
     name,
-    duration
+    duration,
+    mv
   }) {
     this.id = id
     this.artists = artists
     this.album = album
     this.name = name
     this.duration = duration
+    this.mv = mv
   }
 
   getLyric() {
@@ -71,6 +73,7 @@ export function createMusic(music) {
     artists: music.ar,
     album: music.al,
     name: music.name,
-    duration: music.dt
+    duration: music.dt,
+    mv: music.mv
   })
 }
