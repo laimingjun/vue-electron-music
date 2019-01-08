@@ -161,7 +161,7 @@ export default {
       let list = this.musicList.map(item => {
         return createMusic(item)
       })
-      this.savePlayListHistory({ list })
+      this.savePlayAndSequenceListHistory({ list })
     },
     selectItem(item, index) {
       let music = createMusic(item)
@@ -170,7 +170,7 @@ export default {
           let list = this.musicList.map(item => {
             return createMusic(item)
           })
-          this.savePlayListHistory({ list, index })
+          this.savePlayAndSequenceListHistory({ list, index })
         }
       }).catch((err) => {
         let message = DEFAULT_ERR_MSG
@@ -203,7 +203,7 @@ export default {
       })
     },
     ...mapActions([
-      'savePlayListHistory',
+      'savePlayAndSequenceListHistory',
       'insertUserSongList',
       'deleteUserSongList'
     ])

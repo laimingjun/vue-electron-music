@@ -86,7 +86,7 @@ export default {
       let list = this.musicList.map(item => {
         return createMusic(item)
       })
-      this.savePlayListHistory({ list })
+      this.savePlayAndSequenceListHistory({ list })
     },
     _getAlbumDetail(id) {
       httpGet(albumDetailUrl, {
@@ -101,7 +101,7 @@ export default {
     addComment() {
       this.album.info.commentCount = this.album.info.commentCount + 1
     },
-    ...mapActions(['savePlayListHistory'])
+    ...mapActions(['savePlayAndSequenceListHistory'])
   },
   components: {
     Scroll,

@@ -82,6 +82,7 @@ export default {
           }
         })
         .catch(err => {
+          this.logging = false
           if (err && err.response.data.msg) {
             this.errorMsg = err.response.data.msg
           } else {

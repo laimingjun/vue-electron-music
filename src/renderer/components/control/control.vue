@@ -140,7 +140,9 @@ export default {
     hideWindow() {
       ipcRenderer.send('hide-window')
     },
-    closeWindow() { },
+    closeWindow() {
+      ipcRenderer.send('window-all-closed')
+    },
     _getSerachSuggest() {
       httpGet(searchSuggestUrl, {
         keywords: this.keyword

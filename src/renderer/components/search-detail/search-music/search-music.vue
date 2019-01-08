@@ -53,11 +53,11 @@ export default {
           let list = res.songs.map(item => {
             return createMusic(item)
           })
-          this.savePlayListHistory({ list })
+          this.savePlayAndSequenceListHistory({ list })
         }
       })
     },
-    ...mapActions(['insertMusic', 'savePlayListHistory'])
+    ...mapActions(['insertMusic', 'savePlayAndSequenceListHistory'])
   },
   components: {
     MusicList

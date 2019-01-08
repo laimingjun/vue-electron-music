@@ -24,9 +24,14 @@ export function loadSearch() {
 
 export function saveSearch(query) {
   const searches = storage.get(SEARCH_KEY, [])
-  insertArray(searches, query, item => {
-    return item === query
-  }, SEARCH_MAX_LENGTH)
+  insertArray(
+    searches,
+    query,
+    item => {
+      return item === query
+    },
+    SEARCH_MAX_LENGTH
+  )
   storage.set(SEARCH_KEY, searches)
   return searches
 }
@@ -54,6 +59,7 @@ export function loadPlayList() {
 }
 
 export function savePlayList(list) {
+  console.log(list)
   storage.set(PLAYLIST_KEY, list)
   return list
 }

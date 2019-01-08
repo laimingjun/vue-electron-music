@@ -32,13 +32,13 @@ export default {
       let list = this.musicList.map(item => {
         return createMusic(item)
       })
-      this.savePlayListHistory({ list, index })
+      this.savePlayAndSequenceListHistory({ list, index })
     },
     playAll() {
       let list = this.musicList.map(item => {
         return createMusic(item)
       })
-      this.savePlayListHistory({ list })
+      this.savePlayAndSequenceListHistory({ list })
     },
     _getMusicList() {
       httpGet(singerMusicListUrl, {
@@ -49,7 +49,7 @@ export default {
         }
       })
     },
-    ...mapActions(['savePlayListHistory'])
+    ...mapActions(['savePlayAndSequenceListHistory'])
   },
   components: {
     MusicList

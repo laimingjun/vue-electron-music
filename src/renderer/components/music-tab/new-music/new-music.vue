@@ -54,13 +54,13 @@ export default {
       let list = this.musicList.map(item => {
         return new Music(item)
       })
-      this.savePlayListHistory({ list })
+      this.savePlayAndSequenceListHistory({ list })
     },
     selectItem(item, index) {
       let list = this.musicList.map(item => {
         return new Music(item)
       })
-      this.savePlayListHistory({ list, index })
+      this.savePlayAndSequenceListHistory({ list, index })
     },
     _getNewMusicList() {
       httpGet(newMusicListUrl, {
@@ -78,7 +78,7 @@ export default {
         }
       })
     },
-    ...mapActions(['savePlayListHistory'])
+    ...mapActions(['savePlayAndSequenceListHistory'])
   },
   components: {
     Scroll,

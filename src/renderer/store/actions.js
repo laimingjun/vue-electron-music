@@ -37,7 +37,7 @@ export const removeSearchHistory = function ({
   commit(types.SET_SEARCH_HISTORY, removeSearch())
 }
 
-export const savePlayListHistory = function ({
+export const savePlayAndSequenceListHistory = function ({
   commit,
   state
 }, {

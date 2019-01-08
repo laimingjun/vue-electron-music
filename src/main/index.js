@@ -1,11 +1,26 @@
-'use strict'
+// 'use strict'
 
-import {
+// import {
+//   app,
+//   ipcMain,
+//   BrowserWindow,
+//   globalShortcut
+// } from 'electron'
+const {
   app,
   ipcMain,
   BrowserWindow,
   globalShortcut
-} from 'electron'
+} = require('electron')
+
+// const api = require('../../NeteaseCloudMuiscApi/app')
+
+// import {
+//   exec
+// } from 'child_process'
+
+// import api from '../../NeteaseCloudMuiscApi/app'
+// const api = require('../../NeteaseCloudMuiscApi/app')
 
 /**
  * Set `__static` path to static files in production
@@ -16,6 +31,7 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 let mainWindow = null
+let apiServer = null
 const winURL = process.env.NODE_ENV === 'development' ? `http://localhost:9080` : `file://${__dirname}/index.html`
 
 function createWindow() {
@@ -38,20 +54,39 @@ function createWindow() {
   })
 }
 
-app.on('ready', createWindow)
+app.on('ready', () => {
+  createWindow()
+  // 监听快捷键
+  globalShortcut.register('ESC', () => {
+    mainWindow.setFullScreen(false)
+  })
+  globalShortcut.register('F12', () => {
+    mainWindow.openDevTools()
+  })
+  // apiServer = api.listen(3000, () => {
+  //   console.log(`server running @ http://localhost:${3000}`)
+  // })
+  // exec('npm run server', (err) => {
+  //   if (err) {
+  //     console.log(err)
+  //   }
+  // })
+})
 
 app.on('activate', () => {
   if (mainWindow === null) {
     createWindow()
-    globalShortcut.register('ESC', () => {
-      mainWindow.setFullScreen(false)
-    })
   }
 })
 
 // 关闭
 ipcMain.on('window-all-closed', () => {
   app.quit()
+})
+
+app.on('before-quit', (e) => {
+  apiServer && apiServer.close()
+  mainWindow = null
 })
 
 // 隐藏
@@ -71,7 +106,6 @@ ipcMain.on('orignal-window', () => {
 
 // 全屏
 ipcMain.on('full-screen-window', () => {
-  console.log('1')
   mainWindow.setFullScreen(true)
 })
 

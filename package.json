@@ -1,5 +1,5 @@
 {
-  "name": "vue-electron-music",
+  "name": "fish-music",
   "version": "0.0.1",
   "author": "laimingjun",
   "description": "An electron-vue project",
@@ -16,7 +16,8 @@
     "pack": "npm run pack:main && npm run pack:renderer",
     "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
-    "postinstall": "npm run lint:fix"
+    "postinstall": "npm run lint:fix",
+    "server": "node NeteaseCloudMuiscApi/app.js"
   },
   "build": {
     "productName": "vue-electron-music",
@@ -54,6 +55,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "create-keyframe-animation": "^0.1.0",
     "element-ui": "^2.4.11",
     "good-storage": "^1.1.0",
@@ -81,9 +83,10 @@
     "del": "^3.0.0",
     "devtron": "^1.4.0",
     "electron": "^2.0.4",
-    "electron-builder": "^20.19.2",
+    "electron-builder": "^20.38.4",
     "electron-debug": "^1.5.0",
     "electron-devtools-installer": "^2.2.4",
+    "electron-packager": "^13.0.1",
     "eslint": "^4.19.1",
     "eslint-config-standard": "^11.0.0",
     "eslint-friendly-formatter": "^4.0.1",

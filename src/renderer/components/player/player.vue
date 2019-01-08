@@ -52,7 +52,7 @@
                     @click="toAlbumDetail(currentMusic.album.id)"
                   >{{currentMusic.album.name}}</span>
                 </div>
-                <div class="lyric" v-if="lyric.lines">
+                <div class="lyric" v-if="lyric && lyric.lines">
                   <scroll ref="lyricScroll">
                     <ul>
                       <li
@@ -238,6 +238,7 @@ import { playMode, playModeIcon } from '@/common/js/config'
 import { httpGet } from '@/api/httpUtil'
 import { ERR_OK, likeMuiscUrl } from '@/api/config'
 import { controlWindowMixin } from '@/common/js/mixin'
+import { savePlayList } from '@/common/js/cache'
 import { ipcRenderer } from 'electron'
 import * as types from '@/store/mutation-types'
 import Scroll from '@/base/scroll/scroll'
@@ -254,7 +255,7 @@ export default {
       musicReady: true,
       onScroll: true,
       musicUrl: null,
-      lyric: {},
+      lyric: null,
       currentTime: 0,
       currentLyricIndex: 0,
       isOpenComment: false,
@@ -377,7 +378,7 @@ export default {
         return item.id === this.currentMusic.id
       })
       this.saveCurrentPlayIndexHistory(index)
-      this.setPlayList(list)
+      this.setPlayList(savePlayList(list))
     },
     toggleFullScreenWindow() {
       this.fullScreenWindow
