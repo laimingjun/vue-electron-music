@@ -13,7 +13,7 @@ const {
   globalShortcut
 } = require('electron')
 
-// const api = require('../../NeteaseCloudMuiscApi/app')
+const api = require('../../NeteaseCloudMusicApi/app')
 
 // import {
 //   exec
@@ -63,9 +63,9 @@ app.on('ready', () => {
   globalShortcut.register('F12', () => {
     mainWindow.openDevTools()
   })
-  // apiServer = api.listen(3000, () => {
-  //   console.log(`server running @ http://localhost:${3000}`)
-  // })
+  apiServer = api.listen(3000, () => {
+    console.log(`server running @ http://localhost:${3000}`)
+  })
   // exec('npm run server', (err) => {
   //   if (err) {
   //     console.log(err)
