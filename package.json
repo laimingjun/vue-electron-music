@@ -17,10 +17,10 @@
     "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
     "postinstall": "npm run lint:fix",
-    "server": "node NeteaseCloudMuiscApi/app.js"
+    "server": "node NeteaseCloudMusicApi/app.js"
   },
   "build": {
-    "productName": "vue-electron-music",
+    "productName": "Fish Music",
     "appId": "com.example.yourapp",
     "directories": {
       "output": "build"

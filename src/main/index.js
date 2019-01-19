@@ -1,11 +1,5 @@
 // 'use strict'
 
-// import {
-//   app,
-//   ipcMain,
-//   BrowserWindow,
-//   globalShortcut
-// } from 'electron'
 const {
   app,
   ipcMain,
@@ -14,13 +8,6 @@ const {
 } = require('electron')
 
 const api = require('../../NeteaseCloudMusicApi/app')
-
-// import {
-//   exec
-// } from 'child_process'
-
-// import api from '../../NeteaseCloudMuiscApi/app'
-// const api = require('../../NeteaseCloudMuiscApi/app')
 
 /**
  * Set `__static` path to static files in production
@@ -66,11 +53,6 @@ app.on('ready', () => {
   apiServer = api.listen(3000, () => {
     console.log(`server running @ http://localhost:${3000}`)
   })
-  // exec('npm run server', (err) => {
-  //   if (err) {
-  //     console.log(err)
-  //   }
-  // })
 })
 
 app.on('activate', () => {
