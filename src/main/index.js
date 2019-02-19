@@ -7,8 +7,6 @@ const {
   globalShortcut
 } = require('electron')
 
-const api = require('../../NeteaseCloudMusicApi/app')
-
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -18,7 +16,6 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 let mainWindow = null
-let apiServer = null
 const winURL = process.env.NODE_ENV === 'development' ? `http://localhost:9080` : `file://${__dirname}/index.html`
 
 function createWindow() {
@@ -50,9 +47,6 @@ app.on('ready', () => {
   globalShortcut.register('F12', () => {
     mainWindow.openDevTools()
   })
-  apiServer = api.listen(3000, () => {
-    console.log(`server running @ http://localhost:${3000}`)
-  })
 })
 
 app.on('activate', () => {
@@ -67,7 +61,6 @@ ipcMain.on('window-all-closed', () => {
 })
 
 app.on('before-quit', (e) => {
-  apiServer && apiServer.close()
   mainWindow = null
 })
 
