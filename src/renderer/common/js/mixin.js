@@ -20,9 +20,9 @@ import {
   mapMutations
 } from 'vuex'
 import * as types from '@/store/mutation-types'
-import {
-  ipcRenderer
-} from 'electron'
+// import {
+//   ipcRenderer
+// } from 'electron'
 
 export const songMixin = {
   data() {
@@ -240,11 +240,11 @@ export const controlWindowMixin = {
   },
   methods: {
     toggleMaxWindow() {
-      this.maxWindow ? ipcRenderer.send('orignal-window') : ipcRenderer.send('max-window')
+      // this.maxWindow ? ipcRenderer.send('orignal-window') : ipcRenderer.send('max-window')
       this.setMaxWindow(!this.maxWindow)
     },
     closeWindow() {
-      ipcRenderer.send('window-all-closed')
+      // ipcRenderer.send('window-all-closed')
     },
     ...mapMutations({
       setMaxWindow: types.SET_MAX_WINDOW_STATE

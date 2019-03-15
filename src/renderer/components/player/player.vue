@@ -239,7 +239,7 @@ import { httpGet } from '@/api/httpUtil'
 import { ERR_OK, likeMuiscUrl } from '@/api/config'
 import { controlWindowMixin } from '@/common/js/mixin'
 import { savePlayList } from '@/common/js/cache'
-import { ipcRenderer } from 'electron'
+// import { ipcRenderer } from 'electron'
 import * as types from '@/store/mutation-types'
 import Scroll from '@/base/scroll/scroll'
 import PlayList from './play-list/play-list'
@@ -335,7 +335,7 @@ export default {
     },
     toggleFullScreen(flag) {
       if (this.fullScreenWindow) {
-        ipcRenderer.send('quit-full-screen-window')
+        // ipcRenderer.send('quit-full-screen-window')
         this.fullScreenWindow = false
       }
       if (flag && this.lyric && this.currentLyricIndex > 5) {
@@ -381,9 +381,9 @@ export default {
       this.setPlayList(savePlayList(list))
     },
     toggleFullScreenWindow() {
-      this.fullScreenWindow
-        ? ipcRenderer.send('quit-full-screen-window')
-        : ipcRenderer.send('full-screen-window')
+      // this.fullScreenWindow
+      //   ? ipcRenderer.send('quit-full-screen-window')
+      //   : ipcRenderer.send('full-screen-window')
       this.fullScreenWindow = !this.fullScreenWindow
     },
     toggleLike(id) {

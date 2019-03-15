@@ -59,7 +59,6 @@ export function loadPlayList() {
 }
 
 export function savePlayList(list) {
-  console.log(list)
   storage.set(PLAYLIST_KEY, list)
   return list
 }

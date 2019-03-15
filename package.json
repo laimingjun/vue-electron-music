@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "author": "laimingjun",
   "description": "An electron-vue project",
-  "license": null,
+  "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
@@ -16,8 +16,7 @@
     "pack": "npm run pack:main && npm run pack:renderer",
     "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
-    "postinstall": "npm run lint:fix",
-    "server": "node NeteaseCloudMusicApi/app.js"
+    "postinstall": "npm run lint:fix"
   },
   "build": {
     "productName": "Fish Music",
@@ -55,7 +54,6 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "create-keyframe-animation": "^0.1.0",
     "element-ui": "^2.4.11",
     "good-storage": "^1.1.0",
@@ -96,6 +94,7 @@
     "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-standard": "^3.1.0",
+    "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
     "mini-css-extract-plugin": "0.4.0",

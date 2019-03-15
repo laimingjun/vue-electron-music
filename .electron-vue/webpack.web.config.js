@@ -8,6 +8,7 @@ const webpack = require('webpack')
 const BabiliWebpackPlugin = require('babili-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+// const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
 
@@ -52,7 +53,7 @@ let webConfig = {
       {
         test: /\.js$/,
         use: 'babel-loader',
-        include: [ path.resolve(__dirname, '../src/renderer') ],
+        include: [path.resolve(__dirname, '../src/renderer')],
         exclude: /node_modules/
       },
       {
@@ -93,7 +94,8 @@ let webConfig = {
   },
   plugins: [
     new VueLoaderPlugin(),
-    new MiniCssExtractPlugin({filename: 'styles.css'}),
+    // new ExtractTextPlugin("styles.css"),
+    new MiniCssExtractPlugin({ filename: 'styles.css' }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: path.resolve(__dirname, '../src/index.ejs'),
@@ -105,7 +107,10 @@ let webConfig = {
       nodeModules: false
     }),
     new webpack.DefinePlugin({
-      'process.env.IS_WEB': 'true'
+      'process.env.IS_WEB': 'true',
+      'process.env': {
+        NODE_ENV: JSON.stringify('production')
+      }
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()
@@ -117,7 +122,8 @@ let webConfig = {
   resolve: {
     alias: {
       '@': path.join(__dirname, '../src/renderer'),
-      'vue$': 'vue/dist/vue.esm.js'
+      'vue$': 'vue/dist/vue.esm.js',
+      'scss': path.join(__dirname, '../src/renderer/common/scss')
     },
     extensions: ['.js', '.vue', '.json', '.css']
   },

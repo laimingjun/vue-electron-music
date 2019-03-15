@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { ipcRenderer } from 'electron'
+// import { ipcRenderer } from 'electron'
 import { ERR_OK, searchSuggestUrl } from '@/api/config'
 import { httpGet } from '@/api/httpUtil'
 import SearchHot from './search-hot/search-hot'
@@ -138,10 +138,10 @@ export default {
       this.removeSearchHistory()
     },
     hideWindow() {
-      ipcRenderer.send('hide-window')
+      // ipcRenderer.send('hide-window')
     },
     closeWindow() {
-      ipcRenderer.send('window-all-closed')
+      // ipcRenderer.send('window-all-closed')
     },
     _getSerachSuggest() {
       httpGet(searchSuggestUrl, {
