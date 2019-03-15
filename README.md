@@ -1,5 +1,7 @@
 # vue-electron-music
 
+## web访问地址 http://203.195.168.79:3000/
+
 ## 后端api NeteaseCloudMusicApi
 
 https://github.com/Binaryify/NeteaseCloudMusicApi
