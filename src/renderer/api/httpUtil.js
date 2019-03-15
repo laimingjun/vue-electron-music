@@ -1,10 +1,7 @@
 import axios from 'axios'
-import {
-  HOST
-} from './config'
 
 export function httpGet(url, params = {}) {
-  return axios.get(`${HOST}${url}`, {
+  return axios.get(`${axios.defaults.baseHost}${url}`, {
     params
   }).then((res) => {
     return Promise.resolve(res.data)

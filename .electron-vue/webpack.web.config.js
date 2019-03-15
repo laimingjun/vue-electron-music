@@ -1,6 +1,7 @@
 'use strict'
 
 process.env.BABEL_ENV = 'web'
+process.env.NODE_ENV = 'production'
 
 const path = require('path')
 const webpack = require('webpack')
@@ -8,7 +9,6 @@ const webpack = require('webpack')
 const BabiliWebpackPlugin = require('babili-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-// const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
 
@@ -32,7 +32,7 @@ let webConfig = {
       },
       {
         test: /\.scss$/,
-        use: ['vue-style-loader', 'css-loader', 'sass-loader']
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
       },
       {
         test: /\.sass$/,
@@ -94,8 +94,10 @@ let webConfig = {
   },
   plugins: [
     new VueLoaderPlugin(),
-    // new ExtractTextPlugin("styles.css"),
-    new MiniCssExtractPlugin({ filename: 'styles.css' }),
+    new MiniCssExtractPlugin({
+      filename: "css/[name].[contenthash].css",
+      chunkFilename: "css/[id].[contenthash].css"
+    }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: path.resolve(__dirname, '../src/index.ejs'),
@@ -108,15 +110,12 @@ let webConfig = {
     }),
     new webpack.DefinePlugin({
       'process.env.IS_WEB': 'true',
-      'process.env': {
-        NODE_ENV: JSON.stringify('production')
-      }
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()
   ],
   output: {
-    filename: '[name].js',
+    filename: 'js/[name].[hash].js',
     path: path.join(__dirname, '../dist/web')
   },
   resolve: {
@@ -126,6 +125,23 @@ let webConfig = {
       'scss': path.join(__dirname, '../src/renderer/common/scss')
     },
     extensions: ['.js', '.vue', '.json', '.css']
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        styles: {
+          name: 'styles',
+          test: /\.css$/,
+          chunks: 'all',
+          enforce: true
+        },
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all'
+        }
+      }
+    }
   },
   target: 'web'
 }

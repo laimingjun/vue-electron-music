@@ -1,6 +1,3 @@
-// export const HOST = 'http://localhost:3000'
-export const HOST = 'http://203.195.168.79:3000'
-
 export const ERR_OK = 200
 
 export const DEFAULT_ERR_MSG = '未知报错'

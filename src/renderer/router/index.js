@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import MusicTab from '@/components/music-tab/music-tab'
-import Featured from '@/components/music-tab/featured/featured'
+const MusicTab = () => import('@/components/music-tab/music-tab')
+const Featured = () => import('@/components/music-tab/featured/featured')
 const Rank = () => import('@/components/music-tab/rank/rank')
 const Singer = () => import('@/components/music-tab/singer/singer')
 const SongPage = () => import('@/components/music-tab/song-page/song-page')
@@ -33,28 +33,28 @@ export default new Router({
     name: 'MusicTab',
     redirect: '/musicTab/featured',
     children: [{
-        path: '/',
-        redirect: 'featured'
-      }, {
-        path: 'featured',
-        component: Featured
-      },
-      {
-        path: 'rank',
-        component: Rank
-      },
-      {
-        path: 'singer',
-        component: Singer
-      },
-      {
-        path: 'songPage',
-        component: SongPage
-      },
-      {
-        path: 'newMusic',
-        component: NewMusic
-      }
+      path: '/',
+      redirect: 'featured'
+    }, {
+      path: 'featured',
+      component: Featured
+    },
+    {
+      path: 'rank',
+      component: Rank
+    },
+    {
+      path: 'singer',
+      component: Singer
+    },
+    {
+      path: 'songPage',
+      component: SongPage
+    },
+    {
+      path: 'newMusic',
+      component: NewMusic
+    }
     ]
   }, {
     path: '/songDetail/:id',

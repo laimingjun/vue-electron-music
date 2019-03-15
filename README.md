@@ -1,10 +1,12 @@
 # vue-electron-music
 
+## web访问地址 http://203.195.168.79:3000/
+
 ## 后端api NeteaseCloudMusicApi
 
 https://github.com/Binaryify/NeteaseCloudMusicApi
 
-####需要node 8.12+ 环境
+#### 需要node 8.12+ 环境
 
 $ git clone git@github.com:Binaryify/NeteaseCloudMusicApi.git
 
@@ -12,7 +14,7 @@ $ git clone git@github.com:Binaryify/NeteaseCloudMusicApi.git
 
 $ npm install
 
-####运行
+#### 运行
 
 $ node app.js
 
