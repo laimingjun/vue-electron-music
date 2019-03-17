@@ -29,7 +29,7 @@ export const songMixin = {
     return {
       songList: [],
       total: 0,
-      pageSize: 50,
+      pageSize: 48,
       currentPage: 1,
       currentOrder: 'hot',
       tag: '全部'

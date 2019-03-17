@@ -4,7 +4,9 @@
       <div class="song-by-tag">
         <h2>{{$route.params.tag}}</h2>
         <div class="song-header">
-          <div class="btn-mini active"><i class="iconfont icon-bofangqi-bofang"></i>随机播放</div>
+          <!-- <div class="btn-mini active">
+            <i class="iconfont icon-bofangqi-bofang"</i>随机播放
+          </div> -->
           <div class="order">
             <span :class="{active: currentOrder === 'hot'}" @click="toggleOrder('hot')">最热</span>
             <span :class="{active: currentOrder === 'new'}" @click="toggleOrder('new')">最新</span>
@@ -56,6 +58,7 @@ $song-by-tag-bg: #18495c;
     }
     .song-header {
       display: flex;
+      flex-flow: row-reverse;
       justify-content: space-between;
       align-items: baseline;
       .order {

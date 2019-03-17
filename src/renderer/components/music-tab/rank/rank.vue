@@ -3,8 +3,14 @@
     v-loading="loading"
     element-loading-background="#0b4055">
     <scroll>
-      <div class="rank-list">
-        <div class="rank-item" @click="toSongDetail(rank.id)" v-for="(rank, idx) in rankList" :key="rank.id">
+      <el-row :gutter="24" class="rank-list">
+        <el-col
+          :lg="8"
+          :sm="12"
+          class="rank-item" 
+          v-for="(rank, idx) in rankList"
+          :key="rank.id"
+          @click="toSongDetail(rank.id)">
           <div class="cover-img"
             @mouseenter="changeCurrentHover(idx)"
             @mouseleave="changeCurrentHover(null)">
@@ -28,8 +34,8 @@
               <span class="drak">-{{item.second}}</span>
             </li>
           </ul>
-        </div>
-      </div>
+        </el-col>
+      </el-row>
     </scroll>
   </div>
 </template>
@@ -97,12 +103,12 @@ $cover-img-width: $cover-img-height;
     .rank-item {
       display: flex;
       flex-wrap: wrap;
-      width: 48%;
+      // width: 48%;
       margin-bottom: 20px;
       cursor: pointer;
-      &:nth-child(odd) {
-        margin-right: 4%;
-      }
+      // &:nth-child(odd) {
+      //   margin-right: 4%;
+      // }
       .cover-img {
         position: relative;
         width: $cover-img-width;

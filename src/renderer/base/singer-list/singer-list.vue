@@ -27,7 +27,7 @@ export default {
 
 <style scoped lang="scss">
 @import 'scss/variable.scss';
-$singer-item-width: 18%;
+$singer-item-width: 18.6%;
 $singer-item-bg: rgba(28, 86, 104, 0.5);
 .singer-list-wrapper {
   display: flex;
@@ -37,7 +37,7 @@ $singer-item-bg: rgba(28, 86, 104, 0.5);
     box-sizing: border-box;
     width: $singer-item-width;
     padding: 16px;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
     background: $singer-item-bg;
     text-align: center;
     cursor: pointer;

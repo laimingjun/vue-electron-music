@@ -1,10 +1,13 @@
 <template>
-  <div
+  <el-row
+    :gutter="12"
     class="song-list-wrapper"
     v-loading="!songList.length"
     :element-loading-background="loadingBgColor"
   >
-    <div
+    <el-col
+      :lg="4"
+      :sm="6"
       class="song-list-item"
       v-for="item in songList"
       :key="item.id"
@@ -29,8 +32,8 @@
         </div>
       </div>
       <p class="item-name">{{item.name}}</p>
-    </div>
-  </div>
+    </el-col>
+  </el-row>
 </template>
 
 <script>
@@ -68,19 +71,13 @@ export default {
 
 <style scoped lang="scss">
 @import "scss/variable.scss";
-$song-list-item-width: 19%;
 .song-list-wrapper {
   display: flex;
   flex-wrap: wrap;
   min-height: 120px;
   .song-list-item {
-    width: $song-list-item-width;
     margin-top: 20px;
     cursor: pointer;
-    margin-right: 1.25%;
-    &:nth-child(5n + 1) {
-      margin-right: 0;
-    }
     .item-bg {
       position: relative;
       width: 100%;

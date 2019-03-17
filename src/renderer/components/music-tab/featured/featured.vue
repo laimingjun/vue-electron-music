@@ -53,7 +53,7 @@ export default {
     _getRecommendSongList() {
       httpGet(recommendSongListUrl).then(res => {
         if (res.code === ERR_OK) {
-          res.result.length = 15
+          res.result.length = 24
           this.songList = res.result
         }
       })
