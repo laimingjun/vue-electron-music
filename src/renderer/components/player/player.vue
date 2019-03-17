@@ -12,7 +12,7 @@
             <div class="back" v-show="isOpenComment" @click="toggleOpenComment">
               <i class="el-icon-arrow-left"></i>返回
             </div>
-            <div class="control">
+            <!-- <div class="control">
               <div class="icon" @click="toggleFullScreenWindow" :title="fullScreenWindowTip">
                 <i class="iconfont" :class="fullScreenWindowIcon"></i>
               </div>
@@ -22,7 +22,7 @@
               <div class="icon" @click="closeWindow" title="关闭">
                 <i class="iconfont icon-guanbi"></i>
               </div>
-            </div>
+            </div> -->
           </div>
           <div class="main">
             <div class="cover-lyric" v-show="!isOpenComment">
@@ -128,9 +128,9 @@
                   <div class="play-control" @click="next" :class="disableCls">
                     <i class="iconfont icon-xiayishou"></i>
                   </div>
-                  <div class="play-sound">
+                  <!-- <div class="play-sound">
                     <i class="iconfont icon-yinliang"></i>
-                  </div>
+                  </div> -->
                 </div>
                 <div class="right">
                   <div class="playlist" @click.stop="togglePlayList">
@@ -696,12 +696,14 @@ $mv-bg: #ced9dc;
           display: flex;
           width: 100%;
           .cover-img {
+            position: relative;
             width: 50%;
             text-align: right;
             img {
-              width: 280px;
-              margin-top: 50%;
-              margin-right: 30px;
+              position: absolute;
+              top: 50%;
+              right: 10%;
+              width: 300px;
               transform: translateY(-50%);
             }
           }

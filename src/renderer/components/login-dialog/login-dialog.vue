@@ -2,19 +2,20 @@
   <div class="login-dialog-wrapper">
     <div class="header">
       <div>
-        <div class="title">登录</div>
+        <div class="title">登录<small></small></div>
       </div>
       <div class="close-icon" @click="hideLoginDialog">
         <i class="iconfont icon-guanbi"></i>
       </div>
     </div>
     <div class="main">
-      <div class="input-row">
+      <div class="login-tip">请使用网易云音乐账号进行登录</div>
+      <div class="input-row-first">
         <el-input v-model="username" placeholder="手机号/邮箱" @keyup.enter.native="login">
           <i slot="prefix" class="el-input__icon iconfont icon-yonghu"></i>
         </el-input>
       </div>
-      <div class="input-row">
+      <div>
         <el-input v-model="password" type="password" placeholder="密码" @keyup.enter.native="login">
           <i slot="prefix" class="el-input__icon iconfont icon-mima"></i>
         </el-input>
@@ -138,11 +139,13 @@ $login-disable-color: #3fed98;
     }
   }
   .main {
-    padding: 70px 20px 20px 20px;
-    .input-row {
-      &:first-child {
-        margin-bottom: 30px;
-      }
+    padding: 50px 20px 20px 20px;
+    .login-tip {
+      margin-bottom: 10px;
+      color: $color-text-hint;
+    }
+    .input-row-first {
+      margin-bottom: 30px;
     }
     .error {
       min-height: 14px;

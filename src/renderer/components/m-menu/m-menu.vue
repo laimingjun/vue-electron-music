@@ -56,12 +56,13 @@ import { ERR_OK, userSongListUrl, userLikeListUrl } from '@/api/config'
 import * as types from '@/store/mutation-types'
 import { mapGetters, mapMutations } from 'vuex'
 import Scroll from '@/base/scroll/scroll'
+import defaultSrc from '@/common/images/default.png'
 
 export default {
   mixins: [playListVisibleMixin, loginDialogVisibleMixin],
   data() {
     return {
-      headPhotoSrc: 'src/renderer/common/images/default.png',
+      headPhotoSrc: defaultSrc,
       likeName: '我喜欢'
     }
   },

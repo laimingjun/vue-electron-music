@@ -7,13 +7,13 @@ const path = require('path')
 const webpack = require('webpack')
 
 const BabiliWebpackPlugin = require('babili-webpack-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
+// const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
 
 let webConfig = {
-  devtool: '#cheap-module-eval-source-map',
+  devtool: 'cheap-module-eval-source-map',
   entry: {
     web: path.join(__dirname, '../src/renderer/main.js')
   },
@@ -33,14 +33,6 @@ let webConfig = {
       {
         test: /\.scss$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
-      },
-      {
-        test: /\.sass$/,
-        use: ['vue-style-loader', 'css-loader', 'sass-loader?indentedSyntax']
-      },
-      {
-        test: /\.less$/,
-        use: ['vue-style-loader', 'css-loader', 'less-loader']
       },
       {
         test: /\.css$/,
@@ -63,9 +55,7 @@ let webConfig = {
           options: {
             extractCSS: true,
             loaders: {
-              sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax=1',
-              scss: 'vue-style-loader!css-loader!sass-loader',
-              less: 'vue-style-loader!css-loader!less-loader'
+              scss: '!vue-style-loader!css-loader!sass-loader',
             }
           }
         }
@@ -76,7 +66,7 @@ let webConfig = {
           loader: 'url-loader',
           query: {
             limit: 10000,
-            name: 'imgs/[name].[ext]'
+            name: 'statics/imgs/[name].[ext]'
           }
         }
       },
@@ -86,7 +76,7 @@ let webConfig = {
           loader: 'url-loader',
           query: {
             limit: 10000,
-            name: 'fonts/[name].[ext]'
+            name: 'statics/fonts/[name].[ext]'
           }
         }
       }
@@ -95,8 +85,7 @@ let webConfig = {
   plugins: [
     new VueLoaderPlugin(),
     new MiniCssExtractPlugin({
-      filename: "css/[name].[contenthash].css",
-      chunkFilename: "css/[id].[contenthash].css"
+      filename: "statics/css/[name].[contenthash].css"
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
@@ -106,20 +95,17 @@ let webConfig = {
         removeAttributeQuotes: true,
         removeComments: true
       },
+      favicon: 'build/icons/web-ico.ico',
       nodeModules: false
     }),
     new webpack.DefinePlugin({
-<<<<<<< HEAD
-      'process.env.IS_WEB': 'true',
-=======
       'process.env.IS_WEB': 'true'
->>>>>>> 9e350f4d0bcb96f16c1aa9db147a9eb36494c7de
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()
   ],
   output: {
-    filename: 'js/[name].[hash].js',
+    filename: 'statics/js/[name].[hash].js',
     path: path.join(__dirname, '../dist/web')
   },
   resolve: {
@@ -133,12 +119,6 @@ let webConfig = {
   optimization: {
     splitChunks: {
       cacheGroups: {
-        styles: {
-          name: 'styles',
-          test: /\.css$/,
-          chunks: 'all',
-          enforce: true
-        },
         commons: {
           test: /[\\/]node_modules[\\/]/,
           name: 'vendors',
@@ -158,13 +138,13 @@ if (process.env.NODE_ENV === 'production') {
 
   webConfig.plugins.push(
     new BabiliWebpackPlugin(),
-    new CopyWebpackPlugin([
-      {
-        from: path.join(__dirname, '../static'),
-        to: path.join(__dirname, '../dist/web/static'),
-        ignore: ['.*']
-      }
-    ]),
+    // new CopyWebpackPlugin([
+    //   {
+    //     from: path.join(__dirname, '../static'),
+    //     to: path.join(__dirname, '../dist/web/static'),
+    //     ignore: ['*.gitkeep']
+    //   }
+    // ]),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': '"production"'
     }),

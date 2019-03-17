@@ -1,3 +1,5 @@
+import defaultPic from '../common/images/default.png'
+
 export const searchHistory = state => state.searchHistory
 
 export const searchQuery = state => state.searchQuery
@@ -9,7 +11,7 @@ export const sequenceList = state => state.sequenceList
 export const currentMusic = state => state.playList[state.currentPlayIndex] || {
   name: '音乐让生活更美好',
   album: {
-    picUrl: 'src/renderer/common/images/default.png'
+    picUrl: defaultPic
   }
 }
 

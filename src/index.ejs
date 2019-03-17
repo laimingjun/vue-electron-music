@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Fish Music</title>
+    <link rel="shortcut icon" href="../build/icons/web-ico.ico" />
     <% if (htmlWebpackPlugin.options.nodeModules) { %>
       <!-- Add `node_modules/` to global paths so `require` works properly in development -->
       <script>
@@ -14,7 +15,7 @@
     <div id="app"></div>
     <!-- Set `__static` path to static files in production -->
     <script>
-      if (process.env.NODE_ENV !== 'development') window.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
+      // if (process.env.NODE_ENV !== 'development') window.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
     </script>
 
     <!-- webpack builds are automatically injected -->

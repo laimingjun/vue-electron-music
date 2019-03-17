@@ -20,10 +20,10 @@ $ node app.js
 
 
 
-##前端页面 vue-electron-music 
+## 前端页面 vue-electron-music 
 $ git clone git@github.com/laimingjun/vue-electron-music.git
 
-###安装依赖
+### 安装依赖
 
 $ npm install
 

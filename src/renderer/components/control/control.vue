@@ -27,7 +27,7 @@
         >
       </div>
     </div>
-    <div class="btn-group">
+    <!-- <div class="btn-group">
       <div class="icon" @click="hideWindow" title="最小化">
         <i class="iconfont icon-icon30"></i>
       </div>
@@ -37,7 +37,7 @@
       <div class="icon" @click="closeWindow" title="关闭">
         <i class="iconfont icon-guanbi"></i>
       </div>
-    </div>
+    </div> -->
     <div class="search-content" v-if="isShowSearchContent">
       <component
         :suggestList="suggestList"
