@@ -7,33 +7,33 @@
         <el-col
           :lg="8"
           :sm="12"
-          class="rank-item" 
           v-for="(rank, idx) in rankList"
-          :key="rank.id"
-          @click="toSongDetail(rank.id)">
-          <div class="cover-img"
-            @mouseenter="changeCurrentHover(idx)"
-            @mouseleave="changeCurrentHover(null)">
-            <img v-lazy="rank.coverImgUrl" />
-            <div class="cover-hover-bg" v-show="currentHoverIndex === idx">
-              <div class="item-play-icon">
-                <i class="iconfont icon-play"></i>
+          :key="rank.id">
+          <div class="rank-item" @click="toSongDetail(rank.id)">
+            <div class="cover-img"
+              @mouseenter="changeCurrentHover(idx)"
+              @mouseleave="changeCurrentHover(null)">
+              <img v-lazy="rank.coverImgUrl" />
+              <div class="cover-hover-bg" v-show="currentHoverIndex === idx">
+                <div class="item-play-icon">
+                  <i class="iconfont icon-play"></i>
+                </div>
+              </div>
+              <div class="play-count">
+                <i class="iconfont icon-erji"></i>{{rank.playCount | convertUnit}}
               </div>
             </div>
-            <div class="play-count">
-              <i class="iconfont icon-erji"></i>{{rank.playCount | convertUnit}}
-            </div>
+            <ul class="music-list">
+              <li class="title">{{rank.name}}</li>
+              <li class="music-item"
+                v-for="(item, index) in rank.tracks" 
+                :key="index">
+                <span class="drak">{{index + 1}}&nbsp;&nbsp;</span>
+                {{item.first}}
+                <span class="drak">-{{item.second}}</span>
+              </li>
+            </ul>
           </div>
-          <ul class="music-list">
-            <li class="title">{{rank.name}}</li>
-            <li class="music-item"
-              v-for="(item, index) in rank.tracks" 
-              :key="index">
-              <span class="drak">{{index + 1}}&nbsp;&nbsp;</span>
-              {{item.first}}
-              <span class="drak">-{{item.second}}</span>
-            </li>
-          </ul>
         </el-col>
       </el-row>
     </scroll>

@@ -11,12 +11,12 @@
       class="song-list-item"
       v-for="item in songList"
       :key="item.id"
-      @click="selectItem(item.id)"
     >
       <div
         class="item-bg"
         @mouseenter="toggleItemHover($event, true)"
         @mouseleave="toggleItemHover($event, false)"
+        @click="selectItem(item.id)"
       >
         <img v-lazy="item.picUrl || item.coverImgUrl">
         <div class="cover-hover-bg">
