@@ -8,7 +8,7 @@ https://github.com/Binaryify/NeteaseCloudMusicApi
 
 #### 需要node 8.12+ 环境
 
-$ git clone git@github.com:Binaryify/NeteaseCloudMusicApi.git
+$ git clone https://github.com/Binaryify/NeteaseCloudMusicApi.git
 
 #### 安装依赖
 
@@ -21,7 +21,7 @@ $ node app.js
 
 
 ## 前端页面 vue-electron-music 
-$ git clone git@github.com/laimingjun/vue-electron-music.git
+$ git clone https://github.com/laimingjun/vue-electron-music.git
 
 ### 安装依赖
 
